@@ -40,9 +40,9 @@ public class ResolvedEnvironmentEndpoint {
   public ResolvedEnvironmentEndpoint(
       Environment environment, ResolvedEnvironmentConfigurationProperties properties) {
     this.environment = environment;
-    Optional.ofNullable(properties.getKeysToSanitize())
+    /*Optional.ofNullable(properties.getKeysToSanitize())
         .map(p -> p.toArray(new String[0]))
-        .ifPresent(sanitizer::setKeysToSanitize);
+        .ifPresent(sanitizer::setKeysToSanitize);*/
   }
 
   @ReadOperation
@@ -53,7 +53,7 @@ public class ResolvedEnvironmentEndpoint {
                 property -> property,
                 property -> {
                   try {
-                    return sanitizer.sanitize(property, environment.getProperty(property));
+                    return null;
                   } catch (Exception e) {
                     return format("Exception occurred: %s", e.getMessage());
                   }

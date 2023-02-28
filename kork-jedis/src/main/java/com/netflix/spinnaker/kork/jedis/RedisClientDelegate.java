@@ -19,11 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.commands.BinaryJedisCommands;
 import redis.clients.jedis.commands.JedisCommands;
-import redis.clients.jedis.commands.MultiKeyCommands;
-import redis.clients.jedis.commands.RedisPipeline;
-import redis.clients.jedis.commands.ScriptingCommands;
 
 /**
  * Offers a functional interface over either a vanilla Jedis or Dynomite client.
@@ -38,19 +34,19 @@ public interface RedisClientDelegate {
 
   void withCommandsClient(Consumer<JedisCommands> f);
 
-  <R> R withMultiClient(Function<MultiKeyCommands, R> f);
+  //<R> R withMultiClient(Function<MultiKeyCommands, R> f);
 
-  void withMultiClient(Consumer<MultiKeyCommands> f);
+  //void withMultiClient(Consumer<MultiKeyCommands> f);
 
-  <R> R withBinaryClient(Function<BinaryJedisCommands, R> f);
+  //<R> R withBinaryClient(Function<BinaryJedisCommands, R> f);
 
-  void withBinaryClient(Consumer<BinaryJedisCommands> f);
+  //void withBinaryClient(Consumer<BinaryJedisCommands> f);
 
-  void withPipeline(Consumer<RedisPipeline> f);
+  //void withPipeline(Consumer<RedisPipeline> f);
 
-  <R> R withPipeline(Function<RedisPipeline, R> f);
+  //<R> R withPipeline(Function<RedisPipeline, R> f);
 
-  void syncPipeline(RedisPipeline p);
+  //void syncPipeline(RedisPipeline p);
 
   boolean supportsMultiKeyPipelines();
 
@@ -66,9 +62,9 @@ public interface RedisClientDelegate {
 
   boolean supportsScripting();
 
-  void withScriptingClient(Consumer<ScriptingCommands> f);
+  //void withScriptingClient(Consumer<ScriptingCommands> f);
 
-  <R> R withScriptingClient(Function<ScriptingCommands, R> f);
+  //<R> R withScriptingClient(Function<ScriptingCommands, R> f);
 
   void withKeyScan(String pattern, int count, Consumer<RedisScanResult> f);
 }

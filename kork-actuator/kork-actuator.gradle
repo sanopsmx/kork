@@ -19,11 +19,14 @@ apply plugin: "java-library"
 apply from: "$rootDir/gradle/kotlin-test.gradle"
 
 dependencies {
-  implementation(platform(project(":spinnaker-dependencies")))
-  implementation "org.springframework.security:spring-security-core"
-  implementation "org.springframework.boot:spring-boot-starter-security"
-  implementation "org.springframework.boot:spring-boot-starter-web"
-  compileOnly "org.springframework.boot:spring-boot-starter-actuator"
+  //implementation(platform(project(":spinnaker-dependencies")))
+  //implementation 'org.springframework.security:spring-security-config:5.7.3'
+  //implementation group: 'org.springframework.security', name: 'spring-security-config', version: '5.3.4.RELEASE'
+
+  implementation "org.springframework.security:spring-security-core:6.0.2"
+  implementation "org.springframework.boot:spring-boot-starter-security:3.0.2"
+  implementation "org.springframework.boot:spring-boot-starter-web:3.0.2"
+  implementation "org.springframework.boot:spring-boot-starter-actuator:3.0.2"
   testImplementation "org.spockframework:spock-core"
   testImplementation "org.spockframework:spock-spring"
   testImplementation "org.springframework.boot:spring-boot-starter-test"

@@ -15,27 +15,20 @@
  */
 package com.netflix.spinnaker.kork.jedis.telemetry;
 
-import static com.netflix.spinnaker.kork.jedis.telemetry.TelemetryHelper.*;
-
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.histogram.PercentileDistributionSummary;
 import com.netflix.spectator.api.histogram.PercentileTimer;
-import java.util.List;
-import java.util.Map;
+import redis.clients.jedis.Jedis;
+
 import java.util.Optional;
-import java.util.Set;
 import java.util.concurrent.Callable;
-import redis.clients.jedis.*;
-import redis.clients.jedis.params.GeoRadiusParam;
-import redis.clients.jedis.params.SetParams;
-import redis.clients.jedis.params.ZAddParams;
-import redis.clients.jedis.params.ZIncrByParams;
-import redis.clients.jedis.util.Slowlog;
+
+import static com.netflix.spinnaker.kork.jedis.telemetry.TelemetryHelper.*;
 
 /**
  * Instruments: - Timer for each command - Distribution summary for all payload sizes - Error rates
  */
-public class InstrumentedJedis extends Jedis {
+public class InstrumentedJedis{
 
   private final Registry registry;
   private final Jedis delegated;
@@ -115,7 +108,7 @@ public class InstrumentedJedis extends Jedis {
     }
   }
 
-  @Override
+  /*@Override
   public String set(String key, String value) {
     String command = "set";
     return instrumented(command, payloadSize(value), () -> delegated.set(key, value));
@@ -2910,5 +2903,5 @@ public class InstrumentedJedis extends Jedis {
   public List<Long> bitfield(byte[] key, byte[]... arguments) {
     String command = "bitfield";
     return instrumented(command, () -> delegated.bitfield(key, arguments));
-  }
+  }*/
 }

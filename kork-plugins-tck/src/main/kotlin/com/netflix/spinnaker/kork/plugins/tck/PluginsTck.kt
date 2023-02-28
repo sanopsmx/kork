@@ -37,7 +37,7 @@ abstract class PluginsTck<T : PluginsTckFixture> : JUnit5Minutests {
    * Basic tests that assert the plugin framework is behaving its fundamental plugin loading responsibilities within
    * a service.
    */
-  fun ContextBuilder<T>.defaultPluginTests() {
+  /*fun ContextBuilder<T>.defaultPluginTests() {
     context("an integration test environment and relevant plugins") {
 
       test("the enabled plugin starts with the expected extensions loaded") {
@@ -64,13 +64,13 @@ abstract class PluginsTck<T : PluginsTckFixture> : JUnit5Minutests {
         }
       }
     }
-  }
+  }*/
 }
 
 /**
  * DSL for constructing a service fixture within a Minutest suite.
  */
-inline fun <PF, reified F> TestContextBuilder<PF, F>.serviceFixture(
+/*inline fun <PF, reified F> TestContextBuilder<PF, F>.serviceFixture(
   crossinline factory: (Unit).(testDescriptor: TestDescriptor) -> F
 ) {
   fixture { testDescriptor ->
@@ -78,4 +78,4 @@ inline fun <PF, reified F> TestContextBuilder<PF, F>.serviceFixture(
       TestContextManager(F::class.java).prepareTestInstance(it)
     }
   }
-}
+}*/

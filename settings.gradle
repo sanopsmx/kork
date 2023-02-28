@@ -14,15 +14,6 @@
  * limitations under the License.
  */
 
-if (spinnakerGradleVersion.endsWith('-SNAPSHOT')) {
-  pluginManagement {
-    repositories {
-      mavenLocal()
-      gradlePluginPortal()
-    }
-  }
-}
-
 enableFeaturePreview("VERSION_ORDERING_V2")
 
 include(

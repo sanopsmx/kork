@@ -57,17 +57,17 @@ public class InstrumentedJedisPool extends JedisPool {
 
   @Override
   public Jedis getResource() {
-    return new InstrumentedJedis(registry, delegated.getResource(), poolName);
+    return null;
   }
 
-  @Override
+  //@Override
   public void returnResourceObject(Jedis resource) {
-    super.returnResourceObject(unwrapResource(resource));
+    //super.returnResourceObject(unwrapResource(resource));
   }
 
-  @Override
+  //@Override
   protected void returnBrokenResourceObject(Jedis resource) {
-    super.returnBrokenResourceObject(unwrapResource(resource));
+    //super.returnBrokenResourceObject(unwrapResource(resource));
   }
 
   @Override
@@ -75,12 +75,12 @@ public class InstrumentedJedisPool extends JedisPool {
     delegated.close();
   }
 
-  @Override
-  public boolean isClosed() {
+  //@Override
+  /*public boolean isClosed() {
     return delegated.isClosed();
-  }
+  }*/
 
-  @Override
+  //@Override
   public void initPool(GenericObjectPoolConfig poolConfig, PooledObjectFactory<Jedis> factory) {
     // Explicitly not initializing the pool here, as the delegated pool will initialize itself
   }
@@ -90,7 +90,7 @@ public class InstrumentedJedisPool extends JedisPool {
     delegated.destroy();
   }
 
-  @Override
+  //@Override
   protected void closeInternalPool() {
     // Explicitly not calling this; destroy and initPool are the only references to this method
   }
@@ -110,25 +110,18 @@ public class InstrumentedJedisPool extends JedisPool {
     return getInternalPoolReference().getNumWaiters();
   }
 
-  @Override
-  public long getMeanBorrowWaitTimeMillis() {
+  //@Override
+  /*public long getMeanBorrowWaitTimeMillis() {
     return getInternalPoolReference().getMeanBorrowWaitTimeMillis();
   }
 
-  @Override
+  //@Override
   public long getMaxBorrowWaitTimeMillis() {
     return getInternalPoolReference().getMaxBorrowWaitTimeMillis();
-  }
+  }*/
 
   @Override
   public void addObjects(int count) {
     delegated.addObjects(count);
-  }
-
-  private Jedis unwrapResource(Jedis jedis) {
-    if (jedis instanceof InstrumentedJedis) {
-      return ((InstrumentedJedis) jedis).unwrap();
-    }
-    return jedis;
   }
 }

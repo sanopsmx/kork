@@ -31,7 +31,7 @@ import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.params.ZAddParams;
 import redis.clients.jedis.params.ZIncrByParams;
 
-public class InstrumentedPipeline extends Pipeline {
+public class InstrumentedPipeline{
 
   private final Registry registry;
   private final Pipeline delegated;
@@ -103,7 +103,7 @@ public class InstrumentedPipeline extends Pipeline {
     }
   }
 
-  @Override
+  /*@Override
   public void setClient(Client client) {
     delegated.setClient(client);
   }
@@ -2464,5 +2464,5 @@ public class InstrumentedPipeline extends Pipeline {
   public Response<List<Long>> bitfield(byte[] key, byte[]... elements) {
     String command = "bitfield";
     return instrumented(command, () -> delegated.bitfield(key, elements));
-  }
+  }*/
 }

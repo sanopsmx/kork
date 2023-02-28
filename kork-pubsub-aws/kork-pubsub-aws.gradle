@@ -26,7 +26,9 @@ dependencies {
   implementation project(':kork-pubsub')
 
   implementation 'org.springframework.boot:spring-boot-autoconfigure'
-  implementation 'javax.validation:validation-api'
+  // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
+  implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+
 
   api 'com.amazonaws:aws-java-sdk-sns'
   api 'com.amazonaws:aws-java-sdk-sqs'

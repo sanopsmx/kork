@@ -32,7 +32,7 @@ import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.paths.AbstractPathProvider;
+//import springfox.documentation.spring.web.paths.AbstractPathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
@@ -54,8 +54,7 @@ public class SwaggerConfig {
   @Bean
   public Docket gateApi() {
     return new Docket(DocumentationType.SWAGGER_2)
-        .pathProvider(new BasePathProvider(basePath, documentationPath))
-        .select()
+         .select()
         .apis(RequestHandlerSelectors.any())
         .paths(paths())
         .build()
@@ -80,7 +79,7 @@ public class SwaggerConfig {
   }
 
   private Predicate<String> paths() {
-    return or(patterns.stream().map(PathSelectors::regex).collect(Collectors.toList()));
+    return null;
   }
 
   private ApiInfo apiInfo() {
@@ -123,7 +122,7 @@ public class SwaggerConfig {
     return documentationPath;
   }
 
-  public class BasePathProvider extends AbstractPathProvider {
+  public class BasePathProvider {
     private String basePath;
     private String documentationPath;
 
@@ -132,12 +131,12 @@ public class SwaggerConfig {
       this.documentationPath = documentationPath;
     }
 
-    @Override
+    //@Override
     protected String applicationPath() {
       return basePath;
     }
 
-    @Override
+    //@Override
     protected String getDocumentationPath() {
       return documentationPath;
     }

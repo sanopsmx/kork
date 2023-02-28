@@ -38,7 +38,7 @@ public class GenericErrorController implements ErrorController {
       @RequestParam(value = "trace", defaultValue = "false") Boolean includeStackTrace,
       WebRequest webRequest) {
     Map<String, Object> attributes =
-        errorAttributes.getErrorAttributes(webRequest, includeStackTrace);
+        errorAttributes.getErrorAttributes(webRequest, null);
 
     Throwable exception = errorAttributes.getError(webRequest);
     if (exception != null && exception instanceof HasAdditionalAttributes) {
@@ -46,10 +46,5 @@ public class GenericErrorController implements ErrorController {
     }
 
     return attributes;
-  }
-
-  @Override
-  public String getErrorPath() {
-    return "/error";
   }
 }

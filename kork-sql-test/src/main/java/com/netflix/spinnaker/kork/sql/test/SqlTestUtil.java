@@ -46,6 +46,7 @@ import liquibase.resource.ClassLoaderResourceAccessor;
 import org.jooq.DSLContext;
 import org.jooq.Query;
 import org.jooq.SQLDialect;
+import org.jooq.Table;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
@@ -269,7 +270,7 @@ public class SqlTestUtil {
     context.meta().getTables().stream()
         .filter(
             table ->
-                table.getType().isTable()
+                table.getType().isInstance(Table.class)
                     && table.getSchema().getName().equals(schema)
                     && !table.getName().equals(configuration.getDatabaseChangeLogTableName())
                     && !table.getName().equals(configuration.getDatabaseChangeLogLockTableName()))

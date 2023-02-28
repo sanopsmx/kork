@@ -38,9 +38,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import rx.Observable;
-import rx.Scheduler;
-import rx.schedulers.Schedulers;
+
 
 @Configuration
 @EnableConfigurationProperties({
@@ -211,7 +209,7 @@ public class StackdriverConfig {
 
     stackdriver = new StackdriverWriter(params);
 
-    Scheduler scheduler = Schedulers.from(Executors.newFixedThreadPool(1));
+    /*Scheduler scheduler = Schedulers.from(Executors.newFixedThreadPool(1));
 
     Observable.timer(
             spectatorStackdriverConfigurationProperties.getStackdriver().getPeriod(),
@@ -220,7 +218,7 @@ public class StackdriverConfig {
         .subscribe(
             interval -> {
               stackdriver.writeRegistry(registry);
-            });
+            });*/
 
     return stackdriver;
   }

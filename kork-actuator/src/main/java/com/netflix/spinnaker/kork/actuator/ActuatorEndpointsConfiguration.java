@@ -23,18 +23,18 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+//import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE + 67)
-public class ActuatorEndpointsConfiguration extends WebSecurityConfigurerAdapter {
+public class ActuatorEndpointsConfiguration {
 
-  @Override
+ /* @Override
   public void configure(HttpSecurity http) throws Exception {
     // The health endpoint should always be exposed without auth.
     http.requestMatcher(EndpointRequest.to(HealthEndpoint.class))
         .authorizeRequests()
         .anyRequest()
         .permitAll();
-  }
+  }*/
 }

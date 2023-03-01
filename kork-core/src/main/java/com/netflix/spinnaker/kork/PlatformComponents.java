@@ -32,21 +32,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({
-  TransientConfigConfiguration.class,
-  SpectatorConfiguration.class,
-})
-@ImportAutoConfiguration(
-    exclude = {
-      CircuitBreakersHealthIndicatorAutoConfiguration.class,
-      RateLimitersHealthIndicatorAutoConfiguration.class
-    })
+@Import({TransientConfigConfiguration.class, SpectatorConfiguration.class,})
+@ImportAutoConfiguration(exclude = {CircuitBreakersHealthIndicatorAutoConfiguration.class,
+  RateLimitersHealthIndicatorAutoConfiguration.class})
 public class PlatformComponents {
 
   @Bean
   @ConditionalOnMissingBean(ServiceVersion.class)
-  ServiceVersion serviceVersion(
-      ApplicationContext applicationContext, List<VersionResolver> versionResolvers) {
+  ServiceVersion serviceVersion(ApplicationContext applicationContext, List<VersionResolver> versionResolvers) {
     return new ServiceVersion(applicationContext, versionResolvers);
   }
 

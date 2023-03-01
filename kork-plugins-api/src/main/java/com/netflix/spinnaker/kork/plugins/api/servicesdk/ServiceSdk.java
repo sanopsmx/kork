@@ -18,6 +18,8 @@ package com.netflix.spinnaker.kork.plugins.api.servicesdk;
 /**
  * Marker interface for service-specific SDKs.
  *
- * <p>A service may expose additional SDKs that are specific to itself.
+ * <p>
+ * A service may expose additional SDKs that are specific to itself.
  */
-public interface ServiceSdk {}
+public interface ServiceSdk {
+}

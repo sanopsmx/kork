@@ -27,7 +27,8 @@ import org.springframework.util.ClassUtils;
 /**
  * Handles discovery and registration of ObjectMapper subtypes.
  *
- * <p>Using the NAME JsonTypeInfo strategy, each subtype needs to be defined explicitly. If all
+ * <p>
+ * Using the NAME JsonTypeInfo strategy, each subtype needs to be defined explicitly. If all
  * subtypes are known at compile time, the subtypes should be defined on the root type. However,
  * Spinnaker often times offers addition of new types, which may require scanning different packages
  * for additional subtypes. This class will assist this specific task.
@@ -53,29 +54,23 @@ public class ObjectMapperSubtypeConfigurer {
   }
 
   public void registerSubtype(ObjectMapper mapper, SubtypeLocator subtypeLocator) {
-    subtypeLocator
-        .searchPackages()
-        .forEach(pkg -> mapper.registerSubtypes(findSubtypes(subtypeLocator.rootType(), pkg)));
+    subtypeLocator.searchPackages().forEach(
+      pkg -> mapper.registerSubtypes(findSubtypes(subtypeLocator.rootType(), pkg))
+    );
   }
 
   private NamedType[] findSubtypes(Class<?> clazz, String pkg) {
-    ClassPathScanningCandidateComponentProvider provider =
-        new ClassPathScanningCandidateComponentProvider(false);
+    ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(false);
     provider.addIncludeFilter(new AssignableTypeFilter(clazz));
 
-    return provider.findCandidateComponents(pkg).stream()
-        .map(
-            bean -> {
-              String beanClassName = bean.getBeanClassName();
-              if (beanClassName == null) {
-                return null;
-              }
-              Class<?> type =
-                  ClassUtils.resolveClassName(beanClassName, ClassUtils.getDefaultClassLoader());
-              return namedTypeParser.parse(type);
-            })
-        .filter(Objects::nonNull)
-        .toArray(NamedType[]::new);
+    return provider.findCandidateComponents(pkg).stream().map(bean -> {
+      String beanClassName = bean.getBeanClassName();
+      if (beanClassName == null) {
+        return null;
+      }
+      Class<?> type = ClassUtils.resolveClassName(beanClassName, ClassUtils.getDefaultClassLoader());
+      return namedTypeParser.parse(type);
+    }).filter(Objects::nonNull).toArray(NamedType[]::new);
   }
 
   /**

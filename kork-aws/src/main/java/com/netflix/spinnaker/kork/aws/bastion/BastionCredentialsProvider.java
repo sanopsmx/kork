@@ -28,8 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class BastionCredentialsProvider implements AWSCredentialsProvider {
-  private static final String CREDENTIALS_BASE_URL =
-      "http://169.254.169.254/latest/meta-data/iam/security-credentials";
+  private static final String CREDENTIALS_BASE_URL = "http://169.254.169.254/latest/meta-data/iam/security-credentials";
   private static final Logger log = LoggerFactory.getLogger(BastionCredentialsProvider.class);
 
   private final String user;
@@ -41,16 +40,14 @@ public class BastionCredentialsProvider implements AWSCredentialsProvider {
 
   private Date expiration;
   private AWSCredentials credentials;
-  private final SimpleDateFormat format =
-      new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+  private final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
 
-  public BastionCredentialsProvider(
-      String user,
-      String host,
-      Integer port,
-      String proxyCluster,
-      String proxyRegion,
-      String iamRole) {
+  public BastionCredentialsProvider(String user,
+                                    String host,
+                                    Integer port,
+                                    String proxyCluster,
+                                    String proxyRegion,
+                                    String iamRole) {
     this.user = user == null ? (String) System.getProperties().get("user.name") : user;
     this.host = host;
     this.port = port;
@@ -73,12 +70,14 @@ public class BastionCredentialsProvider implements AWSCredentialsProvider {
   }
 
   private AWSCredentials getRemoteCredentials() {
-    final String command =
-        String.format(
-            "oq-ssh -r %s %s,0 'curl -s %s/%s'",
-            proxyRegion, proxyCluster, CREDENTIALS_BASE_URL, iamRole);
-    final RemoteCredentials credentials =
-        RemoteCredentialsSupport.getRemoteCredentials(command, user, host, port);
+    final String command = String.format(
+      "oq-ssh -r %s %s,0 'curl -s %s/%s'",
+      proxyRegion,
+      proxyCluster,
+      CREDENTIALS_BASE_URL,
+      iamRole
+    );
+    final RemoteCredentials credentials = RemoteCredentialsSupport.getRemoteCredentials(command, user, host, port);
 
     try {
       expiration = format.parse(credentials.getExpiration());
@@ -88,6 +87,7 @@ public class BastionCredentialsProvider implements AWSCredentialsProvider {
     }
 
     return new BasicSessionCredentials(
-        credentials.getAccessKeyId(), credentials.getSecretAccessKey(), credentials.getToken());
+      credentials.getAccessKeyId(), credentials.getSecretAccessKey(), credentials.getToken()
+    );
   }
 }

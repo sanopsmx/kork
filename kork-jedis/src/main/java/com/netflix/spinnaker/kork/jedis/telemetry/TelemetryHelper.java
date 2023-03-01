@@ -31,28 +31,32 @@ public class TelemetryHelper {
   private static Logger log = LoggerFactory.getLogger(TelemetryHelper.class);
 
   static Id timerId(Registry registry, String name, String command, boolean pipelined) {
-    return registry
-        .createId(DEFAULT_ID_PREFIX + ".latency." + command)
-        .withTags(POOL_TAG, name, "pipelined", String.valueOf(pipelined));
+    return registry.createId(DEFAULT_ID_PREFIX + ".latency." + command).withTags(
+      POOL_TAG,
+      name,
+      "pipelined",
+      String.valueOf(pipelined)
+    );
   }
 
   static Id payloadSizeId(Registry registry, String name, String command, boolean pipelined) {
-    return registry
-        .createId(DEFAULT_ID_PREFIX + ".payloadSize." + command)
-        .withTags(POOL_TAG, name, "pipelined", String.valueOf(pipelined));
+    return registry.createId(DEFAULT_ID_PREFIX + ".payloadSize." + command).withTags(
+      POOL_TAG,
+      name,
+      "pipelined",
+      String.valueOf(pipelined)
+    );
   }
 
-  static Id invocationId(
-      Registry registry, String name, String command, boolean pipelined, boolean success) {
-    return registry
-        .createId(DEFAULT_ID_PREFIX + ".invocation." + command)
-        .withTags(
-            POOL_TAG,
-            name,
-            "pipelined",
-            String.valueOf(pipelined),
-            "success",
-            String.valueOf(success));
+  static Id invocationId(Registry registry, String name, String command, boolean pipelined, boolean success) {
+    return registry.createId(DEFAULT_ID_PREFIX + ".invocation." + command).withTags(
+      POOL_TAG,
+      name,
+      "pipelined",
+      String.valueOf(pipelined),
+      "success",
+      String.valueOf(success)
+    );
   }
 
   static long payloadSize(String payload) {

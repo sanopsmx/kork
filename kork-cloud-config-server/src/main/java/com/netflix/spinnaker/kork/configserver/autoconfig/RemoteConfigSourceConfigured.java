@@ -32,13 +32,15 @@ public class RemoteConfigSourceConfigured implements Condition {
     ConfigurableListableBeanFactory beanFactory = context.getBeanFactory();
     if (beanFactory != null) {
       Environment environment = context.getEnvironment();
-      String remoteRepoTypes =
-          environment.getProperty(
-              "spring.cloud.config.remote-repo-types", DEFAULT_REMOTE_REPO_TYPES);
+      String remoteRepoTypes = environment.getProperty(
+        "spring.cloud.config.remote-repo-types",
+        DEFAULT_REMOTE_REPO_TYPES
+      );
 
       for (String remoteRepoType : StringUtils.split(remoteRepoTypes, ',')) {
-        if (beanFactory.containsBean(remoteRepoType + "EnvironmentRepository")
-            || beanFactory.containsBean(remoteRepoType + "-env-repo0")) {
+        if (beanFactory.containsBean(remoteRepoType + "EnvironmentRepository") || beanFactory.containsBean(
+          remoteRepoType + "-env-repo0"
+        )) {
           return true;
         }
       }

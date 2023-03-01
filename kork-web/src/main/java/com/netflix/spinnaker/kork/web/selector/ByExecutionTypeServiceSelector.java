@@ -26,12 +26,10 @@ public class ByExecutionTypeServiceSelector implements ServiceSelector {
   private final Set<String> executionTypes;
 
   @SuppressWarnings("unchecked")
-  public ByExecutionTypeServiceSelector(
-      Object service, Integer priority, Map<String, Object> config) {
+  public ByExecutionTypeServiceSelector(Object service, Integer priority, Map<String, Object> config) {
     this.service = service;
     this.priority = priority;
-    this.executionTypes =
-        new HashSet<>(((Map<String, String>) config.get("executionTypes")).values());
+    this.executionTypes = new HashSet<>(((Map<String, String>) config.get("executionTypes")).values());
   }
 
   @Override

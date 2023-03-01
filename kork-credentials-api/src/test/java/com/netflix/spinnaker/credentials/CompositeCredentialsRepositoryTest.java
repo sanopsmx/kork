@@ -36,8 +36,7 @@ public class CompositeCredentialsRepositoryTest {
     when(repo2.getType()).thenReturn("type2");
     when(repo2.getAll()).thenReturn(Collections.emptySet());
 
-    CompositeCredentialsRepository<?> composite =
-        new CompositeCredentialsRepository<>(Arrays.asList(repo1, repo2));
+    CompositeCredentialsRepository<?> composite = new CompositeCredentialsRepository<>(Arrays.asList(repo1, repo2));
     assertThat(composite.getAllCredentials()).hasSize(1);
   }
 }

@@ -28,15 +28,20 @@ public @interface Metered {
    * If set, this value will be used as an override to the metric name that would normally be
    * generated automatically. This is useful when there are metric name collisions.
    *
-   * <p>In the context of plugins, the plugin ID will always be prefixed to the metric name.
+   * <p>
+   * In the context of plugins, the plugin ID will always be prefixed to the metric name.
    *
    * @return Optional metric name override
    */
   String metricName() default "";
 
-  /** @return If set to true, the associated method will not be metered. */
+  /**
+   * @return If set to true, the associated method will not be metered.
+   */
   boolean ignore() default false;
 
-  /** @return Sequence of alternating key/value tag pairs. Expects key as first element. */
+  /**
+   * @return Sequence of alternating key/value tag pairs. Expects key as first element.
+   */
   String[] tags() default {};
 }

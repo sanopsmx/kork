@@ -26,4 +26,5 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @EnableConfigurationProperties(SensitiveProperties.class)
 @Import(SensitiveSerializer.class)
-public class SensitiveAutoConfiguration {}
+public class SensitiveAutoConfiguration {
+}

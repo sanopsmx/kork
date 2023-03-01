@@ -28,14 +28,11 @@ import org.springframework.context.annotation.Configuration;
 public class BastionConfig {
   @Bean
   public AWSCredentialsProvider bastionCredentialsProvider(BastionProperties bastionConfiguration) {
-    final BastionCredentialsProvider provider =
-        new BastionCredentialsProvider(
-            bastionConfiguration.getUser(),
-            bastionConfiguration.getHost(),
-            bastionConfiguration.getPort(),
-            bastionConfiguration.getProxyCluster(),
-            bastionConfiguration.getProxyRegion(),
-            bastionConfiguration.getAccountIamRole());
+    final BastionCredentialsProvider provider = new BastionCredentialsProvider(
+      bastionConfiguration.getUser(), bastionConfiguration.getHost(), bastionConfiguration.getPort(),
+      bastionConfiguration.getProxyCluster(), bastionConfiguration.getProxyRegion(), bastionConfiguration
+        .getAccountIamRole()
+    );
 
     provider.refresh();
 

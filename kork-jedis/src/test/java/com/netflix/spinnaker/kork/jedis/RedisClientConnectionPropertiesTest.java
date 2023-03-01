@@ -29,17 +29,12 @@ import redis.clients.jedis.Protocol;
 public class RedisClientConnectionPropertiesTest {
   private static final String TEST_SSL_URI = "rediss://somehost.somedomain.net:8379/";
   private static final String TEST_NON_SSL_URI = "redis://somehost.somedomain.net:8379/";
-  private static final String TEST_PASSWORD_URI =
-      "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net:8379/";
+  private static final String TEST_PASSWORD_URI = "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net:8379/";
   private static final String TEST_NO_PASSWORD_URI = "rediss://admin@somehost.somedomain.net:8379/";
-  private static final String TEST_CONFIGURED_PORT =
-      "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net:8379/";
-  private static final String TEST_DEFAULT_PORT =
-      "rediss://admin:S0meP@ssw0rd@somehost.somedomain.net/";
-  private static final String TEST_CONFGIURED_DATABASE =
-      "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net/8";
-  private static final String TEST_DEFAULT_DATABASE =
-      "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net";
+  private static final String TEST_CONFIGURED_PORT = "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net:8379/";
+  private static final String TEST_DEFAULT_PORT = "rediss://admin:S0meP@ssw0rd@somehost.somedomain.net/";
+  private static final String TEST_CONFGIURED_DATABASE = "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net/8";
+  private static final String TEST_DEFAULT_DATABASE = "rediss://admin:S0meP%40ssw0rd@somehost.somedomain.net";
 
   @Test
   public void getSSLwhenSSLScheme() {

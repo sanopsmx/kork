@@ -22,8 +22,8 @@ import java.util.Map;
 /**
  * An abstraction over specific pubsub systems, each subscription will have one publisher associated
  * with it It is possible that some subscriptions only allow reading from the subscriber, for
- * instance if the topic is owned by a different entity. In this case, calls to {@link
- * #publish(String, Map)} would be expected to fail.
+ * instance if the topic is owned by a different entity. In this case, calls to
+ * {@link #publish(String, Map)} would be expected to fail.
  */
 public interface PubsubPublisher {
   String getPubsubSystem();

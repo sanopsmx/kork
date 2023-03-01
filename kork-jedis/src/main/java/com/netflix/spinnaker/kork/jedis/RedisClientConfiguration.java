@@ -37,18 +37,17 @@ import redis.clients.jedis.JedisCluster;
  * previous connections. This class should not be imported, but instead use JedisClientConfiguration
  * or DynomiteClientConfiguration.
  *
- * <p>While using this configuration, all clients are exposed through RedisClientSelector.
+ * <p>
+ * While using this configuration, all clients are exposed through RedisClientSelector.
  *
- * <p>This configuration also supports old-style Redis Spring configuration, as long as they wrap
- * their Redis connection pools with a RedisClientDelegate. Typically speaking, these older
- * configuration formats should give their client delegate the name "default".
+ * <p>
+ * This configuration also supports old-style Redis Spring configuration, as long as they wrap their
+ * Redis connection pools with a RedisClientDelegate. Typically speaking, these older configuration
+ * formats should give their client delegate the name "default".
  */
 @Configuration
-@EnableConfigurationProperties({
-  RedisClientConfiguration.ClientConfigurationWrapper.class,
-  RedisClientConfiguration.RedisDriverConfiguration.class,
-  RedisClientConfiguration.DualClientConfiguration.class
-})
+@EnableConfigurationProperties({RedisClientConfiguration.ClientConfigurationWrapper.class,
+  RedisClientConfiguration.RedisDriverConfiguration.class, RedisClientConfiguration.DualClientConfiguration.class})
 public class RedisClientConfiguration {
 
   private final List<RedisClientDelegateFactory> clientDelegateFactories;
@@ -58,44 +57,42 @@ public class RedisClientConfiguration {
     this.clientDelegateFactories = clientDelegateFactories.orElse(Collections.emptyList());
   }
 
-  @ConditionalOnProperty(
-      value = "redis.cluster-enabled",
-      havingValue = "false",
-      matchIfMissing = true)
+  @ConditionalOnProperty(value = "redis.cluster-enabled", havingValue = "false", matchIfMissing = true)
   @Bean("namedRedisClients")
-  public List<RedisClientDelegate> redisClientDelegates(
-      ClientConfigurationWrapper redisClientConfigurations,
-      Optional<List<RedisClientDelegate>> otherRedisClientDelegates) {
+  public List<RedisClientDelegate> redisClientDelegates(ClientConfigurationWrapper redisClientConfigurations,
+                                                        Optional<List<RedisClientDelegate>> otherRedisClientDelegates) {
     List<RedisClientDelegate> clients = new ArrayList<>();
 
-    redisClientConfigurations.clients.forEach(
-        (name, config) -> {
-          if (config.primary != null) {
-            clients.add(
-                getClientFactoryForDriver(config.primary.driver)
-                    .build(RedisClientSelector.getName(true, name), config.primary.config));
-          }
-          if (config.previous != null) {
-            clients.add(
-                getClientFactoryForDriver(config.previous.driver)
-                    .build(RedisClientSelector.getName(false, name), config.previous.config));
-          }
-        });
+    redisClientConfigurations.clients.forEach((name, config) -> {
+      if (config.primary != null) {
+        clients.add(
+          getClientFactoryForDriver(config.primary.driver).build(
+            RedisClientSelector.getName(true, name),
+            config.primary.config
+          )
+        );
+      }
+      if (config.previous != null) {
+        clients.add(
+          getClientFactoryForDriver(config.previous.driver).build(
+            RedisClientSelector.getName(false, name),
+            config.previous.config
+          )
+        );
+      }
+    });
     otherRedisClientDelegates.ifPresent(clients::addAll);
 
     // Backwards compat with `redis.connection` and `redis.connectionPrevious`
-    createDefaultClientIfNotExists(
-        clients, ConnectionCompatibility.PRIMARY, redisClientConfigurations);
-    createDefaultClientIfNotExists(
-        clients, ConnectionCompatibility.PREVIOUS, redisClientConfigurations);
+    createDefaultClientIfNotExists(clients, ConnectionCompatibility.PRIMARY, redisClientConfigurations);
+    createDefaultClientIfNotExists(clients, ConnectionCompatibility.PREVIOUS, redisClientConfigurations);
 
     return clients;
   }
 
-  private void createDefaultClientIfNotExists(
-      List<RedisClientDelegate> clients,
-      ConnectionCompatibility connection,
-      ClientConfigurationWrapper rootConfig) {
+  private void createDefaultClientIfNotExists(List<RedisClientDelegate> clients,
+                                              ConnectionCompatibility connection,
+                                              ClientConfigurationWrapper rootConfig) {
 
     String name;
     if (connection == ConnectionCompatibility.PRIMARY) {
@@ -111,32 +108,26 @@ public class RedisClientConfiguration {
       // will map the connection information from the deprecated format to the new format _if_ the
       // old format values are present and new format values are missing
       if (connection == ConnectionCompatibility.PRIMARY) {
-        Optional.ofNullable(rootConfig.connection)
-            .map(
-                v -> {
-                  if (!Optional.ofNullable(properties.get("connection")).isPresent()) {
-                    properties.put("connection", v);
-                  }
-                  return v;
-                });
+        Optional.ofNullable(rootConfig.connection).map(v -> {
+          if (!Optional.ofNullable(properties.get("connection")).isPresent()) {
+            properties.put("connection", v);
+          }
+          return v;
+        });
       } else {
-        Optional.ofNullable(rootConfig.connectionPrevious)
-            .map(
-                v -> {
-                  if (!Optional.ofNullable(properties.get("connection")).isPresent()) {
-                    properties.put("connection", v);
-                  }
-                  return v;
-                });
+        Optional.ofNullable(rootConfig.connectionPrevious).map(v -> {
+          if (!Optional.ofNullable(properties.get("connection")).isPresent()) {
+            properties.put("connection", v);
+          }
+          return v;
+        });
       }
-      Optional.ofNullable(rootConfig.timeoutMs)
-          .map(
-              v -> {
-                if (!Optional.ofNullable(properties.get("timeoutMs")).isPresent()) {
-                  properties.put("timeoutMs", v);
-                }
-                return v;
-              });
+      Optional.ofNullable(rootConfig.timeoutMs).map(v -> {
+        if (!Optional.ofNullable(properties.get("timeoutMs")).isPresent()) {
+          properties.put("timeoutMs", v);
+        }
+        return v;
+      });
 
       if (stringIsNullOrEmpty((String) properties.get("connection"))) {
         return;
@@ -159,28 +150,19 @@ public class RedisClientConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty(
-      value = "redis.cluster-enabled",
-      havingValue = "false",
-      matchIfMissing = true)
-  public RedisClientSelector redisClientSelector(
-      @Qualifier("namedRedisClients") List<RedisClientDelegate> redisClientDelegates) {
+  @ConditionalOnProperty(value = "redis.cluster-enabled", havingValue = "false", matchIfMissing = true)
+  public RedisClientSelector redisClientSelector(@Qualifier("namedRedisClients") List<RedisClientDelegate> redisClientDelegates) {
     return new RedisClientSelector(redisClientDelegates);
   }
 
   private RedisClientDelegateFactory<?> getClientFactoryForDriver(Driver driver) {
-    return clientDelegateFactories.stream()
-        .filter(it -> it.supports(driver))
-        .findFirst()
-        .orElseThrow(
-            () ->
-                new RedisClientFactoryNotFound(
-                    "Could not find factory for driver: " + driver.name()));
+    return clientDelegateFactories.stream().filter(it -> it.supports(driver)).findFirst().orElseThrow(
+      () -> new RedisClientFactoryNotFound("Could not find factory for driver: " + driver.name())
+    );
   }
 
   private enum ConnectionCompatibility {
-    PRIMARY("connection"),
-    PREVIOUS("connectionPrevious");
+    PRIMARY("connection"), PREVIOUS("connectionPrevious");
 
     private final String value;
 
@@ -190,8 +172,7 @@ public class RedisClientConfiguration {
   }
 
   public enum Driver {
-    REDIS("redis"),
-    DYNOMITE("dynomite");
+    REDIS("redis"), DYNOMITE("dynomite");
 
     private final String value;
 
@@ -203,33 +184,28 @@ public class RedisClientConfiguration {
   @Bean("jedisCluster")
   @ConditionalOnProperty(value = "redis.cluster-enabled")
   @Primary
-  public JedisCluster jedisCluster(
-      GenericObjectPoolConfig objectPoolConfig, ClientConfigurationWrapper config) {
+  public JedisCluster jedisCluster(GenericObjectPoolConfig objectPoolConfig, ClientConfigurationWrapper config) {
     URI cx = URI.create(config.connection);
     return getJedisCluster(objectPoolConfig, config, cx);
   }
 
   @Bean("previousJedisCluster")
   @ConditionalOnProperty(value = "redis.previous-cluster-enabled")
-  public JedisCluster previousJedisCluster(
-      GenericObjectPoolConfig objectPoolConfig, ClientConfigurationWrapper config) {
+  public JedisCluster previousJedisCluster(GenericObjectPoolConfig objectPoolConfig,
+                                           ClientConfigurationWrapper config) {
     URI cx = URI.create(config.connectionPrevious);
     return getJedisCluster(objectPoolConfig, config, cx);
   }
 
-  private JedisCluster getJedisCluster(
-      GenericObjectPoolConfig objectPoolConfig, ClientConfigurationWrapper config, URI cx) {
+  private JedisCluster getJedisCluster(GenericObjectPoolConfig objectPoolConfig,
+                                       ClientConfigurationWrapper config,
+                                       URI cx) {
     RedisClientConnectionProperties cxp = new RedisClientConnectionProperties(cx);
 
     return new JedisCluster(
-        new HostAndPort(cxp.addr(), cxp.port()),
-        config.getTimeoutMs(),
-        config.getTimeoutMs(),
-        config.getMaxAttempts(),
-        cxp.password(),
-        null,
-        objectPoolConfig,
-        cxp.isSSL());
+      new HostAndPort(cxp.addr(), cxp.port()), config.getTimeoutMs(), config.getTimeoutMs(), config.getMaxAttempts(),
+      cxp.password(), null, objectPoolConfig, cxp.isSSL()
+    );
   }
 
   @ConfigurationProperties(prefix = "redis")

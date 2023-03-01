@@ -22,14 +22,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.annotation.Nullable;
 import lombok.Getter;
 
-public class MapBackedCredentialsRepository<T extends Credentials>
-    implements CredentialsRepository<T> {
+public class MapBackedCredentialsRepository<T extends Credentials> implements CredentialsRepository<T> {
   protected Map<String, T> credentials = new ConcurrentHashMap<>();
-  @Nullable protected CredentialsLifecycleHandler<T> eventHandler;
-  @Getter protected String type;
+  @Nullable
+  protected CredentialsLifecycleHandler<T> eventHandler;
+  @Getter
+  protected String type;
 
-  public MapBackedCredentialsRepository(
-      String type, @Nullable CredentialsLifecycleHandler<T> eventHandler) {
+  public MapBackedCredentialsRepository(String type, @Nullable CredentialsLifecycleHandler<T> eventHandler) {
     this.type = type;
     this.eventHandler = eventHandler;
   }
@@ -53,13 +53,9 @@ public class MapBackedCredentialsRepository<T extends Credentials>
   public void save(T creds) {
     if (!creds.getType().equals(getType())) {
       throw new InvalidCredentialsTypeException(
-          "Credentials '"
-              + creds.getName()
-              + "' of type '"
-              + creds.getType()
-              + "' cannot be added to repository of type '"
-              + getType()
-              + "'");
+        "Credentials '" + creds.getName() + "' of type '" + creds.getType()
+          + "' cannot be added to repository of type '" + getType() + "'"
+      );
     }
     if (eventHandler != null) {
       if (credentials.containsKey(creds.getName())) {

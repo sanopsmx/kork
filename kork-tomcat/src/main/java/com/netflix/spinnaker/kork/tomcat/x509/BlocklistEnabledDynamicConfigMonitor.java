@@ -17,7 +17,6 @@ public class BlocklistEnabledDynamicConfigMonitor {
 
   @Scheduled(fixedRate = 5000L)
   public void syncEnabledProperty() {
-    BlocklistingX509TrustManager.BLOCKLIST_ENABLED.set(
-        dynamicConfigService.isEnabled("ssl.blocklist", true));
+    BlocklistingX509TrustManager.BLOCKLIST_ENABLED.set(dynamicConfigService.isEnabled("ssl.blocklist", true));
   }
 }

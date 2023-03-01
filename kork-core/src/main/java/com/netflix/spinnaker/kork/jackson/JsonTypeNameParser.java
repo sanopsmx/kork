@@ -37,8 +37,7 @@ public class JsonTypeNameParser implements NamedTypeParser {
   public NamedType parse(@Nonnull Class<?> type) {
     JsonTypeName nameAnnotation = type.getAnnotation(JsonTypeName.class);
     if (nameAnnotation == null || "".equals(nameAnnotation.value())) {
-      String message =
-          "Subtype " + type.getSimpleName() + " does not have a JsonTypeName annotation";
+      String message = "Subtype " + type.getSimpleName() + " does not have a JsonTypeName annotation";
       if (strictSerialization) {
         throw new InvalidSubtypeConfigurationException(message);
       }

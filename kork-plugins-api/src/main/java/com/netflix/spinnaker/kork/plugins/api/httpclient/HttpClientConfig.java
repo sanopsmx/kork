@@ -154,18 +154,27 @@ public class HttpClientConfig {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
 
       SecurityConfig that = (SecurityConfig) o;
 
-      if (!Objects.equals(keyStorePath, that.keyStorePath)) return false;
-      if (!Objects.equals(keyStorePassword, that.keyStorePassword)) return false;
-      if (!Objects.equals(keyStoreType, that.keyStoreType)) return false;
-      if (!Objects.equals(trustStorePath, that.trustStorePath)) return false;
-      if (!Objects.equals(trustStorePassword, that.trustStorePassword)) return false;
-      if (!Objects.equals(trustStoreType, that.trustStoreType)) return false;
-      if (!Objects.equals(tlsVersions, that.tlsVersions)) return false;
+      if (!Objects.equals(keyStorePath, that.keyStorePath))
+        return false;
+      if (!Objects.equals(keyStorePassword, that.keyStorePassword))
+        return false;
+      if (!Objects.equals(keyStoreType, that.keyStoreType))
+        return false;
+      if (!Objects.equals(trustStorePath, that.trustStorePath))
+        return false;
+      if (!Objects.equals(trustStorePassword, that.trustStorePassword))
+        return false;
+      if (!Objects.equals(trustStoreType, that.trustStoreType))
+        return false;
+      if (!Objects.equals(tlsVersions, that.tlsVersions))
+        return false;
       return Objects.equals(cipherSuites, that.cipherSuites);
     }
 
@@ -223,13 +232,17 @@ public class HttpClientConfig {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
 
       ConnectionConfig that = (ConnectionConfig) o;
 
-      if (retryOnConnectionFailure != that.retryOnConnectionFailure) return false;
-      if (!Objects.equals(connectTimeout, that.connectTimeout)) return false;
+      if (retryOnConnectionFailure != that.retryOnConnectionFailure)
+        return false;
+      if (!Objects.equals(connectTimeout, that.connectTimeout))
+        return false;
       return Objects.equals(readTimeout, that.readTimeout);
     }
 
@@ -267,12 +280,15 @@ public class HttpClientConfig {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
 
       ConnectionPoolConfig that = (ConnectionPoolConfig) o;
 
-      if (!Objects.equals(maxIdleConnections, that.maxIdleConnections)) return false;
+      if (!Objects.equals(maxIdleConnections, that.maxIdleConnections))
+        return false;
       return Objects.equals(keepAlive, that.keepAlive);
     }
 
@@ -286,10 +302,7 @@ public class HttpClientConfig {
 
   public static class LoggingConfig {
     public enum LoggingLevel {
-      NONE,
-      BASIC,
-      HEADERS,
-      BODY
+      NONE, BASIC, HEADERS, BODY
     }
 
     private LoggingLevel level = LoggingLevel.BASIC;
@@ -304,8 +317,10 @@ public class HttpClientConfig {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
 
       LoggingConfig that = (LoggingConfig) o;
 
@@ -320,13 +335,17 @@ public class HttpClientConfig {
 
   @Override
   public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
 
     HttpClientConfig that = (HttpClientConfig) o;
 
-    if (!security.equals(that.security)) return false;
-    if (!connection.equals(that.connection)) return false;
+    if (!security.equals(that.security))
+      return false;
+    if (!connection.equals(that.connection))
+      return false;
     return connectionPool.equals(that.connectionPool);
   }
 

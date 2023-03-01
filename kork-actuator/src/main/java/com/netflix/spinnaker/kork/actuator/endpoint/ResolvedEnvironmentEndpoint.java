@@ -20,7 +20,6 @@ import static java.lang.String.format;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
@@ -37,27 +36,23 @@ public class ResolvedEnvironmentEndpoint {
   private final Environment environment;
 
   @Autowired
-  public ResolvedEnvironmentEndpoint(
-      Environment environment, ResolvedEnvironmentConfigurationProperties properties) {
+  public ResolvedEnvironmentEndpoint(Environment environment, ResolvedEnvironmentConfigurationProperties properties) {
     this.environment = environment;
-    /*Optional.ofNullable(properties.getKeysToSanitize())
-        .map(p -> p.toArray(new String[0]))
-        .ifPresent(sanitizer::setKeysToSanitize);*/
+    /*
+     * Optional.ofNullable(properties.getKeysToSanitize()) .map(p -> p.toArray(new String[0]))
+     * .ifPresent(sanitizer::setKeysToSanitize);
+     */
   }
 
   @ReadOperation
   public Map<String, Object> resolvedEnv() {
-    return getPropertyKeys().stream()
-        .collect(
-            Collectors.toMap(
-                property -> property,
-                property -> {
-                  try {
-                    return null;
-                  } catch (Exception e) {
-                    return format("Exception occurred: %s", e.getMessage());
-                  }
-                }));
+    return getPropertyKeys().stream().collect(Collectors.toMap(property -> property, property -> {
+      try {
+        return null;
+      } catch (Exception e) {
+        return format("Exception occurred: %s", e.getMessage());
+      }
+    }));
   }
 
   /** This gathers all defined properties in the system (no matter the source) */
@@ -71,12 +66,11 @@ public class ResolvedEnvironmentEndpoint {
       sources = new StandardEnvironment().getPropertySources();
     }
 
-    sources.forEach(
-        source -> {
-          if (source instanceof EnumerablePropertySource) {
-            result.addAll(Arrays.asList(((EnumerablePropertySource<?>) source).getPropertyNames()));
-          }
-        });
+    sources.forEach(source -> {
+      if (source instanceof EnumerablePropertySource) {
+        result.addAll(Arrays.asList(((EnumerablePropertySource<?>) source).getPropertyNames()));
+      }
+    });
 
     return result;
   }

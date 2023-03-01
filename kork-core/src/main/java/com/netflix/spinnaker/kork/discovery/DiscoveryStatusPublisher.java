@@ -17,4 +17,5 @@
 package com.netflix.spinnaker.kork.discovery;
 
 /** Marker interface for publishing service discovery status. */
-public interface DiscoveryStatusPublisher {}
+public interface DiscoveryStatusPublisher {
+}

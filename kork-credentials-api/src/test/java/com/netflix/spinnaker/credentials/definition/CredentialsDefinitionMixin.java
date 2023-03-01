@@ -19,4 +19,5 @@ package com.netflix.spinnaker.credentials.definition;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "type")
-interface CredentialsDefinitionMixin {}
+interface CredentialsDefinitionMixin {
+}

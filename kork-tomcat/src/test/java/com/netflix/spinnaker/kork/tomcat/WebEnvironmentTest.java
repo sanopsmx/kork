@@ -21,25 +21,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {WebEnvironmentTest.TestControllerConfiguration.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
+  WebEnvironmentTest.TestControllerConfiguration.class})
 // It would be lovely to have a per-method TestPropertySource annotation, or
 // some other simple way to parametrize tests to verify what happens when
 // default.rejectIllegalHeader isn't set at all, and set to true, in addition to
-// setting it to false.  At the moment this doesn't seem worth the code
-// duplication / complexity.  See
+// setting it to false. At the moment this doesn't seem worth the code
+// duplication / complexity. See
 // https://github.com/spring-projects/spring-framework/issues/18951.
-@TestPropertySource(
-    properties = {
-      "logging.level.org.apache.coyote.http11.Http11InputBuffer = DEBUG",
-      "default.rejectIllegalHeader = false"
-    })
+@TestPropertySource(properties = {"logging.level.org.apache.coyote.http11.Http11InputBuffer = DEBUG",
+  "default.rejectIllegalHeader = false"})
 class WebEnvironmentTest {
 
-  @LocalServerPort int port;
+  @LocalServerPort
+  int port;
 
-  @Autowired TestRestTemplate restTemplate;
+  @Autowired
+  TestRestTemplate restTemplate;
 
   @Test
   void testTomcatWithIllegalHttpHeaders() throws Exception {
@@ -48,14 +46,9 @@ class WebEnvironmentTest {
     // set to true
     headers.add("X-Dum@my", "foo");
 
-    URI uri =
-        UriComponentsBuilder.fromHttpUrl("http://localhost/test-controller")
-            .port(port)
-            .build()
-            .toUri();
+    URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost/test-controller").port(port).build().toUri();
 
-    ResponseEntity<String> entity =
-        restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(headers), String.class);
+    ResponseEntity<String> entity = restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(headers), String.class);
     assertEquals(HttpStatus.OK, entity.getStatusCode());
   }
 

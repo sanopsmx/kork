@@ -50,12 +50,9 @@ public class SpinnakerRetrofitErrorHandlerTest {
   @BeforeAll
   public static void setupOnce() throws Exception {
     mockWebServer.start();
-    retrofitService =
-        new RestAdapter.Builder()
-            .setEndpoint(mockWebServer.url("/").toString())
-            .setErrorHandler(SpinnakerRetrofitErrorHandler.getInstance())
-            .build()
-            .create(RetrofitService.class);
+    retrofitService = new RestAdapter.Builder().setEndpoint(mockWebServer.url("/").toString()).setErrorHandler(
+      SpinnakerRetrofitErrorHandler.getInstance()
+    ).build().create(RetrofitService.class);
   }
 
   @AfterAll
@@ -66,8 +63,10 @@ public class SpinnakerRetrofitErrorHandlerTest {
   @Test
   public void testNotFoundIsNotRetryable() {
     mockWebServer.enqueue(new MockResponse().setResponseCode(HttpStatus.NOT_FOUND.value()));
-    SpinnakerHttpException notFoundException =
-        assertThrows(SpinnakerHttpException.class, () -> retrofitService.getFoo());
+    SpinnakerHttpException notFoundException = assertThrows(
+      SpinnakerHttpException.class,
+      () -> retrofitService.getFoo()
+    );
     assertNotNull(notFoundException.getRetryable());
     assertFalse(notFoundException.getRetryable());
   }
@@ -77,55 +76,49 @@ public class SpinnakerRetrofitErrorHandlerTest {
   // SpinnakerServerException.RetrofitErrorResponseBody class:
   //
   // - the JacksonConverter constructed without an ObjectMapper is used in
-  //   Clouddriver's RestAdapter to communicate with Front50Service
+  // Clouddriver's RestAdapter to communicate with Front50Service
   //
   // - the JacksonConverter constructed with an ObjectMapper is used in Rosco's RestAdapter to
-  //   communicate with Clouddriver
+  // communicate with Clouddriver
   //
   // - GSONConverter is the default converter used by Retrofit if no converter
-  //   is set when building out the RestAdapter
-  @ValueSource(
-      strings = {"Default_GSONConverter", "JacksonConverter", "JacksonConverterWithObjectMapper"})
+  // is set when building out the RestAdapter
+  @ValueSource(strings = {"Default_GSONConverter", "JacksonConverter", "JacksonConverterWithObjectMapper"})
   public void testResponseWithExtraField(String retrofitConverter) throws Exception {
     Map<String, String> responseBodyMap = new HashMap<>();
     responseBodyMap.put("timestamp", "123123123123");
     responseBodyMap.put("message", "Not Found error Message");
     String responseBodyString = new ObjectMapper().writeValueAsString(responseBodyMap);
 
-    RestAdapter.Builder restAdapter =
-        new RestAdapter.Builder()
-            .setEndpoint(mockWebServer.url("/").toString())
-            .setErrorHandler(SpinnakerRetrofitErrorHandler.getInstance());
+    RestAdapter.Builder restAdapter = new RestAdapter.Builder().setEndpoint(mockWebServer.url("/").toString())
+      .setErrorHandler(SpinnakerRetrofitErrorHandler.getInstance());
 
     if (retrofitConverter.equals("JacksonConverter")) {
       restAdapter.setConverter(new JacksonConverter());
     } else if (retrofitConverter.equals("JacksonConverterWithObjectMapper")) {
-      ObjectMapper objectMapper =
-          new ObjectMapper()
-              .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
-              .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+      ObjectMapper objectMapper = new ObjectMapper().enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL)
+        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
 
       restAdapter.setConverter(new JacksonConverter(objectMapper));
     }
 
-    RetrofitService retrofitServiceTestConverter =
-        restAdapter.build().create(RetrofitService.class);
+    RetrofitService retrofitServiceTestConverter = restAdapter.build().create(RetrofitService.class);
 
     mockWebServer.enqueue(
-        new MockResponse()
-            .setBody(responseBodyString)
-            // an arbitrary response code -- one that
-            // SpinnakerRetrofitErrorHandler converts to a
-            // SpinnakerServerException (or one of its children).
-            .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value()));
+      new MockResponse().setBody(responseBodyString)
+        // an arbitrary response code -- one that
+        // SpinnakerRetrofitErrorHandler converts to a
+        // SpinnakerServerException (or one of its children).
+        .setResponseCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+    );
 
     // If the converter can not deserialize the response body to the
     // SpinnakerServerException.RetrofitErrorResponseBody
     // class, then a RuntimeException will be thrown with a ConversionException nested inside.
     //
     // java.lang.RuntimeException:
-    //     retrofit.converter.ConversionException:
-    //         com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field
+    // retrofit.converter.ConversionException:
+    // com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException: Unrecognized field
     // "..."
     //
     // so make sure we get a SpinnakerHttpException from calling getFoo
@@ -135,8 +128,10 @@ public class SpinnakerRetrofitErrorHandlerTest {
   @Test
   public void testBadRequestIsNotRetryable() {
     mockWebServer.enqueue(new MockResponse().setResponseCode(HttpStatus.BAD_REQUEST.value()));
-    SpinnakerHttpException spinnakerHttpException =
-        assertThrows(SpinnakerHttpException.class, () -> retrofitService.getFoo());
+    SpinnakerHttpException spinnakerHttpException = assertThrows(
+      SpinnakerHttpException.class,
+      () -> retrofitService.getFoo()
+    );
     assertNotNull(spinnakerHttpException.getRetryable());
     assertFalse(spinnakerHttpException.getRetryable());
   }
@@ -146,8 +141,10 @@ public class SpinnakerRetrofitErrorHandlerTest {
     // Arbitrarily choose GONE as an example of a client (e.g. 4xx) error that
     // we expect to have null retryable
     mockWebServer.enqueue(new MockResponse().setResponseCode(HttpStatus.GONE.value()));
-    SpinnakerHttpException spinnakerHttpException =
-        assertThrows(SpinnakerHttpException.class, () -> retrofitService.getFoo());
+    SpinnakerHttpException spinnakerHttpException = assertThrows(
+      SpinnakerHttpException.class,
+      () -> retrofitService.getFoo()
+    );
     assertNull(spinnakerHttpException.getRetryable());
   }
 

@@ -27,12 +27,15 @@ import javax.annotation.Nonnull;
 /**
  * Denotes that a class provides extension configuration. For example:
  *
- * <pre>{@code
- * &#064;ExtensionConfiguration("my-extension")
- * public class MyExtensionConfiguration {
- *   private String someProperty;
+ * <pre>
+ * {
+ *   &#64;code
+ *   &#064;ExtensionConfiguration("my-extension")
+ *   public class MyExtensionConfiguration {
+ *     private String someProperty;
+ *   }
  * }
- * }</pre>
+ * </pre>
  */
 @Beta
 @Retention(RetentionPolicy.RUNTIME)
@@ -45,7 +48,8 @@ public @interface ExtensionConfiguration {
    * The property value of the extension configuration. For example, if set to `netflix.orca-stage`
    * the corresponding config coordinates would be:
    *
-   * <p>`spinnaker.extensibility.plugins.pluginId.extensions.netflix.orca-stage.config`
+   * <p>
+   * `spinnaker.extensibility.plugins.pluginId.extensions.netflix.orca-stage.config`
    *
    * @return
    */

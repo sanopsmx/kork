@@ -27,14 +27,16 @@ public class MapUtils {
   /**
    * Returns a new map that is the result of deeply merging original and overrides.
    *
-   * <p>Each key in original is merged with the corresponding key in overrides as follows: - an
-   * explicitly null entry in overrides removes a key in original - a map in original is merged with
-   * a map from overrides (via call to merge) - a non map in overrides results in an
+   * <p>
+   * Each key in original is merged with the corresponding key in overrides as follows: - an
+   * explicitly null entry in overrides removes a key in original - a map in original is merged with a
+   * map from overrides (via call to merge) - a non map in overrides results in an
    * IllegalStateException - a collection in original is replaced with a collection in overrides - a
    * non collection in overrides results in an IllegalStateException - the value is taken from
    * overrides
    *
-   * <p>Each remaining key in overrides is then added to the resulting map.
+   * <p>
+   * Each remaining key in overrides is then added to the resulting map.
    *
    * @param original the original Map
    * @param override the Map to override/merge into original
@@ -42,8 +44,8 @@ public class MapUtils {
    * @throws IllegalStateException if incompatible types exist between original and overrides
    */
   @Nonnull
-  public static Map<String, Object> merge(
-      @Nonnull Map<String, Object> original, @Nonnull Map<String, Object> override) {
+  public static Map<String, Object> merge(@Nonnull Map<String, Object> original,
+                                          @Nonnull Map<String, Object> override) {
     final Set<String> remainingKeys = new LinkedHashSet<>(override.keySet());
     final Map<String, Object> result = new LinkedHashMap<>();
     for (Map.Entry<String, Object> entry : original.entrySet()) {
@@ -69,15 +71,15 @@ public class MapUtils {
   private static Object mergeObject(Object original, Object override) {
     if (original instanceof Map) {
       if (!(override instanceof Map)) {
-        throw new IllegalMergeTypeException(
-            "Attempt to merge Map with " + override.getClass().getSimpleName());
+        throw new IllegalMergeTypeException("Attempt to merge Map with " + override.getClass().getSimpleName());
       }
 
       return merge(toMap(original), toMap(override));
     } else if (original instanceof Collection) {
       if (!(override instanceof Collection)) {
         throw new IllegalMergeTypeException(
-            "Attempt to replace Collection with " + override.getClass().getSimpleName());
+          "Attempt to replace Collection with " + override.getClass().getSimpleName()
+        );
       }
     }
     return override;

@@ -23,22 +23,22 @@ public class SecretAwarePropertySourceTest {
   private SecretManager secretManager;
   private Map<String, String> testValues = new HashMap<>();
 
-  @Rule public ExpectedException thrown = ExpectedException.none();
+  @Rule
+  public ExpectedException thrown = ExpectedException.none();
 
   @Before
   public void setup() {
-    EnumerablePropertySource source =
-        new EnumerablePropertySource("testSource") {
-          @Override
-          public String[] getPropertyNames() {
-            return new String[0];
-          }
+    EnumerablePropertySource source = new EnumerablePropertySource("testSource") {
+      @Override
+      public String[] getPropertyNames() {
+        return new String[0];
+      }
 
-          @Override
-          public Object getProperty(String name) {
-            return testValues.get(name);
-          }
-        };
+      @Override
+      public Object getProperty(String name) {
+        return testValues.get(name);
+      }
+    };
 
     testValues.put("testSecretFile", "encrypted:noop!k:testValue");
     testValues.put("testSecretPath", "encrypted:noop!k:testValue");

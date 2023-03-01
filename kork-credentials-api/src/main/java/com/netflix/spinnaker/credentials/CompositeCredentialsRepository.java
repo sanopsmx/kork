@@ -48,7 +48,8 @@ public class CompositeCredentialsRepository<T extends Credentials> {
     T creds = repository.getOne(credentialsName);
     if (creds == null) {
       throw new MissingCredentialsException(
-          "Credentials '" + credentialsName + "' of type '" + type + "' cannot be found");
+        "Credentials '" + credentialsName + "' of type '" + type + "' cannot be found"
+      );
     }
     return creds;
   }
@@ -61,19 +62,17 @@ public class CompositeCredentialsRepository<T extends Credentials> {
    */
   @Nullable
   public T getFirstCredentialsWithName(String name) {
-    return allRepositories.values().stream()
-        .map(r -> r.getOne(name))
-        .filter(Objects::nonNull)
-        .findFirst()
-        .orElse(null);
+    return allRepositories.values().stream().map(r -> r.getOne(name)).filter(Objects::nonNull).findFirst().orElse(null);
   }
 
-  /** @return All credentials across all repositories */
+  /**
+   * @return All credentials across all repositories
+   */
   public List<T> getAllCredentials() {
     return Collections.unmodifiableList(
-        allRepositories.values().stream()
-            .map(CredentialsRepository::getAll)
-            .flatMap(Collection::stream)
-            .collect(Collectors.toList()));
+      allRepositories.values().stream().map(CredentialsRepository::getAll).flatMap(Collection::stream).collect(
+        Collectors.toList()
+      )
+    );
   }
 }

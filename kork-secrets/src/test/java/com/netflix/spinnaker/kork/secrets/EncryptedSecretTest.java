@@ -25,7 +25,8 @@ import org.junit.rules.ExpectedException;
 
 public class EncryptedSecretTest {
 
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
+  @Rule
+  public ExpectedException exceptionRule = ExpectedException.none();
 
   @Test
   public void isEncryptedSecretShouldReturnFalse() {
@@ -96,8 +97,7 @@ public class EncryptedSecretTest {
   @Test
   public void updateThrowsInvalidSecretFormatException() {
     exceptionRule.expect(InvalidSecretFormatException.class);
-    exceptionRule.expectMessage(
-        "Invalid encrypted secret format, must have at least one parameter");
+    exceptionRule.expectMessage("Invalid encrypted secret format, must have at least one parameter");
     EncryptedSecret encryptedSecret = new EncryptedSecret();
     encryptedSecret.update("encrypted:s3");
   }
@@ -105,8 +105,7 @@ public class EncryptedSecretTest {
   @Test
   public void updateThrowsInvalidSecretFormatExceptionNoKeyValuePairs() {
     exceptionRule.expect(InvalidSecretFormatException.class);
-    exceptionRule.expectMessage(
-        "Invalid encrypted secret format, keys and values must be delimited by ':'");
+    exceptionRule.expectMessage("Invalid encrypted secret format, keys and values must be delimited by ':'");
     EncryptedSecret encryptedSecret = new EncryptedSecret();
     encryptedSecret.update("encrypted:s3!foobar");
   }

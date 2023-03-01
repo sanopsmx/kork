@@ -41,8 +41,8 @@ public class SpectatorConfiguration {
   }
 
   @Bean
-  RegistryInitializer registryInitializer(
-      Registry registry, SpectatorGcLoggingConfiguration spectatorConfigurationProperties) {
+  RegistryInitializer registryInitializer(Registry registry,
+                                          SpectatorGcLoggingConfiguration spectatorConfigurationProperties) {
     return new RegistryInitializer(registry, spectatorConfigurationProperties.isLoggingEnabled());
   }
 

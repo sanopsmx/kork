@@ -85,11 +85,9 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
    */
   public List<String> layoutSearch(String string, Level level) {
 
-    return this.list.stream()
-        .filter(event -> event.getLevel().equals(level))
-        .map(layout::doLayout)
-        .filter(message -> message.contains(string))
-        .collect(Collectors.toList());
+    return this.list.stream().filter(event -> event.getLevel().equals(level)).map(layout::doLayout).filter(
+      message -> message.contains(string)
+    ).collect(Collectors.toList());
   }
 
   /**
@@ -100,11 +98,9 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
    * @return all log messages that satisfy the criteria
    */
   public List<String> search(String string, Level level) {
-    return this.list.stream()
-        .filter(event -> event.getLevel().equals(level))
-        .map(Object::toString)
-        .filter(message -> message.contains(string))
-        .collect(Collectors.toList());
+    return this.list.stream().filter(event -> event.getLevel().equals(level)).map(Object::toString).filter(
+      message -> message.contains(string)
+    ).collect(Collectors.toList());
   }
 
   /** Accessor for the root layout for the root logger. */
@@ -119,7 +115,7 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
 
     OutputStreamAppender<ILoggingEvent> rootAppender = null;
     if (appender instanceof OutputStreamAppender) {
-      // And, assume it's an OutputStreamAppender.  We need this to get at its
+      // And, assume it's an OutputStreamAppender. We need this to get at its
       // encoder...
       rootAppender = (OutputStreamAppender<ILoggingEvent>) appender;
     } else {
@@ -134,13 +130,13 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
     // Finally, grab the layout.
 
     // Look for LayoutWrappingEncoder since it's the class that introduces
-    // Layout.  See http://logback.qos.ch/manual/encoders.html.
+    // Layout. See http://logback.qos.ch/manual/encoders.html.
     if (!(rootAppender.getEncoder() instanceof LayoutWrappingEncoder)) {
       throw new IllegalStateException("no LayoutWrappingEncoder -- can't determine layout");
     }
 
-    final LayoutWrappingEncoder<ILoggingEvent> rootEncoder =
-        (LayoutWrappingEncoder<ILoggingEvent>) rootAppender.getEncoder();
+    final LayoutWrappingEncoder<ILoggingEvent> rootEncoder = (LayoutWrappingEncoder<ILoggingEvent>) rootAppender
+      .getEncoder();
 
     return rootEncoder.getLayout();
   }

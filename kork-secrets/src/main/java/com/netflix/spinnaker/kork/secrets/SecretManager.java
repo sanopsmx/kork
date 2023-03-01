@@ -29,7 +29,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecretManager {
 
-  @Getter private final SecretEngineRegistry secretEngineRegistry;
+  @Getter
+  private final SecretEngineRegistry secretEngineRegistry;
 
   @Autowired
   SecretManager(SecretEngineRegistry secretEngineRegistry) {
@@ -55,11 +56,13 @@ public class SecretManager {
    * EncryptedSecret based on the secretEngine referenced in the configValue, writes the decrypted
    * value into a temporary file, and returns the absolute path to the temporary file.
    *
-   * <p>Based on the EncryptedSecret's parameters, the contents of the temporary file can be: - The
+   * <p>
+   * Based on the EncryptedSecret's parameters, the contents of the temporary file can be: - The
    * decrypted contents of a file stored externally OR (if a key is present in the EncryptedSecret's
    * parameters) - The value of the key in the external file
    *
-   * <p>Note: The temporary file that is created is deleted upon exiting the application.
+   * <p>
+   * Note: The temporary file that is created is deleted upon exiting the application.
    *
    * @param filePathOrEncrypted A filepath or encrypted key
    * @return path to temporary file that contains decrypted contents or null if param not encrypted
@@ -78,11 +81,9 @@ public class SecretManager {
       return encryptedString.getBytes();
     }
 
-    SecretEngine secretEngine =
-        secretEngineRegistry.getEngine(encryptedSecret.getEngineIdentifier());
+    SecretEngine secretEngine = secretEngineRegistry.getEngine(encryptedSecret.getEngineIdentifier());
     if (secretEngine == null) {
-      throw new SecretDecryptionException(
-          "Secret Engine does not exist: " + encryptedSecret.getEngineIdentifier());
+      throw new SecretDecryptionException("Secret Engine does not exist: " + encryptedSecret.getEngineIdentifier());
     }
 
     secretEngine.validate(encryptedSecret);

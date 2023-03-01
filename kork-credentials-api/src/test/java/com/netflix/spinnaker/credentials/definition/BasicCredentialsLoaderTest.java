@@ -35,15 +35,13 @@ public class BasicCredentialsLoaderTest {
 
   @Test
   public void testCredentialsLoader() {
-    CredentialsDefinitionSource<CredentialsDefinition> source =
-        mock(CredentialsDefinitionSource.class);
+    CredentialsDefinitionSource<CredentialsDefinition> source = mock(CredentialsDefinitionSource.class);
     CredentialsLifecycleHandler<FakeCredentials> handler = mock(CredentialsLifecycleHandler.class);
-    CredentialsRepository<FakeCredentials> repository =
-        new MapBackedCredentialsRepository<>(TEST_TYPE, handler);
+    CredentialsRepository<FakeCredentials> repository = new MapBackedCredentialsRepository<>(TEST_TYPE, handler);
 
-    BasicCredentialsLoader loader =
-        new BasicCredentialsLoader(
-            source, account -> new FakeCredentials(account.getName()), repository);
+    BasicCredentialsLoader loader = new BasicCredentialsLoader(
+      source, account -> new FakeCredentials(account.getName()), repository
+    );
 
     CredentialsDefinition def1 = mock(CredentialsDefinition.class);
     when(def1.getName()).thenReturn("cred1");
@@ -74,7 +72,8 @@ public class BasicCredentialsLoaderTest {
 
   @RequiredArgsConstructor
   private class FakeCredentials implements Credentials {
-    @Getter private final String name;
+    @Getter
+    private final String name;
 
     @Override
     public String getType() {

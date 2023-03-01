@@ -31,31 +31,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {
-      MetricsEndpointConfigurationTest.TestConfiguration.class,
-      MetricsEndpointConfiguration.class
-    })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
+  MetricsEndpointConfigurationTest.TestConfiguration.class, MetricsEndpointConfiguration.class})
 @TestPropertySource(properties = {"spectator.web-endpoint.enabled = true"})
 public class MetricsEndpointConfigurationTest {
 
-  @LocalServerPort int port;
+  @LocalServerPort
+  int port;
 
-  @Autowired TestRestTemplate restTemplate;
+  @Autowired
+  TestRestTemplate restTemplate;
 
   @Test
   public void spectatorMetricsAccess() {
-    URI uri =
-        UriComponentsBuilder.fromHttpUrl("http://localhost/spectator/metrics")
-            .port(port)
-            .build()
-            .toUri();
+    URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost/spectator/metrics").port(port).build().toUri();
 
     ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
     assertEquals(HttpStatus.OK, entity.getStatusCode());
   }
 
   @SpringBootApplication
-  public static class TestConfiguration {}
+  public static class TestConfiguration {
+  }
 }

@@ -30,7 +30,7 @@ public class MapPropertyAccessor extends MapAccessor {
 
   @Override
   public boolean canRead(final EvaluationContext context, final Object target, final String name)
-      throws AccessException {
+    throws AccessException {
     if (allowUnknownKeys) {
       return true;
     }
@@ -39,7 +39,7 @@ public class MapPropertyAccessor extends MapAccessor {
 
   @Override
   public TypedValue read(final EvaluationContext context, final Object target, final String name)
-      throws AccessException {
+    throws AccessException {
     try {
       return super.read(context, target, name);
     } catch (AccessException ae) {

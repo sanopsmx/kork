@@ -25,8 +25,7 @@ import javax.annotation.Nonnull;
  * @param <E> the type of event the listener is for
  */
 @FunctionalInterface
-public interface SpinnakerEventListener<E extends SpinnakerApplicationEvent>
-    extends SpinnakerExtensionPoint {
+public interface SpinnakerEventListener<E extends SpinnakerApplicationEvent> extends SpinnakerExtensionPoint {
 
   /**
    * Handles an event of type {@link E}.

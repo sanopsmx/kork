@@ -34,20 +34,23 @@ import java.util.concurrent.TimeUnit;
 /**
  * Adds automatic instrumentation to a target object's method invocations.
  *
- * <p>Two metrics will be recorded for any target: timing and invocations, with an additional tag
- * for "success", having either the value "success" or "failure".
+ * <p>
+ * Two metrics will be recorded for any target: timing and invocations, with an additional tag for
+ * "success", having either the value "success" or "failure".
  *
- * <p>Instrumented methods will be generated at proxy creation time, each associated with a metric
- * name following a pattern of "{namespace}.{method}.{metricName}", where "{metricName}" is either
+ * <p>
+ * Instrumented methods will be generated at proxy creation time, each associated with a metric name
+ * following a pattern of "{namespace}.{method}.{metricName}", where "{metricName}" is either
  * "timing" or "invocations". The namespace is provided at creation time, and is typically unique
  * per target. The "method" is automatically generated, using the method name and parameter count of
  * the method.
  *
- * <p>Instrumented methods can be customized slightly via the {@code Metered} annotation:
+ * <p>
+ * Instrumented methods can be customized slightly via the {@code Metered} annotation:
  *
- * <p>- A method can be ignored, causing no metrics to be collected on it. - Provided a custom
- * metric name, in case auto naming produces naming conflicts. - A list of tags added to the
- * metrics.
+ * <p>
+ * - A method can be ignored, causing no metrics to be collected on it. - Provided a custom metric
+ * name, in case auto naming produces naming conflicts. - A list of tags added to the metrics.
  */
 public class InstrumentedProxy implements InvocationHandler {
 
@@ -56,19 +59,17 @@ public class InstrumentedProxy implements InvocationHandler {
   }
 
   @SuppressWarnings("unchecked")
-  public static <T> T proxy(
-      Registry registry, Object target, String metricNamespace, Map<String, String> tags) {
+  public static <T> T proxy(Registry registry, Object target, String metricNamespace, Map<String, String> tags) {
     final Set<Class<?>> interfaces = new LinkedHashSet<>();
     addHierarchy(interfaces, target.getClass());
 
-    final Class[] proxyInterfaces =
-        interfaces.stream().filter(Class::isInterface).toArray(Class[]::new);
+    final Class[] proxyInterfaces = interfaces.stream().filter(Class::isInterface).toArray(Class[]::new);
 
-    return (T)
-        Proxy.newProxyInstance(
-            target.getClass().getClassLoader(),
-            proxyInterfaces,
-            new InstrumentedProxy(registry, target, metricNamespace, tags));
+    return (T) Proxy.newProxyInstance(
+      target.getClass().getClassLoader(),
+      proxyInterfaces,
+      new InstrumentedProxy(registry, target, metricNamespace, tags)
+    );
   }
 
   private static final String INVOCATIONS = "invocations";
@@ -86,8 +87,7 @@ public class InstrumentedProxy implements InvocationHandler {
     this(registry, target, metricNamespace, new HashMap<>());
   }
 
-  public InstrumentedProxy(
-      Registry registry, Object target, String metricNamespace, Map<String, String> tags) {
+  public InstrumentedProxy(Registry registry, Object target, String metricNamespace, Map<String, String> tags) {
     this.registry = registry;
     this.target = target;
     this.metricNamespace = metricNamespace;
@@ -107,37 +107,30 @@ public class InstrumentedProxy implements InvocationHandler {
       throw e.getCause();
     } finally {
       if (methodMetrics != null) {
-        registry
-            .counter(methodMetrics.invocationsId.withTag(RESULT_KEY, resultValue.toString()))
-            .increment();
+        registry.counter(methodMetrics.invocationsId.withTag(RESULT_KEY, resultValue.toString())).increment();
         recordTiming(methodMetrics.timingId.withTag(RESULT_KEY, resultValue.toString()), start);
       }
     }
   }
 
   private void recordTiming(Id id, long startTimeMs) {
-    PercentileTimer.get(registry, id)
-        .record(System.currentTimeMillis() - startTimeMs, TimeUnit.MILLISECONDS);
+    PercentileTimer.get(registry, id).record(System.currentTimeMillis() - startTimeMs, TimeUnit.MILLISECONDS);
   }
 
   private Id invocationId(Method method, Map<String, String> tags) {
-    return registry.createId(
-        MethodInstrumentation.toMetricId(metricNamespace, method, INVOCATIONS), tags);
+    return registry.createId(MethodInstrumentation.toMetricId(metricNamespace, method, INVOCATIONS), tags);
   }
 
   private Id invocationId(String methodOverride, Map<String, String> tags) {
-    return registry.createId(
-        MethodInstrumentation.toMetricId(methodOverride, metricNamespace, INVOCATIONS), tags);
+    return registry.createId(MethodInstrumentation.toMetricId(methodOverride, metricNamespace, INVOCATIONS), tags);
   }
 
   private Id timingId(Method method, Map<String, String> tags) {
-    return registry.createId(
-        MethodInstrumentation.toMetricId(metricNamespace, method, TIMING), tags);
+    return registry.createId(MethodInstrumentation.toMetricId(metricNamespace, method, TIMING), tags);
   }
 
   private Id timingId(String methodOverride, Map<String, String> tags) {
-    return registry.createId(
-        MethodInstrumentation.toMetricId(methodOverride, metricNamespace, TIMING), tags);
+    return registry.createId(MethodInstrumentation.toMetricId(methodOverride, metricNamespace, TIMING), tags);
   }
 
   private MethodMetrics getMethodMetrics(Method method) {
@@ -153,38 +146,39 @@ public class InstrumentedProxy implements InvocationHandler {
             return null;
           }
 
-          Map<String, String> methodTags =
-              MethodInstrumentation.coalesceTags(target, method, tags, metered.tags());
+          Map<String, String> methodTags = MethodInstrumentation.coalesceTags(target, method, tags, metered.tags());
           if (Strings.isNullOrEmpty(metered.metricName())) {
             addInstrumentedMethod(
-                instrumentedMethods,
-                method,
-                new MethodMetrics(timingId(method, methodTags), invocationId(method, methodTags)));
+              instrumentedMethods,
+              method,
+              new MethodMetrics(timingId(method, methodTags), invocationId(method, methodTags))
+            );
           } else {
             addInstrumentedMethod(
-                instrumentedMethods,
-                method,
-                new MethodMetrics(
-                    timingId(metered.metricName(), methodTags),
-                    invocationId(metered.metricName(), methodTags)));
+              instrumentedMethods,
+              method,
+              new MethodMetrics(
+                timingId(metered.metricName(), methodTags), invocationId(metered.metricName(), methodTags)
+              )
+            );
           }
         }
       }
 
       if (!processed && !instrumentedMethods.containsKey(method)) {
         addInstrumentedMethod(
-            instrumentedMethods,
-            method,
-            new MethodMetrics(timingId(method, tags), invocationId(method, tags)));
+          instrumentedMethods,
+          method,
+          new MethodMetrics(timingId(method, tags), invocationId(method, tags))
+        );
       }
     }
     return instrumentedMethods.get(method);
   }
 
-  private void addInstrumentedMethod(
-      Map<Method, MethodMetrics> existingMethodMetrics,
-      Method method,
-      MethodMetrics methodMetrics) {
+  private void addInstrumentedMethod(Map<Method, MethodMetrics> existingMethodMetrics,
+                                     Method method,
+                                     MethodMetrics methodMetrics) {
     if (!MethodInstrumentation.isMethodAllowed(method)) {
       return;
     }

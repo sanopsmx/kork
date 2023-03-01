@@ -26,11 +26,11 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Allows a plugin to register BeanDefinitions to be loaded in the application Spring {@link
- * ApplicationContext}.
+ * Allows a plugin to register BeanDefinitions to be loaded in the application Spring
+ * {@link ApplicationContext}.
  *
- * <p>This can be used in plugins that want to wire themselves into the application's Spring
- * Context.
+ * <p>
+ * This can be used in plugins that want to wire themselves into the application's Spring Context.
  */
 @Beta
 public abstract class PrivilegedSpringPlugin extends Plugin {
@@ -54,10 +54,8 @@ public abstract class PrivilegedSpringPlugin extends Plugin {
   public abstract void registerBeanDefinitions(BeanDefinitionRegistry registry);
 
   protected BeanDefinition beanDefinitionFor(Class beanClass) {
-    return BeanDefinitionBuilder.genericBeanDefinition(beanClass)
-        .setScope(BeanDefinition.SCOPE_SINGLETON)
-        .setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR)
-        .getBeanDefinition();
+    return BeanDefinitionBuilder.genericBeanDefinition(beanClass).setScope(BeanDefinition.SCOPE_SINGLETON)
+      .setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_CONSTRUCTOR).getBeanDefinition();
   }
 
   protected BeanDefinition primaryBeanDefinitionFor(Class beanClass) {
@@ -67,9 +65,8 @@ public abstract class PrivilegedSpringPlugin extends Plugin {
   }
 
   protected void registerBean(BeanDefinition beanDefinition, BeanDefinitionRegistry registry)
-      throws ClassNotFoundException {
-    final Class loadedBeanClass =
-        this.getClass().getClassLoader().loadClass(beanDefinition.getBeanClassName());
+    throws ClassNotFoundException {
+    final Class loadedBeanClass = this.getClass().getClassLoader().loadClass(beanDefinition.getBeanClassName());
     registry.registerBeanDefinition(loadedBeanClass.getName(), beanDefinition);
   }
 }

@@ -89,12 +89,10 @@ public class PluginsAutoConfiguration {
   }
 
   @Bean
-  public static SpringPluginStatusProvider pluginStatusProvider(
-      DynamicConfigService dynamicConfigService) {
+  public static SpringPluginStatusProvider pluginStatusProvider(DynamicConfigService dynamicConfigService) {
     String configNamespace = PluginsConfigurationProperties.CONFIG_NAMESPACE;
     String defaultRootPath = PluginsConfigurationProperties.DEFAULT_ROOT_PATH;
-    return new SpringPluginStatusProvider(
-        dynamicConfigService, configNamespace + "." + defaultRootPath);
+    return new SpringPluginStatusProvider(dynamicConfigService, configNamespace + "." + defaultRootPath);
   }
 
   @Bean
@@ -105,22 +103,21 @@ public class PluginsAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(ServiceVersion.class)
-  public static ServiceVersion serviceVersion(
-      ApplicationContext applicationContext, List<VersionResolver> versionResolvers) {
+  public static ServiceVersion serviceVersion(ApplicationContext applicationContext,
+                                              List<VersionResolver> versionResolvers) {
     return new ServiceVersion(applicationContext, versionResolvers);
   }
 
   @Bean
   public static VersionManager versionManager(ApplicationContext applicationContext) {
     return new SpinnakerServiceVersionManager(
-        Objects.requireNonNull(
-            applicationContext.getEnvironment().getProperty("spring.application.name")));
+      Objects.requireNonNull(applicationContext.getEnvironment().getProperty("spring.application.name"))
+    );
   }
 
   @Bean
   @ConditionalOnMissingBean(ConfigResolver.class)
-  public static ConfigResolver springEnvironmentConfigResolver(
-      ConfigurableEnvironment environment) {
+  public static ConfigResolver springEnvironmentConfigResolver(ConfigurableEnvironment environment) {
     return new SpringEnvironmentConfigResolver(environment);
   }
 
@@ -130,94 +127,76 @@ public class PluginsAutoConfiguration {
   }
 
   @Bean
-  public static Map<String, PluginRepositoryProperties> pluginRepositoriesConfig(
-      ConfigResolver configResolver) {
+  public static Map<String, PluginRepositoryProperties> pluginRepositoriesConfig(ConfigResolver configResolver) {
     return configResolver.resolve(
-        new RepositoryConfigCoordinates(),
-        new TypeReference<HashMap<String, PluginRepositoryProperties>>() {});
+      new RepositoryConfigCoordinates(),
+      new TypeReference<HashMap<String, PluginRepositoryProperties>>() {}
+    );
   }
 
   @Bean
   PluginsConfigurationProperties pluginsConfigurationProperties(Environment environment) {
-    return Binder.get(environment)
-        .bind(PluginsConfigurationProperties.CONFIG_NAMESPACE, PluginsConfigurationProperties.class)
-        .orElseGet(PluginsConfigurationProperties::new);
+    return Binder.get(environment).bind(
+      PluginsConfigurationProperties.CONFIG_NAMESPACE,
+      PluginsConfigurationProperties.class
+    ).orElseGet(PluginsConfigurationProperties::new);
   }
 
   @Bean
-  @ConditionalOnProperty(
-      value = "spinnaker.extensibility.framework.version",
-      havingValue = FRAMEWORK_V1,
-      matchIfMissing = false)
-  public static PluginFactory pluginFactoryV1(
-      List<SdkFactory> sdkFactories, ConfigFactory configFactory) {
+  @ConditionalOnProperty(value = "spinnaker.extensibility.framework.version", havingValue = FRAMEWORK_V1,
+    matchIfMissing = false)
+  public static PluginFactory pluginFactoryV1(List<SdkFactory> sdkFactories, ConfigFactory configFactory) {
     return new SpinnakerPluginFactory(sdkFactories, configFactory);
   }
 
   @Bean
-  @ConditionalOnProperty(
-      value = "spinnaker.extensibility.framework.version",
-      havingValue = FRAMEWORK_V2,
-      matchIfMissing = true)
-  public static PluginFactory pluginFactoryV2(
-      List<SdkFactory> sdkFactories,
-      ConfigFactory configFactory,
-      GenericApplicationContext applicationContext) {
+  @ConditionalOnProperty(value = "spinnaker.extensibility.framework.version", havingValue = FRAMEWORK_V2,
+    matchIfMissing = true)
+  public static PluginFactory pluginFactoryV2(List<SdkFactory> sdkFactories,
+                                              ConfigFactory configFactory,
+                                              GenericApplicationContext applicationContext) {
     return new SpringPluginFactory(sdkFactories, configFactory, applicationContext);
   }
 
   @Bean
-  public static SpinnakerPluginManager pluginManager(
-      ServiceVersion serviceVersion,
-      VersionManager versionManager,
-      PluginStatusProvider pluginStatusProvider,
-      ApplicationContext applicationContext,
-      ConfigFactory configFactory,
-      List<SdkFactory> sdkFactories,
-      PluginBundleExtractor pluginBundleExtractor,
-      PluginFactory pluginFactory,
-      PluginsConfigurationProperties pluginsConfigurationProperties) {
+  public static SpinnakerPluginManager pluginManager(ServiceVersion serviceVersion,
+                                                     VersionManager versionManager,
+                                                     PluginStatusProvider pluginStatusProvider,
+                                                     ApplicationContext applicationContext,
+                                                     ConfigFactory configFactory,
+                                                     List<SdkFactory> sdkFactories,
+                                                     PluginBundleExtractor pluginBundleExtractor,
+                                                     PluginFactory pluginFactory,
+                                                     PluginsConfigurationProperties pluginsConfigurationProperties) {
     return new SpinnakerPluginManager(
-        serviceVersion,
-        versionManager,
-        pluginStatusProvider,
-        configFactory,
-        sdkFactories,
-        Objects.requireNonNull(
-            applicationContext.getEnvironment().getProperty("spring.application.name")),
-        determineRootPluginPath(pluginsConfigurationProperties),
-        pluginBundleExtractor,
-        pluginFactory);
+      serviceVersion, versionManager, pluginStatusProvider, configFactory, sdkFactories, Objects.requireNonNull(
+        applicationContext.getEnvironment().getProperty("spring.application.name")
+      ), determineRootPluginPath(pluginsConfigurationProperties), pluginBundleExtractor, pluginFactory
+    );
   }
 
   /**
    * If the plugins-root-path property is set, returns the absolute path to the property. Otherwise,
    * returns the default root path 'plugins'.
    */
-  private static Path determineRootPluginPath(
-      PluginsConfigurationProperties pluginsConfigurationProperties) {
-    return pluginsConfigurationProperties
-            .getPluginsRootPath()
-            .equals(PluginsConfigurationProperties.DEFAULT_ROOT_PATH)
-        ? Paths.get(PluginsConfigurationProperties.DEFAULT_ROOT_PATH)
-        : Paths.get(pluginsConfigurationProperties.getPluginsRootPath()).toAbsolutePath();
+  private static Path determineRootPluginPath(PluginsConfigurationProperties pluginsConfigurationProperties) {
+    return pluginsConfigurationProperties.getPluginsRootPath().equals(PluginsConfigurationProperties.DEFAULT_ROOT_PATH)
+      ? Paths.get(PluginsConfigurationProperties.DEFAULT_ROOT_PATH)
+      : Paths.get(pluginsConfigurationProperties.getPluginsRootPath()).toAbsolutePath();
   }
 
   @Bean
-  public static PluginBundleExtractor pluginBundleExtractor(
-      SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider) {
+  public static PluginBundleExtractor pluginBundleExtractor(SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider) {
     return new PluginBundleExtractor(springStrictPluginLoaderStatusProvider);
   }
 
   @Bean
-  public static PluginInfoReleaseSource springPluginInfoReleaseSource(
-      SpringPluginStatusProvider pluginStatusProvider) {
+  public static PluginInfoReleaseSource springPluginInfoReleaseSource(SpringPluginStatusProvider pluginStatusProvider) {
     return new SpringPluginInfoReleaseSource(pluginStatusProvider);
   }
 
   @Bean
-  public static PluginInfoReleaseSource latestPluginInfoReleaseSource(
-      SpinnakerUpdateManager updateManager) {
+  public static PluginInfoReleaseSource latestPluginInfoReleaseSource(SpinnakerUpdateManager updateManager) {
     return new LatestPluginInfoReleaseSource(updateManager, null);
   }
 
@@ -227,107 +206,92 @@ public class PluginsAutoConfiguration {
   }
 
   @Bean
-  public static PluginInfoReleaseProvider pluginInfoReleaseProvider(
-      List<PluginInfoReleaseSource> pluginInfoReleaseSources,
-      SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider) {
-    return new AggregatePluginInfoReleaseProvider(
-        pluginInfoReleaseSources, springStrictPluginLoaderStatusProvider);
+  public static PluginInfoReleaseProvider pluginInfoReleaseProvider(List<PluginInfoReleaseSource> pluginInfoReleaseSources,
+                                                                    SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider) {
+    return new AggregatePluginInfoReleaseProvider(pluginInfoReleaseSources, springStrictPluginLoaderStatusProvider);
   }
 
   /** Not a static bean - see {@link RemotePluginsConfiguration}. */
   @Bean
   @Beta
-  public RemotePluginInfoReleaseCache remotePluginInfoReleaseCache(
-      Collection<PluginInfoReleaseSource> pluginInfoReleaseSources,
-      SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider,
-      ApplicationEventPublisher applicationEventPublisher,
-      SpinnakerUpdateManager updateManager,
-      SpinnakerPluginManager pluginManager,
-      SpringPluginStatusProvider springPluginStatusProvider) {
+  public RemotePluginInfoReleaseCache remotePluginInfoReleaseCache(Collection<PluginInfoReleaseSource> pluginInfoReleaseSources,
+                                                                   SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider,
+                                                                   ApplicationEventPublisher applicationEventPublisher,
+                                                                   SpinnakerUpdateManager updateManager,
+                                                                   SpinnakerPluginManager pluginManager,
+                                                                   SpringPluginStatusProvider springPluginStatusProvider) {
     return new RemotePluginInfoReleaseCache(
-        new AggregatePluginInfoReleaseProvider(
-            pluginInfoReleaseSources.stream()
-                .filter(source -> !(source instanceof Front50PluginInfoReleaseSource))
-                .collect(Collectors.toList()),
-            springStrictPluginLoaderStatusProvider),
-        applicationEventPublisher,
-        updateManager,
-        pluginManager,
-        springPluginStatusProvider);
+      new AggregatePluginInfoReleaseProvider(
+        pluginInfoReleaseSources.stream().filter(source -> !(source instanceof Front50PluginInfoReleaseSource)).collect(
+          Collectors.toList()
+        ), springStrictPluginLoaderStatusProvider
+      ), applicationEventPublisher, updateManager, pluginManager, springPluginStatusProvider
+    );
   }
 
   @Bean
-  public static SpinnakerUpdateManager pluginUpdateManager(
-      SpinnakerPluginManager pluginManager,
-      ApplicationEventPublisher applicationEventPublisher,
-      List<UpdateRepository> updateRepositories) {
+  public static SpinnakerUpdateManager pluginUpdateManager(SpinnakerPluginManager pluginManager,
+                                                           ApplicationEventPublisher applicationEventPublisher,
+                                                           List<UpdateRepository> updateRepositories) {
     return new SpinnakerUpdateManager(applicationEventPublisher, pluginManager, updateRepositories);
   }
 
   @Bean
-  public static FileDownloaderProvider fileDownloaderProvider(
-      List<SupportingFileDownloader> fileDownloaders) {
+  public static FileDownloaderProvider fileDownloaderProvider(List<SupportingFileDownloader> fileDownloaders) {
     return new FileDownloaderProvider(new CompositeFileDownloader(fileDownloaders));
   }
 
   @Bean
   @SneakyThrows
-  public static List<UpdateRepository> pluginUpdateRepositories(
-      Map<String, PluginRepositoryProperties> pluginRepositoriesConfig,
-      FileDownloaderProvider fileDownloaderProvider,
-      PluginsConfigurationProperties properties) {
+  public static List<UpdateRepository> pluginUpdateRepositories(Map<String, PluginRepositoryProperties> pluginRepositoriesConfig,
+                                                                FileDownloaderProvider fileDownloaderProvider,
+                                                                PluginsConfigurationProperties properties) {
 
-    List<UpdateRepository> repositories =
-        pluginRepositoriesConfig.entrySet().stream()
-            .filter(entry -> entry.getValue().isEnabled())
-            .filter(
-                entry -> !entry.getKey().equals(PluginsConfigurationProperties.FRONT5O_REPOSITORY))
-            .map(
-                entry ->
-                    new ConfigurableUpdateRepository(
-                        entry.getKey(),
-                        entry.getValue().getUrl(),
-                        fileDownloaderProvider.get(entry.getValue().fileDownloader),
-                        new CompoundVerifier()))
-            .collect(Collectors.toList());
+    List<UpdateRepository> repositories = pluginRepositoriesConfig.entrySet().stream().filter(
+      entry -> entry.getValue().isEnabled()
+    ).filter(entry -> !entry.getKey().equals(PluginsConfigurationProperties.FRONT5O_REPOSITORY)).map(
+      entry -> new ConfigurableUpdateRepository(
+        entry.getKey(), entry.getValue().getUrl(), fileDownloaderProvider.get(entry.getValue().fileDownloader),
+        new CompoundVerifier()
+      )
+    ).collect(Collectors.toList());
 
     if (properties.isEnableDefaultRepositories()) {
       log.info("Enabling spinnaker-official and spinnaker-community plugin repositories");
 
       repositories.add(
-          new ConfigurableUpdateRepository(
-              PluginsConfigurationProperties.SPINNAKER_OFFICIAL_REPOSITORY,
-              new URL(
-                  "https://raw.githubusercontent.com/spinnaker/plugins/master/official/plugins.json"),
-              fileDownloaderProvider.get(null),
-              new CompoundVerifier()));
+        new ConfigurableUpdateRepository(
+          PluginsConfigurationProperties.SPINNAKER_OFFICIAL_REPOSITORY, new URL(
+            "https://raw.githubusercontent.com/spinnaker/plugins/master/official/plugins.json"
+          ), fileDownloaderProvider.get(null), new CompoundVerifier()
+        )
+      );
       repositories.add(
-          new ConfigurableUpdateRepository(
-              PluginsConfigurationProperties.SPINNAKER_COMMUNITY_REPOSITORY,
-              new URL(
-                  "https://raw.githubusercontent.com/spinnaker/plugins/master/community/plugins.json"),
-              fileDownloaderProvider.get(null),
-              new CompoundVerifier()));
+        new ConfigurableUpdateRepository(
+          PluginsConfigurationProperties.SPINNAKER_COMMUNITY_REPOSITORY, new URL(
+            "https://raw.githubusercontent.com/spinnaker/plugins/master/community/plugins.json"
+          ), fileDownloaderProvider.get(null), new CompoundVerifier()
+        )
+      );
     }
 
     if (repositories.isEmpty()) {
       log.warn(
-          "No remote repositories defined, will fallback to looking for a "
-              + "'repositories.json' file next to the application executable");
+        "No remote repositories defined, will fallback to looking for a "
+          + "'repositories.json' file next to the application executable"
+      );
     }
 
     return repositories;
   }
 
   @Bean
-  public static SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider(
-      Environment environment) {
+  public static SpringStrictPluginLoaderStatusProvider springStrictPluginLoaderStatusProvider(Environment environment) {
     return new SpringStrictPluginLoaderStatusProvider(environment);
   }
 
   @Bean
-  public static MetricInvocationAspect metricInvocationAspect(
-      ObjectProvider<Registry> registryProvider) {
+  public static MetricInvocationAspect metricInvocationAspect(ObjectProvider<Registry> registryProvider) {
     return new MetricInvocationAspect(registryProvider);
   }
 
@@ -337,58 +301,43 @@ public class PluginsAutoConfiguration {
   }
 
   @Bean
-  public static InstalledPluginsEndpoint installedPluginsEndpoint(
-      SpinnakerPluginManager pluginManager) {
+  public static InstalledPluginsEndpoint installedPluginsEndpoint(SpinnakerPluginManager pluginManager) {
     return new InstalledPluginsEndpoint(pluginManager);
   }
 
   @Bean
-  @ConditionalOnProperty(
-      value = "spinnaker.extensibility.framework.version",
-      havingValue = FRAMEWORK_V1,
-      matchIfMissing = false)
-  public static ExtensionBeanDefinitionRegistryPostProcessor pluginBeanPostProcessor(
-      SpinnakerPluginManager pluginManager,
-      SpinnakerUpdateManager updateManager,
-      PluginInfoReleaseProvider pluginInfoReleaseProvider,
-      SpringPluginStatusProvider springPluginStatusProvider,
-      ApplicationEventPublisher applicationEventPublisher,
-      List<InvocationAspect<? extends InvocationState>> invocationAspects) {
+  @ConditionalOnProperty(value = "spinnaker.extensibility.framework.version", havingValue = FRAMEWORK_V1,
+    matchIfMissing = false)
+  public static ExtensionBeanDefinitionRegistryPostProcessor pluginBeanPostProcessor(SpinnakerPluginManager pluginManager,
+                                                                                     SpinnakerUpdateManager updateManager,
+                                                                                     PluginInfoReleaseProvider pluginInfoReleaseProvider,
+                                                                                     SpringPluginStatusProvider springPluginStatusProvider,
+                                                                                     ApplicationEventPublisher applicationEventPublisher,
+                                                                                     List<InvocationAspect<? extends InvocationState>> invocationAspects) {
     return new ExtensionBeanDefinitionRegistryPostProcessor(
-        pluginManager,
-        updateManager,
-        pluginInfoReleaseProvider,
-        springPluginStatusProvider,
-        applicationEventPublisher,
-        invocationAspects);
+      pluginManager, updateManager, pluginInfoReleaseProvider, springPluginStatusProvider, applicationEventPublisher,
+      invocationAspects
+    );
   }
 
   @Bean
-  @ConditionalOnProperty(
-      value = "spinnaker.extensibility.framework.version",
-      havingValue = FRAMEWORK_V2,
-      matchIfMissing = true)
-  public SpinnakerPluginService spinnakerPluginService(
-      SpinnakerPluginManager pluginManager,
-      SpinnakerUpdateManager updateManager,
-      PluginInfoReleaseProvider pluginInfoReleaseProvider,
-      SpringPluginStatusProvider springPluginStatusProvider,
-      ApplicationEventPublisher applicationEventPublisher,
-      List<InvocationAspect<? extends InvocationState>> invocationAspects) {
+  @ConditionalOnProperty(value = "spinnaker.extensibility.framework.version", havingValue = FRAMEWORK_V2,
+    matchIfMissing = true)
+  public SpinnakerPluginService spinnakerPluginService(SpinnakerPluginManager pluginManager,
+                                                       SpinnakerUpdateManager updateManager,
+                                                       PluginInfoReleaseProvider pluginInfoReleaseProvider,
+                                                       SpringPluginStatusProvider springPluginStatusProvider,
+                                                       ApplicationEventPublisher applicationEventPublisher,
+                                                       List<InvocationAspect<? extends InvocationState>> invocationAspects) {
     return new SpinnakerPluginService(
-        pluginManager,
-        updateManager,
-        pluginInfoReleaseProvider,
-        springPluginStatusProvider,
-        invocationAspects,
-        applicationEventPublisher);
+      pluginManager, updateManager, pluginInfoReleaseProvider, springPluginStatusProvider, invocationAspects,
+      applicationEventPublisher
+    );
   }
 
   @Bean
-  @ConditionalOnProperty(
-      value = "spinnaker.extensibility.framework.version",
-      havingValue = FRAMEWORK_V2,
-      matchIfMissing = true)
+  @ConditionalOnProperty(value = "spinnaker.extensibility.framework.version", havingValue = FRAMEWORK_V2,
+    matchIfMissing = true)
   PluginFrameworkInitializer pluginFrameworkInitializer(SpinnakerPluginService pluginService) {
     return new PluginFrameworkInitializer(pluginService);
   }

@@ -25,7 +25,8 @@ import java.util.Set;
  * in Orca) using the cloudProvider as a criteria. This can be used to send traffic to a specific
  * service endpoint based on the cloud provider the traffic is touching.
  *
- * <p>Example usage in Orca
+ * <p>
+ * Example usage in Orca
  *
  * <pre>
  * clouddriver:
@@ -46,12 +47,10 @@ public class ByCloudProviderServiceSelector implements ServiceSelector {
   private final Set<String> cloudProviders;
 
   @SuppressWarnings("unchecked")
-  public ByCloudProviderServiceSelector(
-      Object service, Integer priority, Map<String, Object> config) {
+  public ByCloudProviderServiceSelector(Object service, Integer priority, Map<String, Object> config) {
     this.service = service;
     this.priority = priority;
-    this.cloudProviders =
-        new HashSet<>(((Map<String, String>) config.get("cloudProviders")).values());
+    this.cloudProviders = new HashSet<>(((Map<String, String>) config.get("cloudProviders")).values());
   }
 
   @Override

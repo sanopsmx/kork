@@ -43,6 +43,5 @@ public interface ServiceClientProvider {
    * @param <T> type of client , usually a interface with all the remote method definitions.
    * @return the retrofit interface implementation
    */
-  public <T> T getService(
-      Class<T> type, ServiceEndpoint serviceEndpoint, ObjectMapper objectMapper);
+  public <T> T getService(Class<T> type, ServiceEndpoint serviceEndpoint, ObjectMapper objectMapper);
 }

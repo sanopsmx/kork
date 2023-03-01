@@ -37,15 +37,12 @@ public class InstrumentedRetryCondition implements RetryPolicy.RetryCondition {
   }
 
   @Override
-  public boolean shouldRetry(
-      AmazonWebServiceRequest originalRequest,
-      AmazonClientException exception,
-      int retriesAttempted) {
+  public boolean shouldRetry(AmazonWebServiceRequest originalRequest,
+                             AmazonClientException exception,
+                             int retriesAttempted) {
     final boolean result = delegate.shouldRetry(originalRequest, exception, retriesAttempted);
     if (result) {
-      registry
-          .counter("AWS_retries", AwsMetricsSupport.buildExceptionTags(originalRequest, exception))
-          .increment();
+      registry.counter("AWS_retries", AwsMetricsSupport.buildExceptionTags(originalRequest, exception)).increment();
     }
     return result;
   }

@@ -26,9 +26,8 @@ public class SecretsManagerConfiguration {
   @ConditionalOnMissingBean
   @Bean
   public SecretsManagerClientProvider secretsManagerClientProvider() {
-    return parameters ->
-        AWSSecretsManagerClientBuilder.standard()
-            .withRegion(parameters.get(SecretsManagerSecretEngine.SECRET_REGION))
-            .build();
+    return parameters -> AWSSecretsManagerClientBuilder.standard().withRegion(
+      parameters.get(SecretsManagerSecretEngine.SECRET_REGION)
+    ).build();
   }
 }

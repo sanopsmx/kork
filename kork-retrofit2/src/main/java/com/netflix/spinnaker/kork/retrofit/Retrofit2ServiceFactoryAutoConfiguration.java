@@ -41,8 +41,7 @@ public class Retrofit2ServiceFactoryAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  HttpLoggingInterceptor httpLoggingInterceptor(
-      Retrofit2ConfigurationProperties retrofit2ConfigurationProperties) {
+  HttpLoggingInterceptor httpLoggingInterceptor(Retrofit2ConfigurationProperties retrofit2ConfigurationProperties) {
     HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
     httpLoggingInterceptor.setLevel(retrofit2ConfigurationProperties.getLogLevel());
     return httpLoggingInterceptor;

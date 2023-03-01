@@ -42,11 +42,9 @@ class RawOkHttpClientConfiguration {
    */
   @Bean
   @ConditionalOnMissingBean
-  OkHttpClient okhttp3Client(
-      OkHttpClientConfigurationProperties okHttpClientConfigurationProperties,
-      List<Interceptor> interceptors,
-      HttpTracing httpTracing) {
-    return new RawOkHttpClientFactory()
-        .create(okHttpClientConfigurationProperties, interceptors, httpTracing);
+  OkHttpClient okhttp3Client(OkHttpClientConfigurationProperties okHttpClientConfigurationProperties,
+                             List<Interceptor> interceptors,
+                             HttpTracing httpTracing) {
+    return new RawOkHttpClientFactory().create(okHttpClientConfigurationProperties, interceptors, httpTracing);
   }
 }

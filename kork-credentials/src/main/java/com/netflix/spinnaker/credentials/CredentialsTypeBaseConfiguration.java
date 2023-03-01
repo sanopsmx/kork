@@ -39,19 +39,23 @@ import org.springframework.core.ResolvableType;
  * and {@link AbstractCredentialsLoader} for all the {@link CredentialsTypeProperties} configured in
  * the system.
  *
- * <p>It will try to reuse any {@link CredentialsRepository}, {@link CredentialsDefinitionSource},
- * {@link CredentialsParser}, {@link CredentialsLifecycleHandler}, or {@link
- * AbstractCredentialsLoader} that may have been added as a bean and create default implementations
- * otherwise.
+ * <p>
+ * It will try to reuse any {@link CredentialsRepository}, {@link CredentialsDefinitionSource},
+ * {@link CredentialsParser}, {@link CredentialsLifecycleHandler}, or
+ * {@link AbstractCredentialsLoader} that may have been added as a bean and create default
+ * implementations otherwise.
  */
 @RequiredArgsConstructor
-public class CredentialsTypeBaseConfiguration<
-        T extends Credentials, U extends CredentialsDefinition>
-    implements InitializingBean {
+public class CredentialsTypeBaseConfiguration<T extends Credentials, U extends CredentialsDefinition> implements
+  InitializingBean {
   private final ApplicationContext applicationContext;
   private final CredentialsTypeProperties<T, U> properties;
-  @Nullable @Getter private CredentialsRepository<T> credentialsRepository;
-  @Nullable @Getter private AbstractCredentialsLoader<T> credentialsLoader;
+  @Nullable
+  @Getter
+  private CredentialsRepository<T> credentialsRepository;
+  @Nullable
+  @Getter
+  private AbstractCredentialsLoader<T> credentialsLoader;
 
   @Override
   public void afterPropertiesSet() {
@@ -61,53 +65,48 @@ public class CredentialsTypeBaseConfiguration<
   @SuppressWarnings("unchecked")
   private void registerCredentialsProperties() {
     // Get or build lifecycle handler
-    CredentialsLifecycleHandler<?> lifecycleHandler =
-        getParameterizedBean(
-                applicationContext,
-                CredentialsLifecycleHandler.class,
-                properties.getCredentialsClass())
-            .orElseGet(NoopCredentialsLifecycleHandler::new);
+    CredentialsLifecycleHandler<?> lifecycleHandler = getParameterizedBean(
+      applicationContext,
+      CredentialsLifecycleHandler.class,
+      properties.getCredentialsClass()
+    ).orElseGet(NoopCredentialsLifecycleHandler::new);
 
     // Get or build credentials repository
-    credentialsRepository =
-        getParameterizedBean(
-                applicationContext, CredentialsRepository.class, properties.getCredentialsClass())
-            .orElseGet(
-                () ->
-                    registerCredentialsRepository(
-                        applicationContext, properties, lifecycleHandler));
+    credentialsRepository = getParameterizedBean(
+      applicationContext,
+      CredentialsRepository.class,
+      properties.getCredentialsClass()
+    ).orElseGet(() -> registerCredentialsRepository(applicationContext, properties, lifecycleHandler));
 
     // Get or build credential source
-    CredentialsDefinitionSource<U> credentialsDefinitionSource =
-        getParameterizedBean(
-                applicationContext,
-                CredentialsDefinitionSource.class,
-                properties.getCredentialsDefinitionClass())
-            .orElse(properties.getDefaultCredentialsSource());
+    CredentialsDefinitionSource<U> credentialsDefinitionSource = getParameterizedBean(
+      applicationContext,
+      CredentialsDefinitionSource.class,
+      properties.getCredentialsDefinitionClass()
+    ).orElse(properties.getDefaultCredentialsSource());
 
     // Get or build credentials parser
-    CredentialsParser<U, T> credentialsParser =
-        getParameterizedBean(
-                applicationContext,
-                CredentialsParser.class,
-                properties.getCredentialsDefinitionClass(),
-                properties.getCredentialsClass())
-            .orElse(properties.getCredentialsParser());
+    CredentialsParser<U, T> credentialsParser = getParameterizedBean(
+      applicationContext,
+      CredentialsParser.class,
+      properties.getCredentialsDefinitionClass(),
+      properties.getCredentialsClass()
+    ).orElse(properties.getCredentialsParser());
 
     // Get or build credentials loader
-    credentialsLoader =
-        getParameterizedBean(
-                applicationContext,
-                AbstractCredentialsLoader.class,
-                properties.getCredentialsClass())
-            .orElseGet(
-                () ->
-                    registerCredentialsLoader(
-                        applicationContext,
-                        properties,
-                        credentialsDefinitionSource,
-                        credentialsParser,
-                        credentialsRepository));
+    credentialsLoader = getParameterizedBean(
+      applicationContext,
+      AbstractCredentialsLoader.class,
+      properties.getCredentialsClass()
+    ).orElseGet(
+      () -> registerCredentialsLoader(
+        applicationContext,
+        properties,
+        credentialsDefinitionSource,
+        credentialsParser,
+        credentialsRepository
+      )
+    );
   }
 
   /**
@@ -120,15 +119,14 @@ public class CredentialsTypeBaseConfiguration<
    * @return Credentials repository registered in Spring
    */
   @SuppressWarnings("unchecked")
-  protected CredentialsRepository<T> registerCredentialsRepository(
-      ApplicationContext context,
-      CredentialsTypeProperties<T, ?> properties,
-      CredentialsLifecycleHandler<?> lifecycleHandler) {
+  protected CredentialsRepository<T> registerCredentialsRepository(ApplicationContext context,
+                                                                   CredentialsTypeProperties<T, ?> properties,
+                                                                   CredentialsLifecycleHandler<?> lifecycleHandler) {
 
     RootBeanDefinition bd = new RootBeanDefinition();
     bd.setTargetType(
-        ResolvableType.forClassWithGenerics(
-            CredentialsRepository.class, properties.getCredentialsClass()));
+      ResolvableType.forClassWithGenerics(CredentialsRepository.class, properties.getCredentialsClass())
+    );
     bd.setBeanClass(MapBackedCredentialsRepository.class);
     ConstructorArgumentValues values = new ConstructorArgumentValues();
     values.addGenericArgumentValue(properties.getType());
@@ -136,23 +134,24 @@ public class CredentialsTypeBaseConfiguration<
     bd.setConstructorArgumentValues(values);
 
     String beanName = "credentialsRepository." + properties.getType();
-    ((DefaultListableBeanFactory) ((AbstractApplicationContext) context).getBeanFactory())
-        .registerBeanDefinition(beanName, bd);
+    ((DefaultListableBeanFactory) ((AbstractApplicationContext) context).getBeanFactory()).registerBeanDefinition(
+      beanName,
+      bd
+    );
     return context.getBean(beanName, MapBackedCredentialsRepository.class);
   }
 
   @SuppressWarnings("unchecked")
-  protected AbstractCredentialsLoader<T> registerCredentialsLoader(
-      ApplicationContext context,
-      CredentialsTypeProperties<T, U> properties,
-      CredentialsDefinitionSource<U> credentialsDefinitionSource,
-      CredentialsParser<U, T> credentialsParser,
-      CredentialsRepository<T> credentialsRepository) {
+  protected AbstractCredentialsLoader<T> registerCredentialsLoader(ApplicationContext context,
+                                                                   CredentialsTypeProperties<T, U> properties,
+                                                                   CredentialsDefinitionSource<U> credentialsDefinitionSource,
+                                                                   CredentialsParser<U, T> credentialsParser,
+                                                                   CredentialsRepository<T> credentialsRepository) {
 
     RootBeanDefinition bd = new RootBeanDefinition();
     bd.setTargetType(
-        ResolvableType.forClassWithGenerics(
-            AbstractCredentialsLoader.class, properties.getCredentialsClass()));
+      ResolvableType.forClassWithGenerics(AbstractCredentialsLoader.class, properties.getCredentialsClass())
+    );
     bd.setBeanClass(BasicCredentialsLoader.class);
     ConstructorArgumentValues values = new ConstructorArgumentValues();
     values.addGenericArgumentValue(credentialsDefinitionSource);
@@ -162,14 +161,17 @@ public class CredentialsTypeBaseConfiguration<
     bd.setConstructorArgumentValues(values);
 
     String beanName = "credentialsLoader." + properties.getType();
-    ((DefaultListableBeanFactory) ((AbstractApplicationContext) context).getBeanFactory())
-        .registerBeanDefinition(beanName, bd);
+    ((DefaultListableBeanFactory) ((AbstractApplicationContext) context).getBeanFactory()).registerBeanDefinition(
+      beanName,
+      bd
+    );
     return context.getBean(beanName, AbstractCredentialsLoader.class);
   }
 
   @SuppressWarnings("unchecked")
-  protected <T> Optional<T> getParameterizedBean(
-      ApplicationContext applicationContext, Class<T> paramClass, Class<?>... generics) {
+  protected <T> Optional<T> getParameterizedBean(ApplicationContext applicationContext,
+                                                 Class<T> paramClass,
+                                                 Class<?>... generics) {
     ResolvableType resolvableType = ResolvableType.forClassWithGenerics(paramClass, generics);
     String[] beanNames = applicationContext.getBeanNamesForType(resolvableType);
     if (beanNames.length == 1) {
@@ -179,11 +181,7 @@ public class CredentialsTypeBaseConfiguration<
       return Optional.empty();
     }
     throw new IllegalArgumentException(
-        beanNames.length
-            + " beans found of class "
-            + paramClass
-            + " ("
-            + generics.length
-            + " generics)");
+      beanNames.length + " beans found of class " + paramClass + " (" + generics.length + " generics)"
+    );
   }
 }

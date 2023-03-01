@@ -34,8 +34,7 @@ public class DiscoveryAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean(DiscoveryStatusPublisher.class)
-  public DiscoveryStatusPublisher noDiscoveryStatusPublisher(
-      ApplicationEventPublisher eventPublisher) {
+  public DiscoveryStatusPublisher noDiscoveryStatusPublisher(ApplicationEventPublisher eventPublisher) {
     return new NoDiscoveryStatusPublisher(eventPublisher);
   }
 }

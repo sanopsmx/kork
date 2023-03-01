@@ -22,8 +22,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class TestApplication {
-  public static final Map<String, Object> DEFAULT_PROPS =
-      new DefaultPropertiesBuilder().property("server.port", "0").build();
+  public static final Map<String, Object> DEFAULT_PROPS = new DefaultPropertiesBuilder().property("server.port", "0")
+    .build();
 
   public static void execute(String dummyUserHome) {
     System.setProperty("user.home", dummyUserHome);

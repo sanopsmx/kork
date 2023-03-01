@@ -30,8 +30,7 @@ public class SpringDynamicConfigService implements DynamicConfigService, Environ
   private Environment environment;
 
   @Override
-  public <T> T getConfig(
-      @Nonnull Class<T> configType, @Nonnull String configName, @Nonnull T defaultValue) {
+  public <T> T getConfig(@Nonnull Class<T> configType, @Nonnull String configName, @Nonnull T defaultValue) {
     if (environment == null) {
       return defaultValue;
     }
@@ -47,20 +46,21 @@ public class SpringDynamicConfigService implements DynamicConfigService, Environ
   }
 
   @Override
-  public boolean isEnabled(
-      @Nonnull String flagName, boolean defaultValue, @Nonnull ScopedCriteria criteria) {
+  public boolean isEnabled(@Nonnull String flagName, boolean defaultValue, @Nonnull ScopedCriteria criteria) {
     if (environment == null) {
       return defaultValue;
     }
-    Boolean value =
-        chainedFlagSupplier(
-            new LinkedList<>(
-                Arrays.asList(
-                    booleanSupplier(flagName, "region", criteria.region),
-                    booleanSupplier(flagName, "account", criteria.account),
-                    booleanSupplier(flagName, "cloudProvider", criteria.cloudProvider),
-                    booleanSupplier(flagName, "application", criteria.application),
-                    () -> environment.getProperty(flagPropertyName(flagName), Boolean.class))));
+    Boolean value = chainedFlagSupplier(
+      new LinkedList<>(
+        Arrays.asList(
+          booleanSupplier(flagName, "region", criteria.region),
+          booleanSupplier(flagName, "account", criteria.account),
+          booleanSupplier(flagName, "cloudProvider", criteria.cloudProvider),
+          booleanSupplier(flagName, "application", criteria.application),
+          () -> environment.getProperty(flagPropertyName(flagName), Boolean.class)
+        )
+      )
+    );
     return (value == null) ? defaultValue : value;
   }
 
@@ -72,13 +72,9 @@ public class SpringDynamicConfigService implements DynamicConfigService, Environ
     return (value != null) ? value : chainedFlagSupplier(chain);
   }
 
-  private Supplier<Boolean> booleanSupplier(
-      String configName, String criteriaName, String criteria) {
-    return () ->
-        (configName == null)
-            ? null
-            : environment.getProperty(
-                format("%s.%s.%s", configName, criteriaName, criteria), Boolean.class);
+  private Supplier<Boolean> booleanSupplier(String configName, String criteriaName, String criteria) {
+    return () -> (configName == null) ? null
+      : environment.getProperty(format("%s.%s.%s", configName, criteriaName, criteria), Boolean.class);
   }
 
   @Override

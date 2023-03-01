@@ -80,8 +80,7 @@ final class ArtifactTest {
     String expected = fullArtifactJson();
 
     // Compare the parsed trees of the two results, which is agnostic to key order
-    AssertionsForClassTypes.assertThat(objectMapper.readTree(result))
-        .isEqualTo(objectMapper.readTree(expected));
+    AssertionsForClassTypes.assertThat(objectMapper.readTree(result)).isEqualTo(objectMapper.readTree(expected));
   }
 
   @Test
@@ -90,8 +89,7 @@ final class ArtifactTest {
     String expected = fullArtifactJson();
 
     // Compare the parsed trees of the two results, which is agnostic to key order
-    AssertionsForClassTypes.assertThat(objectMapper.readTree(result))
-        .isEqualTo(objectMapper.readTree(expected));
+    AssertionsForClassTypes.assertThat(objectMapper.readTree(result)).isEqualTo(objectMapper.readTree(expected));
   }
 
   @Test
@@ -121,8 +119,7 @@ final class ArtifactTest {
 
   @Test
   void kindIsIgnored() throws IOException {
-    String json =
-        jsonFactory.objectNode().put("kind", "test").put("name", "my-artifact").toString();
+    String json = jsonFactory.objectNode().put("kind", "test").put("name", "my-artifact").toString();
 
     Artifact deserializedArtifact = objectMapper.readValue(json, Artifact.class);
     assertThat(deserializedArtifact.getMetadata("kind")).isNull();
@@ -139,8 +136,7 @@ final class ArtifactTest {
 
   @Test
   void toBuilderCopiesMetadata() {
-    Artifact originalArtifact =
-        Artifact.builder().putMetadata("abc", "def").putMetadata("mykey", "myval").build();
+    Artifact originalArtifact = Artifact.builder().putMetadata("abc", "def").putMetadata("mykey", "myval").build();
 
     Artifact newArtifact = originalArtifact.toBuilder().build();
     assertThat(newArtifact.getMetadata("abc")).isEqualTo("def");
@@ -174,18 +170,15 @@ final class ArtifactTest {
   @Test
   void notEqualIfExtraMetadata() {
     Artifact first = Artifact.builder().putMetadata("abc", "123").build();
-    Artifact second =
-        Artifact.builder().putMetadata("abc", "123").putMetadata("def", "456").build();
+    Artifact second = Artifact.builder().putMetadata("abc", "123").putMetadata("def", "456").build();
 
     assertThat(first).isNotEqualTo(second);
   }
 
   @Test
   void serializeComplexMetadata() throws IOException {
-    Artifact artifact =
-        Artifact.builder().putMetadata("test", ImmutableMap.of("nested", "abc")).build();
-    JsonNode expectedNode =
-        jsonFactory.objectNode().set("test", jsonFactory.objectNode().put("nested", "abc"));
+    Artifact artifact = Artifact.builder().putMetadata("test", ImmutableMap.of("nested", "abc")).build();
+    JsonNode expectedNode = jsonFactory.objectNode().set("test", jsonFactory.objectNode().put("nested", "abc"));
 
     String result = objectMapper.writeValueAsString(artifact);
     JsonNode resultNode = objectMapper.readTree(result).at("/metadata");
@@ -194,11 +187,7 @@ final class ArtifactTest {
 
   @Test
   void deserializeComplexMetatdata() throws IOException {
-    String json =
-        jsonFactory
-            .objectNode()
-            .set("test", jsonFactory.objectNode().put("nested", "abc"))
-            .toString();
+    String json = jsonFactory.objectNode().set("test", jsonFactory.objectNode().put("nested", "abc")).toString();
 
     Artifact artifact = objectMapper.readValue(json, Artifact.class);
     Object testData = artifact.getMetadata("test");
@@ -247,12 +236,12 @@ final class ArtifactTest {
 
   @Test
   void serializePutMetadataNullValue() throws IOException {
-    String result =
-        objectMapper.writeValueAsString(Artifact.builder().putMetadata("test", null).build());
+    String result = objectMapper.writeValueAsString(Artifact.builder().putMetadata("test", null).build());
 
     // Compare the parsed trees of the two results, which is agnostic to key order
-    AssertionsForClassTypes.assertThat(objectMapper.readTree(result))
-        .isEqualTo(objectMapper.readTree(emptyArtifactJson()));
+    AssertionsForClassTypes.assertThat(objectMapper.readTree(result)).isEqualTo(
+      objectMapper.readTree(emptyArtifactJson())
+    );
   }
 
   @Test
@@ -262,17 +251,17 @@ final class ArtifactTest {
     String result = objectMapper.writeValueAsString(Artifact.builder().metadata(metadata).build());
 
     // Compare the parsed trees of the two results, which is agnostic to key order
-    AssertionsForClassTypes.assertThat(objectMapper.readTree(result))
-        .isEqualTo(objectMapper.readTree(emptyArtifactJson()));
+    AssertionsForClassTypes.assertThat(objectMapper.readTree(result)).isEqualTo(
+      objectMapper.readTree(emptyArtifactJson())
+    );
   }
 
   @Test
   void deserializeNullMetadataValue() throws IOException {
-    String json =
-        jsonFactory
-            .objectNode()
-            .<ObjectNode>set("metadata", jsonFactory.objectNode().<ObjectNode>set("key", null))
-            .toString();
+    String json = jsonFactory.objectNode().<ObjectNode>set(
+      "metadata",
+      jsonFactory.objectNode().<ObjectNode>set("key", null)
+    ).toString();
     Artifact result = objectMapper.readValue(json, Artifact.class);
     assertThat(result.getMetadata("key")).isNull();
   }
@@ -285,43 +274,29 @@ final class ArtifactTest {
   }
 
   private String fullArtifactJson() {
-    return jsonFactory
-        .objectNode()
-        .put("type", "gcs/object")
-        .put("customKind", true)
-        .put("name", "my-artifact")
-        .put("version", "3")
-        .put("location", "somewhere")
-        .put("reference", "https://artifact.test/my-artifact")
-        .put("artifactAccount", "my-account")
-        .put("provenance", "history")
-        .put("uuid", "6b9a5d0b-5706-41da-b379-234c27971482")
-        .<ObjectNode>set("metadata", jsonFactory.objectNode().put("test", "123"))
-        .toString();
+    return jsonFactory.objectNode().put("type", "gcs/object").put("customKind", true).put("name", "my-artifact").put(
+      "version",
+      "3"
+    ).put("location", "somewhere").put("reference", "https://artifact.test/my-artifact").put(
+      "artifactAccount",
+      "my-account"
+    ).put("provenance", "history").put("uuid", "6b9a5d0b-5706-41da-b379-234c27971482").<ObjectNode>set(
+      "metadata",
+      jsonFactory.objectNode().put("test", "123")
+    ).toString();
   }
 
   // Returns the serialization of an empty artifact. Fields that default to null are omitted by our
   // serialization config, while other fields (boolean, Map) serialize to their default values.
   private String emptyArtifactJson() {
-    return jsonFactory
-        .objectNode()
-        .put("customKind", false)
-        .<ObjectNode>set("metadata", jsonFactory.objectNode())
-        .toString();
+    return jsonFactory.objectNode().put("customKind", false).<ObjectNode>set("metadata", jsonFactory.objectNode())
+      .toString();
   }
 
   private Artifact fullArtifact() {
-    return Artifact.builder()
-        .type("gcs/object")
-        .customKind(true)
-        .name("my-artifact")
-        .version("3")
-        .location("somewhere")
-        .reference("https://artifact.test/my-artifact")
-        .artifactAccount("my-account")
-        .provenance("history")
-        .uuid("6b9a5d0b-5706-41da-b379-234c27971482")
-        .putMetadata("test", "123")
-        .build();
+    return Artifact.builder().type("gcs/object").customKind(true).name("my-artifact").version("3").location("somewhere")
+      .reference("https://artifact.test/my-artifact").artifactAccount("my-account").provenance("history").uuid(
+        "6b9a5d0b-5706-41da-b379-234c27971482"
+      ).putMetadata("test", "123").build();
   }
 }

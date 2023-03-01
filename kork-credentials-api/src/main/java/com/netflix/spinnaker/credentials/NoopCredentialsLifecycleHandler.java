@@ -17,8 +17,7 @@
 
 package com.netflix.spinnaker.credentials;
 
-public class NoopCredentialsLifecycleHandler<T extends Credentials>
-    implements CredentialsLifecycleHandler<T> {
+public class NoopCredentialsLifecycleHandler<T extends Credentials> implements CredentialsLifecycleHandler<T> {
   @Override
   public void credentialsAdded(T credentials) {}
 

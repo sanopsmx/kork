@@ -42,15 +42,17 @@ import lombok.ToString;
  *
  * <h2>Encoding Parameter</h2>
  *
- * <p>User secrets may be encoded in JSON, YAML, or CBOR, and the specific encoding format being
- * used by a user secret should be specified through the corresponding {@link UserSecretMetadata} of
- * that secret along. Additional encoding formats and special types may be configured by registering
+ * <p>
+ * User secrets may be encoded in JSON, YAML, or CBOR, and the specific encoding format being used
+ * by a user secret should be specified through the corresponding {@link UserSecretMetadata} of that
+ * secret along. Additional encoding formats and special types may be configured by registering
  * additional {@link UserSecretSerde} beans.
  *
  * <h2>Key Parameter</h2>
  *
- * <p>User secrets may contain more than one secret value. The {@code k} parameter may be specified
- * to select one of the secrets by name which will return a projected version of the secret with the
+ * <p>
+ * User secrets may contain more than one secret value. The {@code k} parameter may be specified to
+ * select one of the secrets by name which will return a projected version of the secret with the
  * selected key.
  *
  * @see UserSecret
@@ -62,8 +64,10 @@ public class UserSecretReference {
   private static final Pattern SECRET_URI = Pattern.compile("^secret(File)?://.+");
   public static final String SECRET_SCHEME = "secret";
 
-  @Nonnull private final String engineIdentifier;
-  @Nonnull private final Map<String, String> parameters = new ConcurrentHashMap<>();
+  @Nonnull
+  private final String engineIdentifier;
+  @Nonnull
+  private final Map<String, String> parameters = new ConcurrentHashMap<>();
 
   private UserSecretReference(URI uri) {
     if (!SECRET_SCHEME.equals(uri.getScheme())) {
@@ -72,14 +76,14 @@ public class UserSecretReference {
     engineIdentifier = uri.getAuthority();
     String[] queryKeyValues = uri.getQuery().split("&");
     if (queryKeyValues.length == 0) {
-      throw new InvalidSecretFormatException(
-          "Invalid user secret URI has no query parameters defined");
+      throw new InvalidSecretFormatException("Invalid user secret URI has no query parameters defined");
     }
     for (String keyValue : queryKeyValues) {
       String[] pair = keyValue.split("=", 2);
       if (pair.length != 2) {
         throw new InvalidSecretFormatException(
-            "Invalid user secret query string; missing parameter value for '" + keyValue + "'");
+          "Invalid user secret query string; missing parameter value for '" + keyValue + "'"
+        );
       }
       parameters.put(pair[0], pair[1]);
     }
@@ -102,8 +106,8 @@ public class UserSecretReference {
   }
 
   /**
-   * Tries to parse a user secret URI into a UserSecretReference. Invalid secret URIs return an
-   * empty value.
+   * Tries to parse a user secret URI into a UserSecretReference. Invalid secret URIs return an empty
+   * value.
    */
   @Nonnull
   public static Optional<UserSecretReference> tryParse(@Nullable Object value) {

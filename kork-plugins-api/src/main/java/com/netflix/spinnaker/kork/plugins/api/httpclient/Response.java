@@ -43,8 +43,7 @@ public interface Response {
   Map<String, String> getHeaders();
 
   /**
-   * Returns whether or not the request had an error (4xx/5xx response code or underlying
-   * IOException)
+   * Returns whether or not the request had an error (4xx/5xx response code or underlying IOException)
    */
   default boolean isError() {
     return getException().isPresent() || getStatusCode() >= 400;

@@ -72,22 +72,19 @@ public class StackdriverWriterTest {
     public MonitoredResource peekMonitoredResource() {
       return monitoredResource;
     }
-  }
-  ;
+  };
 
-  static final long START_TIME_MILLIS =
-      TimeUnit.MILLISECONDS.convert(1472394000L, TimeUnit.SECONDS);
+  static final long START_TIME_MILLIS = TimeUnit.MILLISECONDS.convert(1472394000L, TimeUnit.SECONDS);
   private long millis = START_TIME_MILLIS + 12345L; // doesnt matter
-  private Clock clock =
-      new Clock() {
-        public long wallTime() {
-          return millis;
-        }
+  private Clock clock = new Clock() {
+    public long wallTime() {
+      return millis;
+    }
 
-        public long monotonicTime() {
-          return millis;
-        }
-      };
+    public long monotonicTime() {
+      return millis;
+    }
+  };
 
   static final String INSTANCE_ID = "TestUID";
 
@@ -105,17 +102,20 @@ public class StackdriverWriterTest {
   Id idAYX = idA.withTag("tagA", "Y").withTag("tagB", "X");
   Id idBXY = idB.withTag("tagA", "X").withTag("tagB", "Y");
 
-  Predicate<Measurement> allowAll =
-      new Predicate<Measurement>() {
-        public boolean test(Measurement measurement) {
-          return true;
-        }
-      };
+  Predicate<Measurement> allowAll = new Predicate<Measurement>() {
+    public boolean test(Measurement measurement) {
+      return true;
+    }
+  };
 
-  @Mock Monitoring monitoringApi;
-  @Mock Monitoring.Projects projectsApi;
-  @Mock Monitoring.Projects.MetricDescriptors descriptorsApi;
-  @Mock Monitoring.Projects.TimeSeries timeseriesApi;
+  @Mock
+  Monitoring monitoringApi;
+  @Mock
+  Monitoring.Projects projectsApi;
+  @Mock
+  Monitoring.Projects.MetricDescriptors descriptorsApi;
+  @Mock
+  Monitoring.Projects.TimeSeries timeseriesApi;
 
   ConfigParams.Builder writerConfig;
   TestableStackdriverWriter writer;
@@ -167,16 +167,10 @@ public class StackdriverWriterTest {
     when(projectsApi.metricDescriptors()).thenReturn(descriptorsApi);
     when(projectsApi.timeSeries()).thenReturn(timeseriesApi);
 
-    writerConfig =
-        new ConfigParams.Builder()
-            .setCounterStartTime(START_TIME_MILLIS)
-            .setDetermineProjectName(name -> name)
-            .setStackdriverStub(monitoringApi)
-            .setCustomTypeNamespace("TESTNAMESPACE")
-            .setProjectName(projectName)
-            .setApplicationName(applicationName)
-            .setInstanceId(INSTANCE_ID)
-            .setMeasurementFilter(allowAll);
+    writerConfig = new ConfigParams.Builder().setCounterStartTime(START_TIME_MILLIS).setDetermineProjectName(
+      name -> name
+    ).setStackdriverStub(monitoringApi).setCustomTypeNamespace("TESTNAMESPACE").setProjectName(projectName)
+      .setApplicationName(applicationName).setInstanceId(INSTANCE_ID).setMeasurementFilter(allowAll);
 
     descriptorRegistrySpy = spy(new MetricDescriptorCache(writerConfig.build()));
     writerConfig.setDescriptorCache(descriptorRegistrySpy);
@@ -192,15 +186,10 @@ public class StackdriverWriterTest {
 
   @Test
   public void testConfigParamsDefaultInstanceId() {
-    ConfigParams config =
-        new ConfigParams.Builder()
-            .setCounterStartTime(START_TIME_MILLIS)
-            .setStackdriverStub(monitoringApi)
-            .setCustomTypeNamespace("TESTNAMESPACE")
-            .setProjectName(projectName)
-            .setApplicationName(applicationName)
-            .setMeasurementFilter(allowAll)
-            .build();
+    ConfigParams config = new ConfigParams.Builder().setCounterStartTime(START_TIME_MILLIS).setStackdriverStub(
+      monitoringApi
+    ).setCustomTypeNamespace("TESTNAMESPACE").setProjectName(projectName).setApplicationName(applicationName)
+      .setMeasurementFilter(allowAll).build();
     Assert.assertTrue(!config.getInstanceId().isEmpty());
   }
 
@@ -250,14 +239,18 @@ public class StackdriverWriterTest {
     Meter counterA = testRegistry.counter(idAXY);
     Meter counterB = testRegistry.counter(idBXY);
 
-    doReturn(new TimeSeries())
-        .when(spy)
-        .measurementToTimeSeries(
-            eq(descriptorA.getType()), eq(testRegistry), eq(counterA), eq(measureAXY));
-    doReturn(new TimeSeries())
-        .when(spy)
-        .measurementToTimeSeries(
-            eq(descriptorB.getType()), eq(testRegistry), eq(counterB), eq(measureBXY));
+    doReturn(new TimeSeries()).when(spy).measurementToTimeSeries(
+      eq(descriptorA.getType()),
+      eq(testRegistry),
+      eq(counterA),
+      eq(measureAXY)
+    );
+    doReturn(new TimeSeries()).when(spy).measurementToTimeSeries(
+      eq(descriptorB.getType()),
+      eq(testRegistry),
+      eq(counterB),
+      eq(measureBXY)
+    );
 
     // Just testing the call flow produces descriptors since
     // we return empty TimeSeries values.
@@ -277,22 +270,22 @@ public class StackdriverWriterTest {
     Measurement measureAXY = new Measurement(idAXY, millisA, 1);
     Measurement measureBXY = new Measurement(idBXY, millisB, 20.1);
 
-    descriptorRegistrySpy.addExtraTimeSeriesLabel(
-        MetricDescriptorCache.INSTANCE_LABEL, INSTANCE_ID);
+    descriptorRegistrySpy.addExtraTimeSeriesLabel(MetricDescriptorCache.INSTANCE_LABEL, INSTANCE_ID);
 
     Assert.assertEquals(
-        makeTimeSeries(descriptorA, idAXY, 1, timeA),
-        writer.measurementToTimeSeries(descriptorA.getType(), testRegistry, timerA, measureAXY));
+      makeTimeSeries(descriptorA, idAXY, 1, timeA),
+      writer.measurementToTimeSeries(descriptorA.getType(), testRegistry, timerA, measureAXY)
+    );
     Assert.assertEquals(
-        makeTimeSeries(descriptorB, idBXY, 20.1, timeB),
-        writer.measurementToTimeSeries(descriptorB.getType(), testRegistry, timerB, measureBXY));
+      makeTimeSeries(descriptorB, idBXY, 20.1, timeB),
+      writer.measurementToTimeSeries(descriptorB.getType(), testRegistry, timerB, measureBXY)
+    );
   }
 
   @Test
   public void writeRegistryWithSmallRegistry() throws IOException {
     TestableStackdriverWriter spy = spy(new TestableStackdriverWriter(writerConfig.build()));
-    Monitoring.Projects.TimeSeries.Create mockCreateMethod =
-        Mockito.mock(Monitoring.Projects.TimeSeries.Create.class);
+    Monitoring.Projects.TimeSeries.Create mockCreateMethod = Mockito.mock(Monitoring.Projects.TimeSeries.Create.class);
 
     DefaultRegistry registry = new DefaultRegistry(clock);
     Counter counterA = registry.counter(idAXY);
@@ -300,15 +293,15 @@ public class StackdriverWriterTest {
     counterA.increment(4);
     counterB.increment(10);
 
-    when(timeseriesApi.create(eq("projects/test-project"), any(CreateTimeSeriesRequest.class)))
-        .thenReturn(mockCreateMethod);
+    when(timeseriesApi.create(eq("projects/test-project"), any(CreateTimeSeriesRequest.class))).thenReturn(
+      mockCreateMethod
+    );
     when(mockCreateMethod.execute()).thenReturn(null);
 
     spy.writeRegistry(registry);
     verify(mockCreateMethod, times(1)).execute();
 
-    ArgumentCaptor<CreateTimeSeriesRequest> captor =
-        ArgumentCaptor.forClass(CreateTimeSeriesRequest.class);
+    ArgumentCaptor<CreateTimeSeriesRequest> captor = ArgumentCaptor.forClass(CreateTimeSeriesRequest.class);
     verify(timeseriesApi, times(1)).create(eq("projects/test-project"), captor.capture());
     // A, B, timer count and totalTime.
     Assert.assertEquals(4, captor.getValue().getTimeSeries().size());
@@ -317,8 +310,7 @@ public class StackdriverWriterTest {
   @Test
   public void writeRegistryWithLargeRegistry() throws IOException {
     TestableStackdriverWriter spy = spy(new TestableStackdriverWriter(writerConfig.build()));
-    Monitoring.Projects.TimeSeries.Create mockCreateMethod =
-        Mockito.mock(Monitoring.Projects.TimeSeries.Create.class);
+    Monitoring.Projects.TimeSeries.Create mockCreateMethod = Mockito.mock(Monitoring.Projects.TimeSeries.Create.class);
 
     DefaultRegistry registry = new DefaultRegistry(clock);
 
@@ -358,15 +350,12 @@ public class StackdriverWriterTest {
         found += eq ? 1 : 0;
         return eq;
       }
-    }
-    ;
+    };
 
     MatchN match200 = new MatchN(200);
     MatchN match1 = new MatchN(1);
-    when(timeseriesApi.create(eq("projects/test-project"), argThat(match200)))
-        .thenReturn(mockCreateMethod);
-    when(timeseriesApi.create(eq("projects/test-project"), argThat(match1)))
-        .thenReturn(mockCreateMethod);
+    when(timeseriesApi.create(eq("projects/test-project"), argThat(match200))).thenReturn(mockCreateMethod);
+    when(timeseriesApi.create(eq("projects/test-project"), argThat(match1))).thenReturn(mockCreateMethod);
     when(mockCreateMethod.execute()).thenReturn(null);
 
     spy.writeRegistry(registry);

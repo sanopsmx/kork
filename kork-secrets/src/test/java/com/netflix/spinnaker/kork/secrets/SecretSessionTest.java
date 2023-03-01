@@ -21,7 +21,8 @@ import org.mockito.MockitoAnnotations;
 
 public class SecretSessionTest {
 
-  @Mock private SecretEngineRegistry secretEngineRegistry;
+  @Mock
+  private SecretEngineRegistry secretEngineRegistry;
   private SecretEngine secretEngine;
   private List<SecretEngine> secretEngineList = new ArrayList<>();
   private SecretManager secretManager;

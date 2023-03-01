@@ -21,7 +21,8 @@ import javax.annotation.Nonnull;
 /**
  * Contains a bucket of configured {@link HttpClient}s for use within an extension.
  *
- * <p>There are two categories of HttpClients, one for internal Spinnaker services, and another for
+ * <p>
+ * There are two categories of HttpClients, one for internal Spinnaker services, and another for
  * extension-defined http clients.
  */
 @Beta
@@ -30,7 +31,8 @@ public interface HttpClientRegistry {
   /**
    * Get an extension-defined {@link HttpClient} by name.
    *
-   * <p>The client must first be configured before it can be retrieved from the registry.
+   * <p>
+   * The client must first be configured before it can be retrieved from the registry.
    *
    * @param name The name of the HttpClient
    * @return The configured HttpClient
@@ -50,7 +52,8 @@ public interface HttpClientRegistry {
   /**
    * Configure a new external {@link HttpClient}.
    *
-   * <p>An HttpClient must be configured prior to being used.
+   * <p>
+   * An HttpClient must be configured prior to being used.
    *
    * @param name A unique name for the client, scoped within an extension
    * @param baseUrl The base URL of the HTTP client

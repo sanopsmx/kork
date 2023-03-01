@@ -4,10 +4,11 @@ import javax.annotation.Nonnull;
 import lombok.Getter;
 
 public enum StandardSecretParameter {
-  KEY("k"),
-  ENCODING("e");
+  KEY("k"), ENCODING("e");
 
-  @Getter @Nonnull private final String parameterName;
+  @Getter
+  @Nonnull
+  private final String parameterName;
 
   StandardSecretParameter(String parameterName) {
     this.parameterName = parameterName;

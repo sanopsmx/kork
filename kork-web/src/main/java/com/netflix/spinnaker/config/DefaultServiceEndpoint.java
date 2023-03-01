@@ -25,26 +25,31 @@ import javax.annotation.Nonnull;
 /**
  * Represents a service endpoint URL and name.
  *
- * <p>If a secure client is constructed using this type and not set to use default ssl factory, ssl
+ * <p>
+ * If a secure client is constructed using this type and not set to use default ssl factory, ssl
  * socket factory will be set with supplied trust and keystores, See {@code
  * com.netflix.spinnaker.okhttp.OkHttpClientConfigurationProperties}.
  *
- * <p>If a client is constructed using this type and is insecure, trust and keystores will be set to
+ * <p>
+ * If a client is constructed using this type and is insecure, trust and keystores will be set to
  * empty and host name verification will be turned off.
  */
 public class DefaultServiceEndpoint implements ServiceEndpoint {
 
   /** Name of the service */
-  @Nonnull private final String name;
+  @Nonnull
+  private final String name;
 
   /** Base API url */
-  @Nonnull private final String baseUrl;
+  @Nonnull
+  private final String baseUrl;
 
   /** Indicates whether the certificate/host verification is desired or not */
   private final boolean isSecure;
 
   /** Misc. config necessary for the service client. */
-  @Nonnull private final Map<String, String> config;
+  @Nonnull
+  private final Map<String, String> config;
 
   /**
    * Indicates whether to use system default or wire up the app supplied truststore and keystore.
@@ -59,25 +64,22 @@ public class DefaultServiceEndpoint implements ServiceEndpoint {
     this(name, baseUrl, new HashMap<>(), isSecure, false);
   }
 
-  public DefaultServiceEndpoint(
-      @Nonnull String name,
-      @Nonnull String baseUrl,
-      boolean isSecure,
-      boolean useDefaultSslSocketFactory) {
+  public DefaultServiceEndpoint(@Nonnull String name,
+                                @Nonnull String baseUrl,
+                                boolean isSecure,
+                                boolean useDefaultSslSocketFactory) {
     this(name, baseUrl, new HashMap<>(), isSecure, useDefaultSslSocketFactory);
   }
 
-  public DefaultServiceEndpoint(
-      @Nonnull String name, @Nonnull String baseUrl, @Nonnull Map<String, String> config) {
+  public DefaultServiceEndpoint(@Nonnull String name, @Nonnull String baseUrl, @Nonnull Map<String, String> config) {
     this(name, baseUrl, config, true, false);
   }
 
-  public DefaultServiceEndpoint(
-      @Nonnull String name,
-      @Nonnull String baseUrl,
-      @Nonnull Map<String, String> config,
-      boolean isSecure,
-      boolean useDefaultSslSocketFactory) {
+  public DefaultServiceEndpoint(@Nonnull String name,
+                                @Nonnull String baseUrl,
+                                @Nonnull Map<String, String> config,
+                                boolean isSecure,
+                                boolean useDefaultSslSocketFactory) {
     this.name = Objects.requireNonNull(name);
     this.baseUrl = Objects.requireNonNull(baseUrl);
     this.config = Objects.requireNonNull(config);

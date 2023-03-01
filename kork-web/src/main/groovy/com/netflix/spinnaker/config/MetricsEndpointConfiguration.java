@@ -32,14 +32,14 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @ComponentScan(basePackages = "com.netflix.spectator.controllers")
 @Order(Ordered.HIGHEST_PRECEDENCE + 101)
 @EnableWebSecurity
-public class MetricsEndpointConfiguration{
+public class MetricsEndpointConfiguration {
 
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    http
-      .authorizeHttpRequests((requests) -> requests
-        .requestMatchers(new AntPathRequestMatcher("/spectator/metrics")).permitAll()
-        .anyRequest().authenticated());
+    http.authorizeHttpRequests(
+      (requests) -> requests.requestMatchers(new AntPathRequestMatcher("/spectator/metrics")).permitAll().anyRequest()
+        .authenticated()
+    );
     return http.build();
   }
 }

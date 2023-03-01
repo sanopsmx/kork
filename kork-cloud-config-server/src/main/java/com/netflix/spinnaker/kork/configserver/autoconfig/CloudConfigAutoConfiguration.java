@@ -42,15 +42,12 @@ public class CloudConfigAutoConfiguration {
 
   @Configuration
   @Conditional(RemoteConfigSourceConfigured.class)
-  @Import({
-    CompositeConfiguration.class,
-    ResourceRepositoryConfiguration.class,
-    ConfigServerEncryptionConfiguration.class
-  })
+  @Import({CompositeConfiguration.class, ResourceRepositoryConfiguration.class,
+    ConfigServerEncryptionConfiguration.class})
   static class RemoteConfigSourceConfiguration {
     @Bean
-    CloudConfigResourceService cloudConfigResourceService(
-        ResourceRepository resourceRepository, EnvironmentRepository environmentRepository) {
+    CloudConfigResourceService cloudConfigResourceService(ResourceRepository resourceRepository,
+                                                          EnvironmentRepository environmentRepository) {
       return new CloudConfigResourceService(resourceRepository, environmentRepository);
     }
   }

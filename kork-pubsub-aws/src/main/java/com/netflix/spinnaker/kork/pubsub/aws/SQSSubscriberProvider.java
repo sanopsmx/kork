@@ -58,15 +58,14 @@ public class SQSSubscriberProvider {
   private final AmazonMessageAcknowledger messageAcknowledger;
 
   @Autowired
-  public SQSSubscriberProvider(
-      AWSCredentialsProvider awsCredentialsProvider,
-      AmazonPubsubProperties properties,
-      PubsubSubscribers pubsubSubscribers,
-      AmazonPubsubMessageHandlerFactory pubsubMessageHandlerFactory,
-      AmazonMessageAcknowledger messageAcknowledger,
-      Registry registry,
-      DiscoveryStatusListener discoveryStatus,
-      DynamicConfigService dynamicConfig) {
+  public SQSSubscriberProvider(AWSCredentialsProvider awsCredentialsProvider,
+                               AmazonPubsubProperties properties,
+                               PubsubSubscribers pubsubSubscribers,
+                               AmazonPubsubMessageHandlerFactory pubsubMessageHandlerFactory,
+                               AmazonMessageAcknowledger messageAcknowledger,
+                               Registry registry,
+                               DiscoveryStatusListener discoveryStatus,
+                               DynamicConfigService dynamicConfig) {
     this.awsCredentialsProvider = awsCredentialsProvider;
     this.properties = properties;
     this.pubsubSubscribers = pubsubSubscribers;
@@ -79,50 +78,33 @@ public class SQSSubscriberProvider {
 
   @PostConstruct
   public void start() {
-    Preconditions.checkNotNull(
-        properties, "Can't initialize SQSSubscriberProvider with null properties");
+    Preconditions.checkNotNull(properties, "Can't initialize SQSSubscriberProvider with null properties");
 
-    ExecutorService executorService =
-        Executors.newFixedThreadPool(properties.getSubscriptions().size());
+    ExecutorService executorService = Executors.newFixedThreadPool(properties.getSubscriptions().size());
 
     List<PubsubSubscriber> subscribers = new ArrayList<>();
 
-    properties
-        .getSubscriptions()
-        .forEach(
-            (AmazonPubsubProperties.AmazonPubsubSubscription subscription) -> {
-              log.info("Bootstrapping SQS for SNS topic: {}", subscription.getTopicARN());
-              ARN queueArn = new ARN(subscription.getQueueARN());
-              ARN topicArn = new ARN(subscription.getTopicARN());
+    properties.getSubscriptions().forEach((AmazonPubsubProperties.AmazonPubsubSubscription subscription) -> {
+      log.info("Bootstrapping SQS for SNS topic: {}", subscription.getTopicARN());
+      ARN queueArn = new ARN(subscription.getQueueARN());
+      ARN topicArn = new ARN(subscription.getTopicARN());
 
-              SQSSubscriber worker =
-                  new SQSSubscriber(
-                      subscription,
-                      pubsubMessageHandlerFactory.create(subscription),
-                      messageAcknowledger,
-                      AmazonSNSClientBuilder.standard()
-                          .withCredentials(awsCredentialsProvider)
-                          .withClientConfiguration(new ClientConfiguration())
-                          .withRegion(topicArn.getRegion())
-                          .build(),
-                      AmazonSQSClientBuilder.standard()
-                          .withCredentials(awsCredentialsProvider)
-                          .withClientConfiguration(new ClientConfiguration())
-                          .withRegion(queueArn.getRegion())
-                          .build(),
-                      PubSubUtils.getEnabledSupplier(dynamicConfig, subscription, discoveryStatus),
-                      registry);
-              try {
-                executorService.submit(worker);
-                subscribers.add(worker);
-                log.debug(
-                    "Created worker {} for subscription: {}",
-                    worker.getWorkerName(),
-                    subscription.getName());
-              } catch (RejectedExecutionException e) {
-                log.error("Could not start {}", worker.getWorkerName(), e);
-              }
-            });
+      SQSSubscriber worker = new SQSSubscriber(
+        subscription, pubsubMessageHandlerFactory.create(subscription), messageAcknowledger, AmazonSNSClientBuilder
+          .standard().withCredentials(awsCredentialsProvider).withClientConfiguration(new ClientConfiguration())
+          .withRegion(topicArn.getRegion()).build(), AmazonSQSClientBuilder.standard().withCredentials(
+            awsCredentialsProvider
+          ).withClientConfiguration(new ClientConfiguration()).withRegion(queueArn.getRegion()).build(), PubSubUtils
+            .getEnabledSupplier(dynamicConfig, subscription, discoveryStatus), registry
+      );
+      try {
+        executorService.submit(worker);
+        subscribers.add(worker);
+        log.debug("Created worker {} for subscription: {}", worker.getWorkerName(), subscription.getName());
+      } catch (RejectedExecutionException e) {
+        log.error("Could not start {}", worker.getWorkerName(), e);
+      }
+    });
 
     pubsubSubscribers.putAll(subscribers);
   }

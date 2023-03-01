@@ -48,20 +48,20 @@ public class MetricsInterceptorMicrometerTest {
 
   SimpleMeterRegistry simpleMeterRegistry = new SimpleMeterRegistry();
   Registry registry = new MicrometerRegistry(simpleMeterRegistry);
-  MetricsInterceptor interceptor =
-      new MetricsInterceptor(
-          registry, "controller.invocations", pathVariables, queryParams, controllersToExclude);
+  MetricsInterceptor interceptor = new MetricsInterceptor(
+    registry, "controller.invocations", pathVariables, queryParams, controllersToExclude
+  );
 
   @Test
-  public void allPublishedMetricsHaveTheSameSetOfTagsAndCanBeRegisteredInMicrometer()
-      throws Exception {
+  public void allPublishedMetricsHaveTheSameSetOfTagsAndCanBeRegisteredInMicrometer() throws Exception {
     MockHttpServletRequest request1 = new MockHttpServletRequest();
     request1.setAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE, Collections.emptyMap());
 
     MockHttpServletRequest request2 = new MockHttpServletRequest();
     request2.setAttribute(
-        HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE,
-        Collections.singletonMap("path-var-1", "path-val-1"));
+      HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE,
+      Collections.singletonMap("path-var-1", "path-val-1")
+    );
     request2.setParameter("param-1", "val-1");
 
     interceptCall(interceptor, request1, RESPONSE, HANDLER, null);
@@ -70,80 +70,77 @@ public class MetricsInterceptorMicrometerTest {
     interceptCall(interceptor, request2, RESPONSE, HANDLER, new IllegalArgumentException());
 
     Search actual = simpleMeterRegistry.find("controller.invocations");
-    assertThat(getAllTagsAndRemovePercentileTag(actual))
-        .hasSize(4)
-        .containsOnly(
-            Arrays.asList(
-                Tag.of("cause", "IllegalArgumentException"),
-                Tag.of("controller", "TestController"),
-                Tag.of("criticality", "unknown"),
-                Tag.of("method", "execute"),
-                Tag.of("param-1", "val-1"),
-                Tag.of("param-2", "None"),
-                Tag.of("path-var-1", "path-val-1"),
-                Tag.of("path-var-2", "None"),
-                Tag.of("statistic", "percentile"),
-                Tag.of("status", "5xx"),
-                Tag.of("statusCode", "500"),
-                Tag.of("success", "false")),
-            Arrays.asList(
-                Tag.of("cause", "RuntimeException"),
-                Tag.of("controller", "TestController"),
-                Tag.of("criticality", "unknown"),
-                Tag.of("method", "execute"),
-                Tag.of("param-1", "None"),
-                Tag.of("param-2", "None"),
-                Tag.of("path-var-1", "None"),
-                Tag.of("path-var-2", "None"),
-                Tag.of("statistic", "percentile"),
-                Tag.of("status", "5xx"),
-                Tag.of("statusCode", "500"),
-                Tag.of("success", "false")),
-            Arrays.asList(
-                Tag.of("cause", "None"),
-                Tag.of("controller", "TestController"),
-                Tag.of("criticality", "unknown"),
-                Tag.of("method", "execute"),
-                Tag.of("param-1", "val-1"),
-                Tag.of("param-2", "None"),
-                Tag.of("path-var-1", "path-val-1"),
-                Tag.of("path-var-2", "None"),
-                Tag.of("statistic", "percentile"),
-                Tag.of("status", "2xx"),
-                Tag.of("statusCode", "200"),
-                Tag.of("success", "true")),
-            Arrays.asList(
-                Tag.of("cause", "None"),
-                Tag.of("controller", "TestController"),
-                Tag.of("criticality", "unknown"),
-                Tag.of("method", "execute"),
-                Tag.of("param-1", "None"),
-                Tag.of("param-2", "None"),
-                Tag.of("path-var-1", "None"),
-                Tag.of("path-var-2", "None"),
-                Tag.of("statistic", "percentile"),
-                Tag.of("status", "2xx"),
-                Tag.of("statusCode", "200"),
-                Tag.of("success", "true")));
+    assertThat(getAllTagsAndRemovePercentileTag(actual)).hasSize(4).containsOnly(
+      Arrays.asList(
+        Tag.of("cause", "IllegalArgumentException"),
+        Tag.of("controller", "TestController"),
+        Tag.of("criticality", "unknown"),
+        Tag.of("method", "execute"),
+        Tag.of("param-1", "val-1"),
+        Tag.of("param-2", "None"),
+        Tag.of("path-var-1", "path-val-1"),
+        Tag.of("path-var-2", "None"),
+        Tag.of("statistic", "percentile"),
+        Tag.of("status", "5xx"),
+        Tag.of("statusCode", "500"),
+        Tag.of("success", "false")
+      ),
+      Arrays.asList(
+        Tag.of("cause", "RuntimeException"),
+        Tag.of("controller", "TestController"),
+        Tag.of("criticality", "unknown"),
+        Tag.of("method", "execute"),
+        Tag.of("param-1", "None"),
+        Tag.of("param-2", "None"),
+        Tag.of("path-var-1", "None"),
+        Tag.of("path-var-2", "None"),
+        Tag.of("statistic", "percentile"),
+        Tag.of("status", "5xx"),
+        Tag.of("statusCode", "500"),
+        Tag.of("success", "false")
+      ),
+      Arrays.asList(
+        Tag.of("cause", "None"),
+        Tag.of("controller", "TestController"),
+        Tag.of("criticality", "unknown"),
+        Tag.of("method", "execute"),
+        Tag.of("param-1", "val-1"),
+        Tag.of("param-2", "None"),
+        Tag.of("path-var-1", "path-val-1"),
+        Tag.of("path-var-2", "None"),
+        Tag.of("statistic", "percentile"),
+        Tag.of("status", "2xx"),
+        Tag.of("statusCode", "200"),
+        Tag.of("success", "true")
+      ),
+      Arrays.asList(
+        Tag.of("cause", "None"),
+        Tag.of("controller", "TestController"),
+        Tag.of("criticality", "unknown"),
+        Tag.of("method", "execute"),
+        Tag.of("param-1", "None"),
+        Tag.of("param-2", "None"),
+        Tag.of("path-var-1", "None"),
+        Tag.of("path-var-2", "None"),
+        Tag.of("statistic", "percentile"),
+        Tag.of("status", "2xx"),
+        Tag.of("statusCode", "200"),
+        Tag.of("success", "true")
+      )
+    );
   }
 
   private Stream<List<Tag>> getAllTagsAndRemovePercentileTag(Search actual) {
-    return actual.counters().stream()
-        .map(c -> c.getId().getTags())
-        .map(
-            tags ->
-                tags.stream()
-                    .filter(tag -> !tag.getKey().equalsIgnoreCase("percentile"))
-                    .collect(Collectors.toList()));
+    return actual.counters().stream().map(c -> c.getId().getTags()).map(
+      tags -> tags.stream().filter(tag -> !tag.getKey().equalsIgnoreCase("percentile")).collect(Collectors.toList())
+    );
   }
 
-  private void interceptCall(
-      MetricsInterceptor interceptor,
-      HttpServletRequest request,
-      HttpServletResponse response,
-      HandlerMethod handler,
-      Exception exception)
-      throws Exception {
+  private void interceptCall(MetricsInterceptor interceptor,
+                             HttpServletRequest request,
+                             HttpServletResponse response,
+                             HandlerMethod handler,
+                             Exception exception) throws Exception {
     interceptor.preHandle(request, response, handler);
 
     interceptor.afterCompletion(request, response, handler, exception);

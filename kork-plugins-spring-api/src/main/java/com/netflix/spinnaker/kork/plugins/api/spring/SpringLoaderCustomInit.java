@@ -27,11 +27,11 @@ public abstract class SpringLoaderCustomInit implements ApplicationContextAware 
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     init(
-        (AnnotationConfigServletWebServerApplicationContext) applicationContext.getParent(),
-        (AnnotationConfigApplicationContext) applicationContext);
+      (AnnotationConfigServletWebServerApplicationContext) applicationContext.getParent(),
+      (AnnotationConfigApplicationContext) applicationContext
+    );
   }
 
-  protected abstract void init(
-      AnnotationConfigServletWebServerApplicationContext appContext,
-      AnnotationConfigApplicationContext pluginContext);
+  protected abstract void init(AnnotationConfigServletWebServerApplicationContext appContext,
+                               AnnotationConfigApplicationContext pluginContext);
 }

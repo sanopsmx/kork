@@ -59,11 +59,16 @@ public class PubSubUtils {
     return queueUrl;
   }
 
-  public static String ensureQueueExists(
-      AmazonSQS amazonSQS, ARN queueARN, ARN topicARN, int sqsMessageRetentionPeriodSeconds) {
-    String queueUrl =
-        retrySupport.retry(
-            () -> getQueueUrl(amazonSQS, queueARN), MAX_RETRIES, RETRY_BACKOFF, EXPONENTIAL);
+  public static String ensureQueueExists(AmazonSQS amazonSQS,
+                                         ARN queueARN,
+                                         ARN topicARN,
+                                         int sqsMessageRetentionPeriodSeconds) {
+    String queueUrl = retrySupport.retry(
+      () -> getQueueUrl(amazonSQS, queueARN),
+      MAX_RETRIES,
+      RETRY_BACKOFF,
+      EXPONENTIAL
+    );
 
     HashMap<String, String> attributes = new HashMap<>();
     attributes.put("Policy", buildSQSPolicy(queueARN, topicARN).toJson());
@@ -76,24 +81,23 @@ public class PubSubUtils {
   /** Returns the subscription arn resulting from subscribing the queueARN to the topicARN */
   public static String subscribeToTopic(AmazonSNS amazonSNS, ARN topicARN, ARN queueARN) {
     return retrySupport.retry(
-        () -> amazonSNS.subscribe(topicARN.getArn(), "sqs", queueARN.getArn()).getSubscriptionArn(),
-        MAX_RETRIES,
-        RETRY_BACKOFF,
-        EXPONENTIAL);
+      () -> amazonSNS.subscribe(topicARN.getArn(), "sqs", queueARN.getArn()).getSubscriptionArn(),
+      MAX_RETRIES,
+      RETRY_BACKOFF,
+      EXPONENTIAL
+    );
   }
 
   /** This policy allows messages to be sent from an SNS topic. */
   public static Policy buildSQSPolicy(ARN queue, ARN topic) {
-    Statement snsStatement =
-        new Statement(Statement.Effect.Allow).withActions(SQSActions.SendMessage);
+    Statement snsStatement = new Statement(Statement.Effect.Allow).withActions(SQSActions.SendMessage);
     snsStatement.setPrincipals(Principal.All);
     snsStatement.setResources(Collections.singletonList(new Resource(queue.getArn())));
     snsStatement.setConditions(
-        Collections.singletonList(
-            new Condition()
-                .withType("ArnEquals")
-                .withConditionKey("aws:SourceArn")
-                .withValues(topic.getArn())));
+      Collections.singletonList(
+        new Condition().withType("ArnEquals").withConditionKey("aws:SourceArn").withValues(topic.getArn())
+      )
+    );
 
     return new Policy("allow-sns-send", Collections.singletonList(snsStatement));
   }
@@ -102,42 +106,35 @@ public class PubSubUtils {
    * Ensure that the topic exists and has a policy granting the specified accounts permission to
    * publish messages to it
    */
-  public static String ensureTopicExists(
-      AmazonSNS amazonSNS, ARN topicARN, AmazonPubsubSubscription subscription) {
-    String createdTopicARN =
-        retrySupport.retry(
-            () -> amazonSNS.createTopic(topicARN.getName()).getTopicArn(),
-            MAX_RETRIES,
-            RETRY_BACKOFF,
-            EXPONENTIAL);
+  public static String ensureTopicExists(AmazonSNS amazonSNS, ARN topicARN, AmazonPubsubSubscription subscription) {
+    String createdTopicARN = retrySupport.retry(
+      () -> amazonSNS.createTopic(topicARN.getName()).getTopicArn(),
+      MAX_RETRIES,
+      RETRY_BACKOFF,
+      EXPONENTIAL
+    );
 
     log.debug(
-        (createdTopicARN.equals(topicARN.getArn()))
-            ? "Reusing existing topic {}"
-            : "Created topic {}",
-        createdTopicARN);
+      (createdTopicARN.equals(topicARN.getArn())) ? "Reusing existing topic {}" : "Created topic {}",
+      createdTopicARN
+    );
 
     if (!subscription.getAccountIds().isEmpty()) {
       amazonSNS.setTopicAttributes(
-          new SetTopicAttributesRequest()
-              .withTopicArn(createdTopicARN)
-              .withAttributeName("Policy")
-              .withAttributeValue(
-                  buildSNSPolicy(new ARN(createdTopicARN), subscription.getAccountIds()).toJson()));
+        new SetTopicAttributesRequest().withTopicArn(createdTopicARN).withAttributeName("Policy").withAttributeValue(
+          buildSNSPolicy(new ARN(createdTopicARN), subscription.getAccountIds()).toJson()
+        )
+      );
     }
 
     return createdTopicARN;
   }
 
-  public static Supplier<Boolean> getEnabledSupplier(
-      DynamicConfigService dynamicConfig,
-      AmazonPubsubSubscription subscription,
-      DiscoveryStatusListener discoveryStatus) {
-    return () ->
-        dynamicConfig.isEnabled("pubsub", false)
-            && dynamicConfig.isEnabled("pubsub.amazon", false)
-            && dynamicConfig.isEnabled("pubsub.amazon." + subscription.getName(), false)
-            && discoveryStatus.isEnabled();
+  public static Supplier<Boolean> getEnabledSupplier(DynamicConfigService dynamicConfig,
+                                                     AmazonPubsubSubscription subscription,
+                                                     DiscoveryStatusListener discoveryStatus) {
+    return () -> dynamicConfig.isEnabled("pubsub", false) && dynamicConfig.isEnabled("pubsub.amazon", false)
+      && dynamicConfig.isEnabled("pubsub.amazon." + subscription.getName(), false) && discoveryStatus.isEnabled();
   }
 
   public static Policy buildSNSPolicy(ARN topicARN, List<String> accountIds) {

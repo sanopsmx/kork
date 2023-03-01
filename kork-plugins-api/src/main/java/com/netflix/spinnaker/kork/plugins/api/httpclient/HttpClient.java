@@ -21,27 +21,33 @@ import javax.annotation.Nonnull;
 /**
  * A simple HTTP client abstraction for use by plugins to talk to other Spinnaker services.
  *
- * <p>Many plugins will need to communicate with other Spinnaker services. Supplying plugins with a
+ * <p>
+ * Many plugins will need to communicate with other Spinnaker services. Supplying plugins with a
  * Retrofit client or similar, and including all of its dependencies as a global plugin contract,
  * would be cause for a potential dependency management nightmare. HttpClient is used as an
  * abstraction layer over what HTTP libraries we use internally to talk between services, allowing
  * us to change the internals over time easier without affecting the plugin community.
  *
- * <p>Since this is an abstraction, plugins will not need to configure their own HTTP clients with
+ * <p>
+ * Since this is an abstraction, plugins will not need to configure their own HTTP clients with
  * keystores/truststores, etc, as operators will be defining this once for the Spinnaker service
  * that the plugin is for.
  *
- * <p>It is not mandatory for plugins to use this HttpClient for all HTTP/RPC needs. If a plugin
- * wants to use Spring's WebClient, Retrofit, or something else, they are still able to do so.
+ * <p>
+ * It is not mandatory for plugins to use this HttpClient for all HTTP/RPC needs. If a plugin wants
+ * to use Spring's WebClient, Retrofit, or something else, they are still able to do so.
  *
- * <pre>{@code
- * // Internal services can be retrieved by name.
- * HttpClient front50Client = httpClientProvider.getInternalService("front50");
+ * <pre>
+ * {
+ *   &#64;code
+ *   // Internal services can be retrieved by name.
+ *   HttpClient front50Client = httpClientProvider.getInternalService("front50");
  *
- * Response response = front50Client.get(new Request("getApplication", "/v2/applications/gate"));
+ *   Response response = front50Client.get(new Request("getApplication", "/v2/applications/gate"));
  *
- * Application app = response.getBody(Application.class);
- * }</pre>
+ *   Application app = response.getBody(Application.class);
+ * }
+ * </pre>
  *
  * TODO(rz): Add async api as well?
  */

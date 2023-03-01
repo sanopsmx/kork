@@ -28,13 +28,9 @@ public class FriggaReflectiveNamer implements Namer<Object> {
   public Moniker deriveMoniker(Object obj) {
     String name = getName(obj);
     com.netflix.frigga.Names names = com.netflix.frigga.Names.parseName(name);
-    return Moniker.builder()
-        .app(names.getApp())
-        .stack(names.getStack())
-        .detail(names.getDetail())
-        .cluster(names.getCluster())
-        .sequence(names.getSequence())
-        .build();
+    return Moniker.builder().app(names.getApp()).stack(names.getStack()).detail(names.getDetail()).cluster(
+      names.getCluster()
+    ).sequence(names.getSequence()).build();
   }
 
   @Override
@@ -83,8 +79,7 @@ public class FriggaReflectiveNamer implements Namer<Object> {
       clazz = clazz.getSuperclass();
     }
 
-    throw new IllegalArgumentException(
-        "No way to infer how to name " + obj.getClass().getSimpleName());
+    throw new IllegalArgumentException("No way to infer how to name " + obj.getClass().getSimpleName());
   }
 
   private String getName(Object obj) {
@@ -121,7 +116,6 @@ public class FriggaReflectiveNamer implements Namer<Object> {
       clazz = clazz.getSuperclass();
     }
 
-    throw new IllegalArgumentException(
-        "No way to infer how to name " + obj.getClass().getSimpleName());
+    throw new IllegalArgumentException("No way to infer how to name " + obj.getClass().getSimpleName());
   }
 }

@@ -38,8 +38,7 @@ public class DefaultAmazonMessageAcknowledger implements AmazonMessageAcknowledg
       subscription.amazonSQS.deleteMessage(subscription.queueUrl, message.getReceiptHandle());
       registry.counter(getSuccessCounter(subscription)).increment();
     } catch (ReceiptHandleIsInvalidException e) {
-      log.warn(
-          "Error deleting message: {}, subscription: {}", message.getMessageId(), subscription, e);
+      log.warn("Error deleting message: {}, subscription: {}", message.getMessageId(), subscription, e);
       registry.counter(getErrorCounter(subscription, e)).increment();
     }
   }
@@ -51,21 +50,20 @@ public class DefaultAmazonMessageAcknowledger implements AmazonMessageAcknowledg
   }
 
   private Id getSuccessCounter(AmazonSubscriptionInformation subscription) {
-    return registry.createId(
-        "pubsub.amazon.acked", "subscription", subscription.properties.getName());
+    return registry.createId("pubsub.amazon.acked", "subscription", subscription.properties.getName());
   }
 
   private Id getErrorCounter(AmazonSubscriptionInformation subscription, Exception e) {
     return registry.createId(
-        "pubsub.amazon.ackFailed",
-        "subscription",
-        subscription.properties.getName(),
-        "exceptionClass",
-        e.getClass().getSimpleName());
+      "pubsub.amazon.ackFailed",
+      "subscription",
+      subscription.properties.getName(),
+      "exceptionClass",
+      e.getClass().getSimpleName()
+    );
   }
 
   private Id getNackCounter(AmazonSubscriptionInformation subscription) {
-    return registry.createId(
-        "pubsub.amazon.nacked", "subscription", subscription.properties.getName());
+    return registry.createId("pubsub.amazon.nacked", "subscription", subscription.properties.getName());
   }
 }

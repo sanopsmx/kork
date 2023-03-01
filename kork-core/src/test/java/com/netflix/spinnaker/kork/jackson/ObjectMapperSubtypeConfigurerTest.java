@@ -41,28 +41,30 @@ public class ObjectMapperSubtypeConfigurerTest {
 
   @Test
   public void shouldRegisterSubtypesByClass() throws JsonProcessingException {
-    new ObjectMapperSubtypeConfigurer(true)
-        .registerSubtype(mapper, new ClassSubtypeLocator(RootType.class, searchPackages()));
+    new ObjectMapperSubtypeConfigurer(true).registerSubtype(
+      mapper,
+      new ClassSubtypeLocator(RootType.class, searchPackages())
+    );
 
     assertEquals("{\"kind\":\"child\"}", mapper.writeValueAsString(new ChildType()));
   }
 
   @Test
   public void shouldRegisterSubtypesByName() throws JsonProcessingException {
-    new ObjectMapperSubtypeConfigurer(true)
-        .registerSubtype(
-            mapper,
-            new StringSubtypeLocator(
-                "com.netflix.spinnaker.kork.jackson.RootType", searchPackages()));
+    new ObjectMapperSubtypeConfigurer(true).registerSubtype(
+      mapper,
+      new StringSubtypeLocator("com.netflix.spinnaker.kork.jackson.RootType", searchPackages())
+    );
 
     assertEquals("{\"kind\":\"child\"}", mapper.writeValueAsString(new ChildType()));
   }
 
   @Test(expected = InvalidSubtypeConfigurationException.class)
   public void shouldThrowWhenSubtypeNameIsUndefined() {
-    new ObjectMapperSubtypeConfigurer(true)
-        .registerSubtype(
-            mapper, new ClassSubtypeLocator(UndefinedRootType.class, searchPackages()));
+    new ObjectMapperSubtypeConfigurer(true).registerSubtype(
+      mapper,
+      new ClassSubtypeLocator(UndefinedRootType.class, searchPackages())
+    );
   }
 
   List<String> searchPackages() {
@@ -72,13 +74,21 @@ public class ObjectMapperSubtypeConfigurerTest {
   }
 }
 
+
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "kind")
-abstract class RootType {}
+abstract class RootType {
+}
+
 
 @JsonTypeName("child")
-class ChildType extends RootType {}
+class ChildType extends RootType {
+}
+
 
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "kind")
-class UndefinedRootType {}
+class UndefinedRootType {
+}
 
-class UndefinedType extends UndefinedRootType {}
+
+class UndefinedType extends UndefinedRootType {
+}

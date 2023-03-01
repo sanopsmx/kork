@@ -26,8 +26,9 @@ import java.lang.annotation.Target;
 /**
  * Provides additional deprecation information, which should be used alongside {@link Deprecated}.
  *
- * <p>For guidance and process of deprecations, please refer to spinnaker.io's "Managing
- * Deprecations" page: https://spinnaker.io/community/contributing/managing-deprecations/
+ * <p>
+ * For guidance and process of deprecations, please refer to spinnaker.io's "Managing Deprecations"
+ * page: https://spinnaker.io/community/contributing/managing-deprecations/
  */
 @Documented
 @Retention(RetentionPolicy.SOURCE)
@@ -39,24 +40,28 @@ public @interface DeprecationInfo {
   /**
    * A short explanation of the deprecation.
    *
-   * <p>If a short explanation is insufficient, use {@link DeprecationInfo#link()} to provide
-   * additional context.
+   * <p>
+   * If a short explanation is insufficient, use {@link DeprecationInfo#link()} to provide additional
+   * context.
    *
-   * <p>Example: "Use of Duration is preferred over primitive long values."
+   * <p>
+   * Example: "Use of Duration is preferred over primitive long values."
    */
   String reason();
 
   /**
    * The product version that the deprecation was introduced.
    *
-   * <p>Example: "1.20.0"
+   * <p>
+   * Example: "1.20.0"
    */
   String since();
 
   /**
    * The scheduled product version that will see this functionality removed from the codebase.
    *
-   * <p>Example: "1.25.0"
+   * <p>
+   * Example: "1.25.0"
    */
   String eol();
 
@@ -64,10 +69,12 @@ public @interface DeprecationInfo {
    * Short explanation on what functionality is replacing this deprecation. If there is no
    * replacement, {@link DeprecationInfo#NO_REPLACEMENT} should be used.
    *
-   * <p>If a short explanation is insufficient, use {@link DeprecationInfo#link()} to provide
-   * additional context.
+   * <p>
+   * If a short explanation is insufficient, use {@link DeprecationInfo#link()} to provide additional
+   * context.
    *
-   * <p>Example: "{@code MyClass#theMethodReturningDuration()}"
+   * <p>
+   * Example: "{@code MyClass#theMethodReturningDuration()}"
    */
   String replaceWith() default NO_REPLACEMENT;
 

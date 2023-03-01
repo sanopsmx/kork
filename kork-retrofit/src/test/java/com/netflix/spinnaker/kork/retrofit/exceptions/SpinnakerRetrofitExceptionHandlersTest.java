@@ -55,21 +55,18 @@ import retrofit.client.Response;
 import retrofit.converter.GsonConverter;
 import retrofit.mime.TypedString;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {
-      ErrorConfiguration.class,
-      RetrofitErrorConfiguration.class,
-      SpinnakerRetrofitExceptionHandlersTest.TestControllerConfiguration.class
-    })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {ErrorConfiguration.class,
+  RetrofitErrorConfiguration.class, SpinnakerRetrofitExceptionHandlersTest.TestControllerConfiguration.class})
 @TestPropertySource(properties = {"retrofit.enabled = false"})
 class SpinnakerRetrofitExceptionHandlersTest {
 
   private static final String CUSTOM_MESSAGE = "custom message";
 
-  @LocalServerPort int port;
+  @LocalServerPort
+  int port;
 
-  @Autowired TestRestTemplate restTemplate;
+  @Autowired
+  TestRestTemplate restTemplate;
 
   private MemoryAppender memoryAppender;
 
@@ -108,13 +105,13 @@ class SpinnakerRetrofitExceptionHandlersTest {
     ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
     assertEquals(status, entity.getStatusCode().value());
 
-    // Only expect error logging for a server error, debug otherwise.  No need
+    // Only expect error logging for a server error, debug otherwise. No need
     // to fill up logs with client errors assuming the server is doing the best
     // it can.
     assertEquals(
-        1,
-        memoryAppender.countEventsForLevel(
-            HttpStatus.resolve(status).is5xxServerError() ? Level.ERROR : Level.DEBUG));
+      1,
+      memoryAppender.countEventsForLevel(HttpStatus.resolve(status).is5xxServerError() ? Level.ERROR : Level.DEBUG)
+    );
   }
 
   @ParameterizedTest(name = "testChainedSpinnakerHttpException status = {0}")
@@ -125,30 +122,24 @@ class SpinnakerRetrofitExceptionHandlersTest {
     ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
     assertEquals(status, entity.getStatusCode().value());
 
-    // Only expect error logging for a server error, debug otherwise.  No need
+    // Only expect error logging for a server error, debug otherwise. No need
     // to fill up logs with client errors assuming the server is doing the best
     // it can.
     assertEquals(
-        1,
-        memoryAppender.countEventsForLevel(
-            HttpStatus.resolve(status).is5xxServerError() ? Level.ERROR : Level.DEBUG));
+      1,
+      memoryAppender.countEventsForLevel(HttpStatus.resolve(status).is5xxServerError() ? Level.ERROR : Level.DEBUG)
+    );
 
     // Make sure the message is what we expect.
     assertEquals(
-        1,
-        memoryAppender
-            .search(
-                CUSTOM_MESSAGE,
-                HttpStatus.resolve(status).is5xxServerError() ? Level.ERROR : Level.DEBUG)
-            .size());
+      1,
+      memoryAppender.search(CUSTOM_MESSAGE, HttpStatus.resolve(status).is5xxServerError() ? Level.ERROR : Level.DEBUG)
+        .size()
+    );
   }
 
   private URI getUri(String path) {
-    return UriComponentsBuilder.fromHttpUrl("http://localhost/test-controller")
-        .port(port)
-        .path(path)
-        .build()
-        .toUri();
+    return UriComponentsBuilder.fromHttpUrl("http://localhost/test-controller").port(port).path(path).build().toUri();
   }
 
   @Configuration
@@ -194,7 +185,7 @@ class SpinnakerRetrofitExceptionHandlersTest {
       // throw new SpinnakerServerException(retrofitError)
       //
       // And in the end, the thing we care about is how SpinnakerServerException
-      // gets handled.  This isn't a test of how the SpinnakerServerException
+      // gets handled. This isn't a test of how the SpinnakerServerException
       // class uses a RetrofitError to build its message.
       SpinnakerServerException spinnakerServerException = mock(SpinnakerServerException.class);
       when(spinnakerServerException.getMessage()).thenReturn("message");
@@ -216,7 +207,7 @@ class SpinnakerRetrofitExceptionHandlersTest {
     @GetMapping("/chainedSpinnakerHttpException/{status}")
     void chainedSpinnakerHttpException(@PathVariable int status) {
       // We could return a mock here, but we get better test coverage by
-      // returning a real object.  It does mean that the underlying response
+      // returning a real object. It does mean that the underlying response
       // (e.g. cause.response) needs to be a real object too though, or at least
       // real enough so that cause.response.getStatus() returns the specified
       // status.
@@ -232,19 +223,16 @@ class SpinnakerRetrofitExceptionHandlersTest {
       // would be sufficient, except in the chained case, where the return value
       // of this method is the cause of a real SpinnakerHttpException object.
       // There, getResponseCode needs a real underlying response, at least real
-      // enough for response.getStatus() to work.  So, go ahead and build one.
+      // enough for response.getStatus() to work. So, go ahead and build one.
       String url = "https://some-url";
-      Response response =
-          new Response(
-              url,
-              status,
-              "arbitrary reason",
-              List.of(),
-              new TypedString("{ message: \"arbitrary message\" }"));
+      Response response = new Response(
+        url, status, "arbitrary reason", List.of(), new TypedString("{ message: \"arbitrary message\" }")
+      );
 
       // choose GsonConverter since retrofit's (private) Base class does.
       return new SpinnakerHttpException(
-          RetrofitError.httpError(url, response, new GsonConverter(new Gson()), Response.class));
+        RetrofitError.httpError(url, response, new GsonConverter(new Gson()), Response.class)
+      );
     }
   }
 }

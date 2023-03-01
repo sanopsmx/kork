@@ -41,9 +41,8 @@ class DefaultTomcatConnectorCustomizer implements TomcatConnectorCustomizer {
   private final TomcatConfigurationProperties tomcatConfigurationProperties;
   private final SslExtensionConfigurationProperties sslExtensionConfigurationProperties;
 
-  DefaultTomcatConnectorCustomizer(
-      TomcatConfigurationProperties tomcatConfigurationProperties,
-      SslExtensionConfigurationProperties sslExtensionConfigurationProperties) {
+  DefaultTomcatConnectorCustomizer(TomcatConfigurationProperties tomcatConfigurationProperties,
+                                   SslExtensionConfigurationProperties sslExtensionConfigurationProperties) {
     this.tomcatConfigurationProperties = tomcatConfigurationProperties;
     this.sslExtensionConfigurationProperties = sslExtensionConfigurationProperties;
   }
@@ -53,8 +52,9 @@ class DefaultTomcatConnectorCustomizer implements TomcatConnectorCustomizer {
     this.applySSLSettings(connector);
     this.applyRelaxedURIProperties(connector);
     if (tomcatConfigurationProperties.getRejectIllegalHeader() != null) {
-      ((AbstractHttp11Protocol<?>) connector.getProtocolHandler())
-          .setRejectIllegalHeader(tomcatConfigurationProperties.getRejectIllegalHeader());
+      ((AbstractHttp11Protocol<?>) connector.getProtocolHandler()).setRejectIllegalHeader(
+        tomcatConfigurationProperties.getRejectIllegalHeader()
+      );
     }
   }
 
@@ -64,9 +64,10 @@ class DefaultTomcatConnectorCustomizer implements TomcatConnectorCustomizer {
     BeanUtils.copyProperties(tomcat.getSsl(), ssl);
     ssl.setClientAuth(Ssl.ClientAuth.NEED);
     ssl.setCiphers(
-        tomcatConfigurationProperties
-            .getCipherSuites()
-            .toArray(new String[tomcatConfigurationProperties.getCipherSuites().size()]));
+      tomcatConfigurationProperties.getCipherSuites().toArray(
+        new String[tomcatConfigurationProperties.getCipherSuites().size()]
+      )
+    );
     return ssl;
   }
 
@@ -76,41 +77,41 @@ class DefaultTomcatConnectorCustomizer implements TomcatConnectorCustomizer {
       if (((AbstractHttp11JsseProtocol) handler).isSSLEnabled()) {
         SSLHostConfig[] sslConfigs = connector.findSslHostConfigs();
         if (sslConfigs.length != 1) {
-          throw new RuntimeException(
-              String.format("Ssl configs: found %d, expected 1.", sslConfigs.length));
+          throw new RuntimeException(String.format("Ssl configs: found %d, expected 1.", sslConfigs.length));
         }
-        ((AbstractHttp11JsseProtocol<?>) handler)
-            .setSslImplementationName(BlocklistingSSLImplementation.class.getName());
+        ((AbstractHttp11JsseProtocol<?>) handler).setSslImplementationName(
+          BlocklistingSSLImplementation.class.getName()
+        );
         SSLHostConfig sslHostConfig = sslConfigs[0];
         sslHostConfig.setHonorCipherOrder(true);
         sslHostConfig.setCiphers(String.join(",", tomcatConfigurationProperties.getCipherSuites()));
-        sslHostConfig.setProtocols(
-            String.join(",", tomcatConfigurationProperties.getTlsVersions()));
-        sslHostConfig.setCertificateRevocationListFile(
-            sslExtensionConfigurationProperties.getCrlFile());
+        sslHostConfig.setProtocols(String.join(",", tomcatConfigurationProperties.getTlsVersions()));
+        sslHostConfig.setCertificateRevocationListFile(sslExtensionConfigurationProperties.getCrlFile());
       }
     }
   }
 
   void applyRelaxedURIProperties(Connector connector) {
-    if (StringUtils.isEmpty(tomcatConfigurationProperties.getRelaxedPathCharacters())
-        && StringUtils.isEmpty(tomcatConfigurationProperties.getRelaxedQueryCharacters())) {
+    if (StringUtils.isEmpty(tomcatConfigurationProperties.getRelaxedPathCharacters()) && StringUtils.isEmpty(
+      tomcatConfigurationProperties.getRelaxedQueryCharacters()
+    )) {
       return;
     }
 
     ProtocolHandler protocolHandler = connector.getProtocolHandler();
     if (protocolHandler instanceof AbstractHttp11Protocol) {
       if (!StringUtils.isEmpty(tomcatConfigurationProperties.getRelaxedPathCharacters())) {
-        ((AbstractHttp11Protocol) protocolHandler)
-            .setRelaxedPathChars(tomcatConfigurationProperties.getRelaxedPathCharacters());
+        ((AbstractHttp11Protocol) protocolHandler).setRelaxedPathChars(
+          tomcatConfigurationProperties.getRelaxedPathCharacters()
+        );
       }
       if (!StringUtils.isEmpty(tomcatConfigurationProperties.getRelaxedQueryCharacters())) {
-        ((AbstractHttp11Protocol) protocolHandler)
-            .setRelaxedPathChars(tomcatConfigurationProperties.getRelaxedPathCharacters());
+        ((AbstractHttp11Protocol) protocolHandler).setRelaxedPathChars(
+          tomcatConfigurationProperties.getRelaxedPathCharacters()
+        );
       }
     } else {
-      log.warn(
-          "Can't apply relaxedPath/Query config to connector of type $connector.protocolHandlerClassName");
+      log.warn("Can't apply relaxedPath/Query config to connector of type $connector.protocolHandlerClassName");
     }
   }
 }

@@ -19,4 +19,5 @@ package com.netflix.spinnaker.kork.plugins.api.servicesdk;
  * If a service does not provide its own {@link ServiceSdk}, this empty class will be provided in
  * return.
  */
-public class EmptyServiceSdk implements ServiceSdk {}
+public class EmptyServiceSdk implements ServiceSdk {
+}

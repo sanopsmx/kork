@@ -29,14 +29,12 @@ import org.springframework.web.bind.annotation.RestController;
 /** Promotes ExposeToApp and RestControllers from a plugin to the application's context. */
 public class SpringLoaderBeanPostProcessor implements BeanPostProcessor {
 
-  private static final org.slf4j.Logger log =
-      org.slf4j.LoggerFactory.getLogger(SpringLoaderBeanPostProcessor.class);
+  private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SpringLoaderBeanPostProcessor.class);
 
   private final GenericApplicationContext pluginContext;
   private final BeanPromoter beanPromoter;
 
-  public SpringLoaderBeanPostProcessor(
-      GenericApplicationContext pluginContext, BeanPromoter beanPromoter) {
+  public SpringLoaderBeanPostProcessor(GenericApplicationContext pluginContext, BeanPromoter beanPromoter) {
     this.pluginContext = pluginContext;
     this.beanPromoter = beanPromoter;
   }
@@ -49,8 +47,9 @@ public class SpringLoaderBeanPostProcessor implements BeanPostProcessor {
       // look for annotations that indicate a bean should be elevated to the service's app context
       boolean exposeToApp = false;
       // look annotations on bean class
-      if (bean.getClass().isAnnotationPresent(ExposeToApp.class)
-          || bean.getClass().isAnnotationPresent(RestController.class)) {
+      if (bean.getClass().isAnnotationPresent(ExposeToApp.class) || bean.getClass().isAnnotationPresent(
+        RestController.class
+      )) {
         exposeToApp = true;
       } else {
         if (def instanceof AnnotatedBeanDefinition) {
@@ -61,8 +60,7 @@ public class SpringLoaderBeanPostProcessor implements BeanPostProcessor {
           } else {
             // look for annotation on the method that instantiates the bean in the enclosing
             // configuration
-            final Set<MethodMetadata> methods =
-                metadata.getAnnotatedMethods(ExposeToApp.class.getName());
+            final Set<MethodMetadata> methods = metadata.getAnnotatedMethods(ExposeToApp.class.getName());
             if (methods.stream().anyMatch(method -> method.getMethodName().equals(beanName))) {
               exposeToApp = true;
             }

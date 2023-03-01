@@ -29,8 +29,8 @@ import org.junit.jupiter.api.Test;
 
 class ConfigFileServiceTest {
   private static final String TEST_FILE_NAME = "testfile";
-  private static final String TEST_FILE_PATH =
-      Paths.get(System.getProperty("java.io.tmpdir"), TEST_FILE_NAME).toString();
+  private static final String TEST_FILE_PATH = Paths.get(System.getProperty("java.io.tmpdir"), TEST_FILE_NAME)
+    .toString();
   private static final String TEST_FILE_CONTENTS = "test file contents";
 
   private ConfigFileService configFileService = new ConfigFileService(null);
@@ -50,8 +50,10 @@ class ConfigFileServiceTest {
 
   @Test
   void getLocalPathWhenFileDoesNotExist() {
-    RuntimeException exception =
-        assertThrows(RuntimeException.class, () -> configFileService.getLocalPath(TEST_FILE_PATH));
+    RuntimeException exception = assertThrows(
+      RuntimeException.class,
+      () -> configFileService.getLocalPath(TEST_FILE_PATH)
+    );
     assertThat(exception.getMessage()).contains(TEST_FILE_PATH);
   }
 

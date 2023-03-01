@@ -28,8 +28,10 @@ import lombok.extern.jackson.Jacksonized;
 @Builder
 @Jacksonized
 public class SensitiveAccount implements CredentialsDefinition {
-  @Nonnull String name;
+  @Nonnull
+  String name;
   String username;
-  @Sensitive String password;
+  @Sensitive
+  String password;
   String token;
 }

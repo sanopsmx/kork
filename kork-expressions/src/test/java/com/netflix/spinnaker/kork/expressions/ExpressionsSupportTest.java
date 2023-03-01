@@ -39,18 +39,19 @@ public class ExpressionsSupportTest {
     Map<String, Object> testInput = Collections.singletonMap("owner", "managed-by-${team}");
 
     assertThrows(
-        SpelHelperFunctionException.class,
-        () -> ExpressionsSupport.JsonExpressionFunctionProvider.toJson(testInput));
+      SpelHelperFunctionException.class,
+      () -> ExpressionsSupport.JsonExpressionFunctionProvider.toJson(testInput)
+    );
   }
 
   @Test
   public void testToJsonWhenNotEvaluableExpression() {
     Map<String, Object> testInput = Collections.singletonMap("owner", "managed-by-${team}");
-    NotEvaluableExpression notEvaluableExpression =
-        ExpressionsSupport.FlowExpressionFunctionProvider.doNotEval(testInput);
+    NotEvaluableExpression notEvaluableExpression = ExpressionsSupport.FlowExpressionFunctionProvider.doNotEval(
+      testInput
+    );
 
-    String result =
-        ExpressionsSupport.JsonExpressionFunctionProvider.toJson(notEvaluableExpression);
+    String result = ExpressionsSupport.JsonExpressionFunctionProvider.toJson(notEvaluableExpression);
 
     assertEquals("{\"owner\":\"managed-by-${team}\"}", result);
   }
@@ -60,18 +61,17 @@ public class ExpressionsSupportTest {
     ExpressionProperties expressionProperties = new ExpressionProperties();
     expressionProperties.getDoNotEvalSpel().setEnabled(true);
 
-    Map<String, Object> testContext =
-        Collections.singletonMap(
-            "file_json", Collections.singletonMap("owner", "managed-by-${team}"));
+    Map<String, Object> testContext = Collections.singletonMap(
+      "file_json",
+      Collections.singletonMap("owner", "managed-by-${team}")
+    );
     String testInput = "${#toJson(#doNotEval(file_json))}";
 
-    String evaluated =
-        new ExpressionTransform(parserContext, parser, Function.identity())
-            .transformString(
-                testInput,
-                new ExpressionsSupport(null, expressionProperties)
-                    .buildEvaluationContext(testContext, true),
-                new ExpressionEvaluationSummary());
+    String evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformString(
+      testInput,
+      new ExpressionsSupport(null, expressionProperties).buildEvaluationContext(testContext, true),
+      new ExpressionEvaluationSummary()
+    );
 
     assertThat(evaluated).isEqualTo("{\"owner\":\"managed-by-${team}\"}");
   }
@@ -81,19 +81,17 @@ public class ExpressionsSupportTest {
     ExpressionProperties expressionProperties = new ExpressionProperties();
     expressionProperties.getDoNotEvalSpel().setEnabled(true);
 
-    Map<String, Object> testContext =
-        Collections.singletonMap(
-            "file_json",
-            Collections.singletonMap("json_file", "${#toJson(#doNotEval(file_json))}"));
+    Map<String, Object> testContext = Collections.singletonMap(
+      "file_json",
+      Collections.singletonMap("json_file", "${#toJson(#doNotEval(file_json))}")
+    );
     String testInput = "${#toJson(#doNotEval(file_json))}";
 
-    String evaluated =
-        new ExpressionTransform(parserContext, parser, Function.identity())
-            .transformString(
-                testInput,
-                new ExpressionsSupport(null, expressionProperties)
-                    .buildEvaluationContext(testContext, true),
-                new ExpressionEvaluationSummary());
+    String evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformString(
+      testInput,
+      new ExpressionsSupport(null, expressionProperties).buildEvaluationContext(testContext, true),
+      new ExpressionEvaluationSummary()
+    );
 
     assertThat(evaluated).isEqualTo("{\"json_file\":\"${#toJson(#doNotEval(file_json))}\"}");
   }

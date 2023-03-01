@@ -42,24 +42,20 @@ import org.springframework.context.annotation.Configuration;
 public class RemotePluginsConfiguration {
 
   @Bean
-  public RemotePluginsCache remotePluginsCache(
-      ApplicationEventPublisher applicationEventPublisher) {
+  public RemotePluginsCache remotePluginsCache(ApplicationEventPublisher applicationEventPublisher) {
     return new RemotePluginsCache(applicationEventPublisher);
   }
 
   @Bean
-  public RemotePluginConfigChangedListener remotePluginConfigChangedListener(
-      ObjectProvider<ObjectMapper> objectMapperProvider,
-      ObjectProvider<List<SubtypeLocator>> subtypeLocatorsProvider,
-      ObjectProvider<OkHttpClientProvider> okHttpClientProvider,
-      RemotePluginsCache remotePluginsCache,
-      List<RemoteExtensionPointDefinition> remoteExtensionPointDefinitions) {
+  public RemotePluginConfigChangedListener remotePluginConfigChangedListener(ObjectProvider<ObjectMapper> objectMapperProvider,
+                                                                             ObjectProvider<List<SubtypeLocator>> subtypeLocatorsProvider,
+                                                                             ObjectProvider<OkHttpClientProvider> okHttpClientProvider,
+                                                                             RemotePluginsCache remotePluginsCache,
+                                                                             List<RemoteExtensionPointDefinition> remoteExtensionPointDefinitions) {
     return new RemotePluginConfigChangedListener(
-        objectMapperProvider,
-        subtypeLocatorsProvider,
-        okHttpClientProvider,
-        remotePluginsCache,
-        remoteExtensionPointDefinitions);
+      objectMapperProvider, subtypeLocatorsProvider, okHttpClientProvider, remotePluginsCache,
+      remoteExtensionPointDefinitions
+    );
   }
 
   @Bean

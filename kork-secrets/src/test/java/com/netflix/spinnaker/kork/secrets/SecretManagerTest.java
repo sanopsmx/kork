@@ -34,13 +34,16 @@ import org.mockito.MockitoAnnotations;
 
 public class SecretManagerTest {
 
-  @Mock SecretEngineRegistry secretEngineRegistry;
+  @Mock
+  SecretEngineRegistry secretEngineRegistry;
 
-  @Mock SecretEngine secretEngine;
+  @Mock
+  SecretEngine secretEngine;
 
   SecretManager secretManager;
 
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
+  @Rule
+  public ExpectedException exceptionRule = ExpectedException.none();
 
   @Before
   public void setup() {
@@ -69,9 +72,7 @@ public class SecretManagerTest {
 
   @Test
   public void decryptInvalidParams() throws SecretDecryptionException {
-    doThrow(InvalidSecretFormatException.class)
-        .when(secretEngine)
-        .validate(any(EncryptedSecret.class));
+    doThrow(InvalidSecretFormatException.class).when(secretEngine).validate(any(EncryptedSecret.class));
     String secretConfig = "encrypted:s3!paramName:paramValue";
     exceptionRule.expect(InvalidSecretFormatException.class);
     secretManager.decrypt(secretConfig);
@@ -99,9 +100,7 @@ public class SecretManagerTest {
 
   @Test
   public void decryptFileInvalidParams() throws SecretDecryptionException {
-    doThrow(InvalidSecretFormatException.class)
-        .when(secretEngine)
-        .validate(any(EncryptedSecret.class));
+    doThrow(InvalidSecretFormatException.class).when(secretEngine).validate(any(EncryptedSecret.class));
     String secretConfig = "encrypted:s3!paramName:paramValue";
     exceptionRule.expect(InvalidSecretFormatException.class);
     secretManager.decryptAsFile(secretConfig);

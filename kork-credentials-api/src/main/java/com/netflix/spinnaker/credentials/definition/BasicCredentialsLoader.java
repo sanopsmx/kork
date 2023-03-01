@@ -32,31 +32,31 @@ import lombok.Setter;
  * @param <T>
  * @param <U>
  */
-public class BasicCredentialsLoader<T extends CredentialsDefinition, U extends Credentials>
-    extends AbstractCredentialsLoader<U> {
+public class BasicCredentialsLoader<T extends CredentialsDefinition, U extends Credentials> extends
+  AbstractCredentialsLoader<U> {
   protected final CredentialsParser<T, U> parser;
   protected final CredentialsDefinitionSource<T> definitionSource;
   /**
-   * When parallel is true, the loader may apply changes in parallel. See {@link
-   * java.util.concurrent.ForkJoinPool} for limitations. This can be useful when adding or updating
-   * credentials is expected to take some time, as for instance when making a network call.
+   * When parallel is true, the loader may apply changes in parallel. See
+   * {@link java.util.concurrent.ForkJoinPool} for limitations. This can be useful when adding or
+   * updating credentials is expected to take some time, as for instance when making a network call.
    */
-  @Setter @Getter protected boolean parallel;
+  @Setter
+  @Getter
+  protected boolean parallel;
   // Definition is kept so we can quickly check for changes before parsing
   protected final Map<String, T> loadedDefinitions = new ConcurrentHashMap<>();
 
-  public BasicCredentialsLoader(
-      CredentialsDefinitionSource<T> definitionSource,
-      CredentialsParser<T, U> parser,
-      CredentialsRepository<U> credentialsRepository) {
+  public BasicCredentialsLoader(CredentialsDefinitionSource<T> definitionSource,
+                                CredentialsParser<T, U> parser,
+                                CredentialsRepository<U> credentialsRepository) {
     this(definitionSource, parser, credentialsRepository, false);
   }
 
-  public BasicCredentialsLoader(
-      CredentialsDefinitionSource<T> definitionSource,
-      CredentialsParser<T, U> parser,
-      CredentialsRepository<U> credentialsRepository,
-      boolean parallel) {
+  public BasicCredentialsLoader(CredentialsDefinitionSource<T> definitionSource,
+                                CredentialsParser<T, U> parser,
+                                CredentialsRepository<U> credentialsRepository,
+                                boolean parallel) {
     super(credentialsRepository);
     this.parser = parser;
     this.definitionSource = definitionSource;
@@ -71,11 +71,8 @@ public class BasicCredentialsLoader<T extends CredentialsDefinition, U extends C
   protected void parse(Collection<T> definitions) {
     Set<String> definitionNames = definitions.stream().map(T::getName).collect(Collectors.toSet());
 
-    credentialsRepository.getAll().stream()
-        .map(Credentials::getName)
-        .filter(name -> !definitionNames.contains(name))
-        .peek(loadedDefinitions::remove)
-        .forEach(credentialsRepository::delete);
+    credentialsRepository.getAll().stream().map(Credentials::getName).filter(name -> !definitionNames.contains(name))
+      .peek(loadedDefinitions::remove).forEach(credentialsRepository::delete);
 
     List<U> toApply = new ArrayList<>();
 

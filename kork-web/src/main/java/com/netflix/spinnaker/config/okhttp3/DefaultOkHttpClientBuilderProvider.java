@@ -48,16 +48,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultOkHttpClientBuilderProvider implements OkHttpClientBuilderProvider {
 
-  private static final Logger log =
-      LoggerFactory.getLogger(DefaultOkHttpClientBuilderProvider.class);
+  private static final Logger log = LoggerFactory.getLogger(DefaultOkHttpClientBuilderProvider.class);
 
   private final OkHttpClient okHttpClient;
   private final OkHttpClientConfigurationProperties okHttpClientConfigurationProperties;
 
   @Autowired
-  public DefaultOkHttpClientBuilderProvider(
-      OkHttpClient okHttpClient,
-      OkHttpClientConfigurationProperties okHttpClientConfigurationProperties) {
+  public DefaultOkHttpClientBuilderProvider(OkHttpClient okHttpClient,
+                                            OkHttpClientConfigurationProperties okHttpClientConfigurationProperties) {
     this.okHttpClient = okHttpClient;
     this.okHttpClientConfigurationProperties = okHttpClientConfigurationProperties;
   }
@@ -70,51 +68,48 @@ public class DefaultOkHttpClientBuilderProvider implements OkHttpClientBuilderPr
     return builder;
   }
 
-  protected OkHttpClient.Builder setSSLSocketFactory(
-      OkHttpClient.Builder builder, ServiceEndpoint serviceEndpoint) {
+  protected OkHttpClient.Builder setSSLSocketFactory(OkHttpClient.Builder builder, ServiceEndpoint serviceEndpoint) {
 
-    if ((okHttpClientConfigurationProperties.getKeyStore() == null
-            && okHttpClientConfigurationProperties.getTrustStore() == null)
-        || serviceEndpoint.isUseDefaultSslSocketFactory()) {
+    if ((okHttpClientConfigurationProperties.getKeyStore() == null && okHttpClientConfigurationProperties
+      .getTrustStore() == null) || serviceEndpoint.isUseDefaultSslSocketFactory()) {
       return builder;
     }
 
     try {
-      KeyManagerFactory keyManagerFactory =
-          KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+      KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
       KeyStore ks = KeyStore.getInstance(okHttpClientConfigurationProperties.getKeyStoreType());
       ks.load(
-          new FileInputStream(okHttpClientConfigurationProperties.getKeyStore()),
-          okHttpClientConfigurationProperties.getKeyStorePassword().toCharArray());
-      keyManagerFactory.init(
-          ks, okHttpClientConfigurationProperties.getKeyStorePassword().toCharArray());
+        new FileInputStream(okHttpClientConfigurationProperties.getKeyStore()),
+        okHttpClientConfigurationProperties.getKeyStorePassword().toCharArray()
+      );
+      keyManagerFactory.init(ks, okHttpClientConfigurationProperties.getKeyStorePassword().toCharArray());
 
-      TrustManagerFactory trustManagerFactory =
-          TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+      TrustManagerFactory trustManagerFactory = TrustManagerFactory.getInstance(
+        TrustManagerFactory.getDefaultAlgorithm()
+      );
       KeyStore ts = KeyStore.getInstance(okHttpClientConfigurationProperties.getTrustStoreType());
       ts.load(
-          new FileInputStream(okHttpClientConfigurationProperties.getTrustStore()),
-          okHttpClientConfigurationProperties.getTrustStorePassword().toCharArray());
+        new FileInputStream(okHttpClientConfigurationProperties.getTrustStore()),
+        okHttpClientConfigurationProperties.getTrustStorePassword().toCharArray()
+      );
       trustManagerFactory.init(ts);
 
-      SecureRandom secureRandom =
-          SecureRandom.getInstance(
-              okHttpClientConfigurationProperties.getSecureRandomInstanceType());
+      SecureRandom secureRandom = SecureRandom.getInstance(
+        okHttpClientConfigurationProperties.getSecureRandomInstanceType()
+      );
       SSLContext sslContext = SSLContext.getInstance("TLS");
-      sslContext.init(
-          keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), secureRandom);
+      sslContext.init(keyManagerFactory.getKeyManagers(), trustManagerFactory.getTrustManagers(), secureRandom);
       TrustManager[] trustManagers = trustManagerFactory.getTrustManagers();
+      checkState(trustManagers.length == 1, "Found multiple trust managers; don't know which one to use");
       checkState(
-          trustManagers.length == 1, "Found multiple trust managers; don't know which one to use");
-      checkState(
-          trustManagers[0] instanceof X509TrustManager,
-          "Configured TrustManager is a %s, not an X509TrustManager; don't know how to configure it",
-          trustManagers[0].getClass().getSimpleName());
+        trustManagers[0] instanceof X509TrustManager,
+        "Configured TrustManager is a %s, not an X509TrustManager; don't know how to configure it",
+        trustManagers[0].getClass().getSimpleName()
+      );
       builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustManagers[0]);
     } catch (Exception e) {
       log.error("Unable to set ssl socket factory for {}", serviceEndpoint.getBaseUrl(), e);
-      throw new SystemException(
-          format("Unable to set ssl socket factory for (%s)", serviceEndpoint.getBaseUrl()), e);
+      throw new SystemException(format("Unable to set ssl socket factory for (%s)", serviceEndpoint.getBaseUrl()), e);
     }
 
     return builder;
@@ -122,26 +117,25 @@ public class DefaultOkHttpClientBuilderProvider implements OkHttpClientBuilderPr
 
   protected OkHttpClient.Builder applyConnectionSpecs(OkHttpClient.Builder builder) {
 
-    ConnectionSpec.Builder connectionSpecBuilder =
-        new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS);
+    ConnectionSpec.Builder connectionSpecBuilder = new ConnectionSpec.Builder(ConnectionSpec.MODERN_TLS);
     if (okHttpClientConfigurationProperties.getCipherSuites() != null) {
-      connectionSpecBuilder.cipherSuites(
-          okHttpClientConfigurationProperties.getCipherSuites().toArray(new String[0]));
+      connectionSpecBuilder.cipherSuites(okHttpClientConfigurationProperties.getCipherSuites().toArray(new String[0]));
     } else {
       connectionSpecBuilder.cipherSuites(
-          Objects.requireNonNull(ConnectionSpec.MODERN_TLS.cipherSuites()).stream()
-              .map(CipherSuite::javaName)
-              .toArray(String[]::new));
+        Objects.requireNonNull(ConnectionSpec.MODERN_TLS.cipherSuites()).stream().map(CipherSuite::javaName).toArray(
+          String[]::new
+        )
+      );
     }
 
     if (okHttpClientConfigurationProperties.getTlsVersions() != null) {
-      connectionSpecBuilder.tlsVersions(
-          okHttpClientConfigurationProperties.getTlsVersions().toArray(new String[0]));
+      connectionSpecBuilder.tlsVersions(okHttpClientConfigurationProperties.getTlsVersions().toArray(new String[0]));
     } else {
       connectionSpecBuilder.tlsVersions(
-          Objects.requireNonNull(ConnectionSpec.MODERN_TLS.tlsVersions()).stream()
-              .map(TlsVersion::javaName)
-              .toArray(String[]::new));
+        Objects.requireNonNull(ConnectionSpec.MODERN_TLS.tlsVersions()).stream().map(TlsVersion::javaName).toArray(
+          String[]::new
+        )
+      );
     }
 
     ConnectionSpec connectionSpec = connectionSpecBuilder.build();

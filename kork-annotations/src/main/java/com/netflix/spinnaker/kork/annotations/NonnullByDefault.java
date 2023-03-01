@@ -29,4 +29,5 @@ import javax.annotation.meta.TypeQualifierDefault;
 @Retention(RetentionPolicy.RUNTIME)
 @Nonnull
 @TypeQualifierDefault({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
-public @interface NonnullByDefault {}
+public @interface NonnullByDefault {
+}

@@ -44,9 +44,11 @@ public class EurekaConfigurationProperties {
     }
   }
 
-  @NestedConfigurationProperty private final Namespace instance = new Namespace("netflix.appinfo.");
+  @NestedConfigurationProperty
+  private final Namespace instance = new Namespace("netflix.appinfo.");
 
-  @NestedConfigurationProperty private final Namespace client = new Namespace("netflix.discovery.");
+  @NestedConfigurationProperty
+  private final Namespace client = new Namespace("netflix.discovery.");
 
   public Namespace getInstance() {
     return instance;

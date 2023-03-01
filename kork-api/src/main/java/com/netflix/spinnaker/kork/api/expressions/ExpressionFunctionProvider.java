@@ -26,11 +26,13 @@ import javax.annotation.Nullable;
 /**
  * Provides a contract for adding new function definitions for SpEL evaluation.
  *
- * <p>The SpEL expression evaluator expects the the function implementations are included in the
- * same concrete class as the {@link ExpressionFunctionProvider}, with method names matching those
+ * <p>
+ * The SpEL expression evaluator expects the the function implementations are included in the same
+ * concrete class as the {@link ExpressionFunctionProvider}, with method names matching those
  * defined in the {@code getFunctions()} definitions.
  *
- * <pre>{@code
+ * <pre>
+ * {@code
  * class HelloFunctionProvider : ExpressionFunctionProvider {
  *   override fun getNamespace(): String? = "netflix"
  *   override fun getFunctions(): Functions =
@@ -43,21 +45,23 @@ import javax.annotation.Nullable;
  *       )
  *     )
  *
- *   @JvmStatic
+ *   &#64;JvmStatic
  *   fun hello(execution: Execution): String =
  *     "Hello, ${execution.id}"
  * }
- * }</pre>
+ * }
+ * </pre>
  *
  * The above function provider could then be called in a SpEL expression:
  *
- * <p>{@code ${netflix.hello()}}
+ * <p>
+ * {@code ${netflix.hello()}}
  */
 public interface ExpressionFunctionProvider extends SpinnakerExtensionPoint {
 
   /**
-   * Optional. Typically, a namespace should be provided if you are providing a non-core function.
-   * The namespace value typically would be the name of your organization (e.g. {@code netflix} or
+   * Optional. Typically, a namespace should be provided if you are providing a non-core function. The
+   * namespace value typically would be the name of your organization (e.g. {@code netflix} or
    * {@code myteamname}.
    */
   @Nullable
@@ -86,8 +90,8 @@ public interface ExpressionFunctionProvider extends SpinnakerExtensionPoint {
   }
 
   /**
-   * A single function definition. This defines the name and input parameter contract for
-   * interacting with the function.
+   * A single function definition. This defines the name and input parameter contract for interacting
+   * with the function.
    */
   class FunctionDefinition {
 
@@ -101,23 +105,20 @@ public interface ExpressionFunctionProvider extends SpinnakerExtensionPoint {
     private final List<FunctionParameter> parameters;
 
     /** End-user friendly documentation of the function, will be surfaced to the UI via Deck. */
-    @Nullable private final FunctionDocumentation documentation;
+    @Nullable
+    private final FunctionDocumentation documentation;
 
     @Deprecated
-    @DeprecationInfo(
-        reason = "Please use the overload with description",
-        since = "1.18",
-        eol = "1.25",
-        replaceWith = "FunctionDefinition(name, \"\", functionParameters)")
+    @DeprecationInfo(reason = "Please use the overload with description", since = "1.18", eol = "1.25",
+      replaceWith = "FunctionDefinition(name, \"\", functionParameters)")
     public FunctionDefinition(String name, FunctionParameter... functionParameters) {
       this(name, "", Arrays.asList(functionParameters));
     }
 
-    public FunctionDefinition(
-        String name,
-        String description,
-        List<FunctionParameter> parameters,
-        @Nullable FunctionDocumentation documentation) {
+    public FunctionDefinition(String name,
+                              String description,
+                              List<FunctionParameter> parameters,
+                              @Nullable FunctionDocumentation documentation) {
       this.name = name;
       this.description = description;
       this.parameters = parameters;
@@ -184,7 +185,8 @@ public interface ExpressionFunctionProvider extends SpinnakerExtensionPoint {
   /**
    * Documentation for a function.
    *
-   * <p>This documentation is used by Deck to display in-line docs for a SpEL function.
+   * <p>
+   * This documentation is used by Deck to display in-line docs for a SpEL function.
    */
   class FunctionDocumentation {
 
@@ -192,7 +194,8 @@ public interface ExpressionFunctionProvider extends SpinnakerExtensionPoint {
     private final String documentation;
 
     /** List of example usages of the function. */
-    @Nullable private final List<FunctionUsageExample> examples;
+    @Nullable
+    private final List<FunctionUsageExample> examples;
 
     public FunctionDocumentation(String documentation) {
       this.documentation = documentation;
@@ -222,7 +225,8 @@ public interface ExpressionFunctionProvider extends SpinnakerExtensionPoint {
   /**
    * Function usage example.
    *
-   * <p>This is used by Deck to display in-line docs for a SpEL function.
+   * <p>
+   * This is used by Deck to display in-line docs for a SpEL function.
    */
   class FunctionUsageExample {
 
@@ -232,7 +236,8 @@ public interface ExpressionFunctionProvider extends SpinnakerExtensionPoint {
     /**
      * Explanation of the usage sample. Markdown is supported.
      *
-     * <p>e.g. "checks if the bake stage has completed successfully"
+     * <p>
+     * e.g. "checks if the bake stage has completed successfully"
      */
     private final String description;
 

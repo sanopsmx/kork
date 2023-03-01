@@ -41,8 +41,7 @@ public class ReloadingFileBlocklist implements Blocklist {
     private static Entry fromString(String blocklistEntry) {
       int idx = blocklistEntry.indexOf(DELIMITER);
       if (idx == -1) {
-        throw new IllegalArgumentException(
-            "Missing delimiter " + DELIMITER + " in " + blocklistEntry);
+        throw new IllegalArgumentException("Missing delimiter " + DELIMITER + " in " + blocklistEntry);
       }
       X500Principal principal = new X500Principal(blocklistEntry.substring(0, idx));
       BigInteger serial = new BigInteger(blocklistEntry.substring(idx + DELIMITER.length()));
@@ -56,12 +55,15 @@ public class ReloadingFileBlocklist implements Blocklist {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
+      if (this == o)
+        return true;
+      if (o == null || getClass() != o.getClass())
+        return false;
 
       Entry entry = (Entry) o;
 
-      if (!issuer.equals(entry.issuer)) return false;
+      if (!issuer.equals(entry.issuer))
+        return false;
       return serial.equals(entry.serial);
     }
 
@@ -79,25 +81,22 @@ public class ReloadingFileBlocklist implements Blocklist {
 
   public ReloadingFileBlocklist(String blocklistFile, long reloadInterval, TimeUnit unit) {
     this.blocklistFile = blocklistFile;
-    this.blocklist =
-        CacheBuilder.newBuilder()
-            .expireAfterAccess(reloadInterval, unit)
-            .build(
-                new CacheLoader<String, Set<Entry>>() {
-                  @Override
-                  public Set<Entry> load(String key) throws Exception {
-                    File f = new File(key);
-                    if (!f.exists()) {
-                      return Collections.emptySet();
-                    }
-                    return ImmutableSet.copyOf(
-                        Files.readAllLines(f.toPath()).stream()
-                            .map(String::trim)
-                            .filter(line -> !(line.isEmpty() || line.startsWith("#")))
-                            .map(Entry::fromString)
-                            .collect(Collectors.toSet()));
-                  }
-                });
+    this.blocklist = CacheBuilder.newBuilder().expireAfterAccess(reloadInterval, unit).build(
+      new CacheLoader<String, Set<Entry>>() {
+        @Override
+        public Set<Entry> load(String key) throws Exception {
+          File f = new File(key);
+          if (!f.exists()) {
+            return Collections.emptySet();
+          }
+          return ImmutableSet.copyOf(
+            Files.readAllLines(f.toPath()).stream().map(String::trim).filter(
+              line -> !(line.isEmpty() || line.startsWith("#"))
+            ).map(Entry::fromString).collect(Collectors.toSet())
+          );
+        }
+      }
+    );
   }
 
   public ReloadingFileBlocklist(String blocklistFile) {
@@ -107,9 +106,7 @@ public class ReloadingFileBlocklist implements Blocklist {
   @Override
   public boolean isBlocklisted(X509Certificate cert) {
     try {
-      return blocklist
-          .get(blocklistFile)
-          .contains(new Entry(cert.getIssuerX500Principal(), cert.getSerialNumber()));
+      return blocklist.get(blocklistFile).contains(new Entry(cert.getIssuerX500Principal(), cert.getSerialNumber()));
     } catch (ExecutionException ee) {
       Throwable cause = ee.getCause();
       if (cause != null) {

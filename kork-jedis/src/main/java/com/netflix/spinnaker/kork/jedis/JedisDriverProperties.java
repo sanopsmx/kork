@@ -28,7 +28,8 @@ public class JedisDriverProperties {
   /**
    * Redis object pool configuration.
    *
-   * <p>If left null, the default object pool as defined in {@code JedisClientConfiguration} will be
+   * <p>
+   * If left null, the default object pool as defined in {@code JedisClientConfiguration} will be
    * used.
    */
   public GenericObjectPoolConfig poolConfig;

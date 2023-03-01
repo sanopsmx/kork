@@ -39,8 +39,7 @@ class GoogleUtils {
     GoogleCredentials credentials = GoogleCredentials.getApplicationDefault();
 
     if (credentials.createScopedRequired()) {
-      credentials =
-          credentials.createScoped(Collections.singleton(StorageScopes.DEVSTORAGE_READ_ONLY));
+      credentials = credentials.createScoped(Collections.singleton(StorageScopes.DEVSTORAGE_READ_ONLY));
     }
 
     return credentials;
@@ -60,10 +59,12 @@ class GoogleUtils {
         super.initialize(request);
         request.setConnectTimeout(CONNECT_TIMEOUT);
         request.setReadTimeout(READ_TIMEOUT);
-        HttpBackOffUnsuccessfulResponseHandler unsuccessfulResponseHandler =
-            new HttpBackOffUnsuccessfulResponseHandler(new ExponentialBackOff());
+        HttpBackOffUnsuccessfulResponseHandler unsuccessfulResponseHandler = new HttpBackOffUnsuccessfulResponseHandler(
+          new ExponentialBackOff()
+        );
         unsuccessfulResponseHandler.setBackOffRequired(
-            HttpBackOffUnsuccessfulResponseHandler.BackOffRequired.ON_SERVER_ERROR);
+          HttpBackOffUnsuccessfulResponseHandler.BackOffRequired.ON_SERVER_ERROR
+        );
         request.setUnsuccessfulResponseHandler(unsuccessfulResponseHandler);
       }
     };

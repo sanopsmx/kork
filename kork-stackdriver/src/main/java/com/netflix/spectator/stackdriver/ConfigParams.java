@@ -51,8 +51,8 @@ public class ConfigParams {
   protected String instanceId;
 
   /** Overridable for testing only. */
-  protected Function<String, String> determineProjectName =
-      defaultName -> new MonitoredResourceBuilder().determineProjectName(defaultName);
+  protected Function<String, String> determineProjectName = defaultName -> new MonitoredResourceBuilder()
+    .determineProjectName(defaultName);
 
   /** Optional. */
   protected Predicate<Measurement> measurementFilter;
@@ -77,7 +77,8 @@ public class ConfigParams {
     /**
      * Ensure the configuration parameters are complete and valid.
      *
-     * <p>If some required parameters are not yet explicitly set then this may initialize them.
+     * <p>
+     * If some required parameters are not yet explicitly set then this may initialize them.
      */
     public ConfigParams build() {
       ConfigParams result = new ConfigParams();
@@ -85,8 +86,7 @@ public class ConfigParams {
       String actualProjectName = determineProjectName.apply(projectName);
       result.projectName = validateString(actualProjectName, "stackdriver projectName");
       result.applicationName = validateString(applicationName, "applicationName");
-      result.customTypeNamespace =
-          validateString(customTypeNamespace, "stackdriver customTypeNamespace");
+      result.customTypeNamespace = validateString(customTypeNamespace, "stackdriver customTypeNamespace");
 
       result.counterStartTime = counterStartTime;
       result.measurementFilter = measurementFilter;
@@ -113,10 +113,9 @@ public class ConfigParams {
             version = "Unknown";
           }
 
-          result.monitoring =
-              new Monitoring.Builder(transport, jsonFactory, credential)
-                  .setApplicationName("Spinnaker/" + version)
-                  .build();
+          result.monitoring = new Monitoring.Builder(transport, jsonFactory, credential).setApplicationName(
+            "Spinnaker/" + version
+          ).build();
         } catch (IOException | java.security.GeneralSecurityException e) {
           final Logger log = LoggerFactory.getLogger("StackdriverWriter");
           log.error("Caught exception initializing client: " + e);
@@ -133,7 +132,8 @@ public class ConfigParams {
     /**
      * Overrides the function for determining the actual project name
      *
-     * <p>This is for testing purposes only.
+     * <p>
+     * This is for testing purposes only.
      */
     public Builder setDetermineProjectName(Function<String, String> fn) {
       determineProjectName = fn;
@@ -143,7 +143,8 @@ public class ConfigParams {
     /**
      * The Stackdriver namespace containing Custom Metric Descriptor types.
      *
-     * <p>This is intended to group a family of metric types together for a particular system. (e.g.
+     * <p>
+     * This is intended to group a family of metric types together for a particular system. (e.g.
      * "spinnaker")
      */
     public Builder setCustomTypeNamespace(String name) {
@@ -154,8 +155,9 @@ public class ConfigParams {
     /**
      * Sets the Google project name for Stackdriver to manage metrics under.
      *
-     * <p>This is a Google Cloud Platform project owned by the user deploying the system using
-     * Spectator and used by Stackdriver to catalog our data (e.g. "my-unique-project").
+     * <p>
+     * This is a Google Cloud Platform project owned by the user deploying the system using Spectator
+     * and used by Stackdriver to catalog our data (e.g. "my-unique-project").
      */
     public Builder setProjectName(String name) {
       projectName = name;
@@ -165,7 +167,8 @@ public class ConfigParams {
     /**
      * The path to specific Google Credentials create the client stub with.
      *
-     * <p>This is not needed if injecting a specific Monitoring client stub.
+     * <p>
+     * This is not needed if injecting a specific Monitoring client stub.
      */
     public Builder setCredentialsPath(String path) {
       credentialsPath = path;
@@ -175,8 +178,9 @@ public class ConfigParams {
     /**
      * Sets the application name that we are associating these metrics with.
      *
-     * <p>It distinguishes similar metrics within a system that are coming from different services.
-     * (e.g. "clouddriver")
+     * <p>
+     * It distinguishes similar metrics within a system that are coming from different services. (e.g.
+     * "clouddriver")
      */
     public Builder setApplicationName(String name) {
       applicationName = name;
@@ -186,7 +190,8 @@ public class ConfigParams {
     /**
      * Sets the instance id that we are associating these metrics with.
      *
-     * <p>This will be the INSTANCE_LABEL value for the metrics we store.
+     * <p>
+     * This will be the INSTANCE_LABEL value for the metrics we store.
      */
     public Builder setInstanceId(String id) {
       instanceId = id;
@@ -227,32 +232,31 @@ public class ConfigParams {
     }
 
     /** Helper function for the validator that reads our credentials for talking to Stackdriver. */
-    private static GoogleCredential loadCredential(
-        HttpTransport transport, JsonFactory factory, String credentialsPath) throws IOException {
+    private static GoogleCredential loadCredential(HttpTransport transport, JsonFactory factory, String credentialsPath)
+      throws IOException {
       final Logger log = LoggerFactory.getLogger("StackdriverWriter");
 
       GoogleCredential credential;
       if (credentialsPath != null && !credentialsPath.isEmpty()) {
         FileInputStream stream = new FileInputStream(credentialsPath);
         try {
-          credential =
-              GoogleCredential.fromStream(stream, transport, factory)
-                  .createScoped(Collections.singleton(MonitoringScopes.MONITORING));
+          credential = GoogleCredential.fromStream(stream, transport, factory).createScoped(
+            Collections.singleton(MonitoringScopes.MONITORING)
+          );
           log.info("Loaded credentials from from {}", credentialsPath);
         } finally {
           stream.close();
         }
       } else {
         log.info(
-            "spectator.stackdriver.monitoring.enabled without"
-                + " spectator.stackdriver.credentialsPath. "
-                + " Using default application credentials.");
+          "spectator.stackdriver.monitoring.enabled without" + " spectator.stackdriver.credentialsPath. "
+            + " Using default application credentials."
+        );
         credential = GoogleCredential.getApplicationDefault();
       }
       return credential;
     }
-  }
-  ;
+  };
 
   /** The Stackdriver namespace containing Custom Metric Descriptor types. */
   public String getCustomTypeNamespace() {
@@ -293,5 +297,4 @@ public class ConfigParams {
   public long getCounterStartTime() {
     return counterStartTime;
   }
-}
-;
+};

@@ -32,16 +32,14 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @SpringBootTest(classes = SecretConfiguration.class)
 public class UserSecretSerdeTest {
 
-  @Autowired UserSecretSerdeFactory factory;
+  @Autowired
+  UserSecretSerdeFactory factory;
 
   @Test
   public void jsonStringMap() {
-    var metadata =
-        UserSecretMetadata.builder().type("opaque").encoding("json").roles(List.of()).build();
+    var metadata = UserSecretMetadata.builder().type("opaque").encoding("json").roles(List.of()).build();
     var serde = factory.serdeFor(metadata);
-    var bytes =
-        serde.serialize(
-            new OpaqueUserSecretData(Map.of("foo", "bar", "second", "second")), metadata);
+    var bytes = serde.serialize(new OpaqueUserSecretData(Map.of("foo", "bar", "second", "second")), metadata);
     var secret = serde.deserialize(bytes, metadata);
     assertThat(secret.getType(), equalTo("opaque"));
     assertThat(secret.getEncoding(), equalTo("json"));
@@ -51,11 +49,9 @@ public class UserSecretSerdeTest {
 
   @Test
   public void yamlStringMap() {
-    var metadata =
-        UserSecretMetadata.builder().type("opaque").encoding("yaml").roles(List.of()).build();
+    var metadata = UserSecretMetadata.builder().type("opaque").encoding("yaml").roles(List.of()).build();
     var serde = factory.serdeFor(metadata);
-    var bytes =
-        serde.serialize(new OpaqueUserSecretData(Map.of("a", "A", "b", "B", "c", "C")), metadata);
+    var bytes = serde.serialize(new OpaqueUserSecretData(Map.of("a", "A", "b", "B", "c", "C")), metadata);
     var secret = serde.deserialize(bytes, metadata);
     assertThat(secret.getType(), equalTo("opaque"));
     assertThat(secret.getEncoding(), equalTo("yaml"));
@@ -66,8 +62,7 @@ public class UserSecretSerdeTest {
 
   @Test
   public void cborStringMap() {
-    var metadata =
-        UserSecretMetadata.builder().type("opaque").encoding("cbor").roles(List.of()).build();
+    var metadata = UserSecretMetadata.builder().type("opaque").encoding("cbor").roles(List.of()).build();
     var serde = factory.serdeFor(metadata);
     var bytes = serde.serialize(new OpaqueUserSecretData(Map.of("bin", "packed")), metadata);
     var secret = serde.deserialize(bytes, metadata);

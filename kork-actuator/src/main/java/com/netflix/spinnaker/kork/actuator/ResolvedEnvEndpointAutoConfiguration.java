@@ -37,9 +37,8 @@ public class ResolvedEnvEndpointAutoConfiguration {
 
   @Bean
   @ConditionalOnMissingBean
-  public ResolvedEnvironmentEndpoint resolvedEnvironmentEndpoint(
-      Environment environment,
-      ResolvedEnvironmentConfigurationProperties resolvedEnvironmentConfigurationProperties) {
+  public ResolvedEnvironmentEndpoint resolvedEnvironmentEndpoint(Environment environment,
+                                                                 ResolvedEnvironmentConfigurationProperties resolvedEnvironmentConfigurationProperties) {
     return new ResolvedEnvironmentEndpoint(environment, resolvedEnvironmentConfigurationProperties);
   }
 }

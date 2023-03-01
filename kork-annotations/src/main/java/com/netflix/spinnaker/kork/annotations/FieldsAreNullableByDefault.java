@@ -29,4 +29,5 @@ import javax.annotation.meta.TypeQualifierDefault;
 @Retention(RetentionPolicy.RUNTIME)
 @Nullable
 @TypeQualifierDefault({ElementType.FIELD})
-public @interface FieldsAreNullableByDefault {}
+public @interface FieldsAreNullableByDefault {
+}

@@ -38,30 +38,21 @@ public class JedisPoolFactory {
     this.registry = registry;
   }
 
-  public Pool<Jedis> build(
-      String name, JedisDriverProperties properties, GenericObjectPoolConfig objectPoolConfig) {
+  public Pool<Jedis> build(String name, JedisDriverProperties properties, GenericObjectPoolConfig objectPoolConfig) {
     if (properties.connection == null || "".equals(properties.connection)) {
       throw new MissingRequiredConfiguration("Jedis client must have a connection defined");
     }
 
-    RedisClientConnectionProperties cxp =
-        new RedisClientConnectionProperties(URI.create(properties.connection));
-    GenericObjectPoolConfig poolConfig =
-        Optional.ofNullable(properties.poolConfig).orElse(objectPoolConfig);
+    RedisClientConnectionProperties cxp = new RedisClientConnectionProperties(URI.create(properties.connection));
+    GenericObjectPoolConfig poolConfig = Optional.ofNullable(properties.poolConfig).orElse(objectPoolConfig);
 
     return new InstrumentedJedisPool(
-        registry,
-        // Pool name should always be "null", as setting this is incompat with some SaaS Redis
-        // offerings
-        new JedisPool(
-            poolConfig,
-            cxp.addr(),
-            cxp.port(),
-            properties.timeoutMs,
-            cxp.password(),
-            cxp.database(),
-            null,
-            cxp.isSSL()),
-        name);
+      registry,
+      // Pool name should always be "null", as setting this is incompat with some SaaS Redis
+      // offerings
+      new JedisPool(
+        poolConfig, cxp.addr(), cxp.port(), properties.timeoutMs, cxp.password(), cxp.database(), null, cxp.isSSL()
+      ), name
+    );
   }
 }

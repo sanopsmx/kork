@@ -18,14 +18,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {CRLFHeaderTest.HeaderTestControllerConfiguration.class})
-@TestPropertySource(
-    properties = {"logging.level.org.apache.coyote.http11.Http11InputBuffer = DEBUG"})
-@org.springframework.boot.context.properties.EnableConfigurationProperties({
-  TomcatConfigurationProperties.class
-})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
+  CRLFHeaderTest.HeaderTestControllerConfiguration.class})
+@TestPropertySource(properties = {"logging.level.org.apache.coyote.http11.Http11InputBuffer = DEBUG"})
+@org.springframework.boot.context.properties.EnableConfigurationProperties({TomcatConfigurationProperties.class})
 public class CRLFHeaderTest {
   private static final String CR = "\r";
   private static final String LF = "\n";
@@ -48,15 +44,16 @@ public class CRLFHeaderTest {
     public void onGetRequest() {}
   }
 
-  @LocalServerPort private int port;
+  @LocalServerPort
+  private int port;
 
   /*
-   * clientTest tests the TCP segmentation bug introduced in tomcat v9.0.31.
-   * See https://bz.apache.org/bugzilla/show_bug.cgi?id=64210
+   * clientTest tests the TCP segmentation bug introduced in tomcat v9.0.31. See
+   * https://bz.apache.org/bugzilla/show_bug.cgi?id=64210
    *
-   * We reproduce this test by forcing a TCP segmentation in between a header that ends with a CR
-   * and begins the next header with a LF. This causes tomcat to throw an exception and results in a
-   * 400 status code due to invalid header parsing
+   * We reproduce this test by forcing a TCP segmentation in between a header that ends with a CR and
+   * begins the next header with a LF. This causes tomcat to throw an exception and results in a 400
+   * status code due to invalid header parsing
    */
   @Test
   public void clientTest() throws IOException {
@@ -69,21 +66,15 @@ public class CRLFHeaderTest {
       InputStream in = socket.getInputStream();
       OutputStream out = socket.getOutputStream();
 
-      String requestAndHeaders =
-          "GET /header/test HTTP/1.1"
-              + CR
-              + LF
-              + "Host: "
-              + HOST
-              + ":"
-              + port
-              + CR // Writes the CR to the socket and is received by the server
-              + LF // This LF causes a 400
-              + "User-Agent: spinnaker-test/1.0"
-              + CR
-              + LF
-              + CR
-              + LF;
+      String requestAndHeaders = "GET /header/test HTTP/1.1" + CR + LF + "Host: " + HOST + ":" + port + CR // Writes the
+      // CR to the
+      // socket and
+      // is
+      // received
+      // by the
+      // server
+        + LF // This LF causes a 400
+        + "User-Agent: spinnaker-test/1.0" + CR + LF + CR + LF;
 
       // write the first header
       out.write(requestAndHeaders.getBytes(StandardCharsets.UTF_8));

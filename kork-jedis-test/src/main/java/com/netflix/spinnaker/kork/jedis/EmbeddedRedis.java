@@ -18,14 +18,9 @@ public class EmbeddedRedis implements AutoCloseable {
 
   private EmbeddedRedis(int port) throws IOException, URISyntaxException {
     this.connection = URI.create(String.format("redis://127.0.0.1:%d/0", port));
-    this.redisServer =
-        RedisServer.builder()
-            .port(port)
-            .setting("bind 127.0.0.1")
-            .setting("appendonly no")
-            .setting("save \"\"")
-            .setting("databases 1")
-            .build();
+    this.redisServer = RedisServer.builder().port(port).setting("bind 127.0.0.1").setting("appendonly no").setting(
+      "save \"\""
+    ).setting("databases 1").build();
     this.redisServer.start();
   }
 

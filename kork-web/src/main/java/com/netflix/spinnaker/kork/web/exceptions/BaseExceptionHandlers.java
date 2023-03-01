@@ -30,8 +30,7 @@ public class BaseExceptionHandlers extends ResponseEntityExceptionHandler {
     this.exceptionMessageDecorator = exceptionMessageDecorator;
   }
 
-  protected void storeException(
-      HttpServletRequest request, HttpServletResponse response, Exception ex) {
+  protected void storeException(HttpServletRequest request, HttpServletResponse response, Exception ex) {
     // store exception as an attribute of HttpServletRequest such that it can be referenced by
     // GenericErrorController
     defaultErrorAttributes.resolveException(request, response, null, ex);

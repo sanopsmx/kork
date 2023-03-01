@@ -34,21 +34,23 @@ public class AwsArnProducer {
   private final TextProducer textProducer;
   private final RandomProducer randomProducer;
 
-  public AwsArnProducer(
-      AwsProducer awsProducer, TextProducer textProducer, RandomProducer randomProducer) {
+  public AwsArnProducer(AwsProducer awsProducer, TextProducer textProducer, RandomProducer randomProducer) {
     this.awsProducer = awsProducer;
     this.textProducer = textProducer;
     this.randomProducer = randomProducer;
   }
 
   private String render(String template) {
-    return template
-        .replaceAll(Pattern.quote(PARTITION), getPartition())
-        .replaceAll(Pattern.quote(REGION), awsProducer.getRegion())
-        .replaceAll(Pattern.quote(ACCOUNT), awsProducer.getAccountId())
-        .replaceAll(Pattern.quote(UUID), randomProducer.uuid())
-        .replaceAll(Pattern.quote(DASHED_ID), textProducer.dashedWords(1, 6))
-        .replaceAll(Pattern.quote(AWS_ID), randomProducer.numeric(17));
+    return template.replaceAll(Pattern.quote(PARTITION), getPartition()).replaceAll(
+      Pattern.quote(REGION),
+      awsProducer.getRegion()
+    ).replaceAll(Pattern.quote(ACCOUNT), awsProducer.getAccountId()).replaceAll(
+      Pattern.quote(UUID),
+      randomProducer.uuid()
+    ).replaceAll(Pattern.quote(DASHED_ID), textProducer.dashedWords(1, 6)).replaceAll(
+      Pattern.quote(AWS_ID),
+      randomProducer.numeric(17)
+    );
   }
 
   public String getPartition() {
@@ -57,18 +59,9 @@ public class AwsArnProducer {
 
   public String getAutoscalingPolicy() {
     return render(
-        "arn:"
-            + PARTITION
-            + ":autoscaling:"
-            + REGION
-            + ":"
-            + ACCOUNT
-            + ":scalingPolicy:"
-            + UUID
-            + ":autoScalingGroupName/"
-            + DASHED_ID
-            + ":policyName/"
-            + DASHED_ID);
+      "arn:" + PARTITION + ":autoscaling:" + REGION + ":" + ACCOUNT + ":scalingPolicy:" + UUID
+        + ":autoScalingGroupName/" + DASHED_ID + ":policyName/" + DASHED_ID
+    );
   }
 
   public class Ec2Arns {

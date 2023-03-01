@@ -34,20 +34,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties({
-  TomcatConfigurationProperties.class,
-  SslExtensionConfigurationProperties.class
-})
+@EnableConfigurationProperties({TomcatConfigurationProperties.class, SslExtensionConfigurationProperties.class})
 class TomcatConfiguration {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   @Bean
-  TomcatConnectorCustomizer defaultTomcatConnectorCustomizer(
-      TomcatConfigurationProperties tomcatConfigurationProperties,
-      SslExtensionConfigurationProperties sslExtensionConfigurationProperties) {
-    return new DefaultTomcatConnectorCustomizer(
-        tomcatConfigurationProperties, sslExtensionConfigurationProperties);
+  TomcatConnectorCustomizer defaultTomcatConnectorCustomizer(TomcatConfigurationProperties tomcatConfigurationProperties,
+                                                             SslExtensionConfigurationProperties sslExtensionConfigurationProperties) {
+    return new DefaultTomcatConnectorCustomizer(tomcatConfigurationProperties, sslExtensionConfigurationProperties);
   }
 
   /**
@@ -56,9 +51,8 @@ class TomcatConfiguration {
    */
   @Bean
   @ConditionalOnExpression("${server.ssl.enabled:false}")
-  WebServerFactoryCustomizer containerCustomizer(
-      DefaultTomcatConnectorCustomizer defaultTomcatConnectorCustomizer,
-      TomcatConfigurationProperties tomcatConfigurationProperties) {
+  WebServerFactoryCustomizer containerCustomizer(DefaultTomcatConnectorCustomizer defaultTomcatConnectorCustomizer,
+                                                 TomcatConfigurationProperties tomcatConfigurationProperties) {
     System.setProperty("jdk.tls.rejectClientInitiatedRenegotiation", "true");
     System.setProperty("jdk.tls.ephemeralDHKeySize", "2048");
 
@@ -71,9 +65,7 @@ class TomcatConfiguration {
         tomcat.addConnectorCustomizers(defaultTomcatConnectorCustomizer);
 
         if (tomcatConfigurationProperties.getLegacyServerPort() > 0) {
-          log.info(
-              "Creating legacy connector on port {}",
-              tomcatConfigurationProperties.getLegacyServerPort());
+          log.info("Creating legacy connector on port {}", tomcatConfigurationProperties.getLegacyServerPort());
           Connector httpConnector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
           httpConnector.setScheme("http");
           httpConnector.setPort(tomcatConfigurationProperties.getLegacyServerPort());
@@ -92,8 +84,7 @@ class TomcatConfiguration {
           applyCompressionSettings(apiConnector, tomcat);
 
           Ssl ssl = defaultTomcatConnectorCustomizer.copySslConfigurationWithClientAuth(tomcat);
-          CustomizableTomcatServletWebServerFactory newFactory =
-              new CustomizableTomcatServletWebServerFactory();
+          CustomizableTomcatServletWebServerFactory newFactory = new CustomizableTomcatServletWebServerFactory();
           BeanUtils.copyProperties(tomcat, newFactory);
           newFactory.setPort(tomcatConfigurationProperties.getApiPort());
           newFactory.setSsl(ssl);
@@ -107,11 +98,10 @@ class TomcatConfiguration {
 
   /**
    * Apply compression setting to the protocol of the given connector Spring will configure the main
-   * connector with compression settings from `server:` settings in YAML, but for secondary
-   * connectors we have to do that ourselves. Use the config from the default connector
+   * connector with compression settings from `server:` settings in YAML, but for secondary connectors
+   * we have to do that ourselves. Use the config from the default connector
    */
-  private static void applyCompressionSettings(
-      Connector connector, TomcatServletWebServerFactory tomcat) {
+  private static void applyCompressionSettings(Connector connector, TomcatServletWebServerFactory tomcat) {
     Http11NioProtocol protocol = (Http11NioProtocol) connector.getProtocolHandler();
 
     if (tomcat.getCompression().getEnabled()) {
@@ -123,8 +113,7 @@ class TomcatConfiguration {
     }
   }
 
-  private static class CustomizableTomcatServletWebServerFactory
-      extends TomcatServletWebServerFactory {
+  private static class CustomizableTomcatServletWebServerFactory extends TomcatServletWebServerFactory {
     void customizeSslConnector(Connector connector) {
       super.customizeConnector(connector);
     }

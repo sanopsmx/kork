@@ -22,9 +22,8 @@ import com.github.benmanes.caffeine.cache.stats.StatsCounter;
 import com.netflix.spectator.api.Counter;
 import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.api.Timer;
-import org.checkerframework.checker.index.qual.NonNegative;
-
 import java.util.concurrent.TimeUnit;
+import org.checkerframework.checker.index.qual.NonNegative;
 
 public class CaffeineStatsCounter implements StatsCounter {
   private final Counter hitCount;
@@ -74,17 +73,15 @@ public class CaffeineStatsCounter implements StatsCounter {
   }
 
   @Override
-  public void recordEviction(@NonNegative int weight, RemovalCause cause) {
+  public void recordEviction(@NonNegative int weight, RemovalCause cause) {}
 
-  }
-
-  //@Override
+  // @Override
   @SuppressWarnings("deprecation")
   public void recordEviction() {
     recordEviction(1);
   }
 
-  //@Override
+  // @Override
   public void recordEviction(int weight) {
     evictionCount.increment();
     evictionWeight.increment(weight);
@@ -93,13 +90,14 @@ public class CaffeineStatsCounter implements StatsCounter {
   @Override
   public CacheStats snapshot() {
     return CacheStats.of(
-        hitCount.count(),
-        missCount.count(),
-        loadSuccessCount.count(),
-        loadFailureCount.count(),
-        totalLoadTime.count(),
-        evictionCount.count(),
-        evictionWeight.count());
+      hitCount.count(),
+      missCount.count(),
+      loadSuccessCount.count(),
+      loadFailureCount.count(),
+      totalLoadTime.count(),
+      evictionCount.count(),
+      evictionWeight.count()
+    );
   }
 
   @Override

@@ -27,7 +27,8 @@ import javax.annotation.Nonnull;
 /**
  * Specify the metric criticality of high, low, or unknown.
  *
- * <p>This could be used to inform alerting conditions.
+ * <p>
+ * This could be used to inform alerting conditions.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

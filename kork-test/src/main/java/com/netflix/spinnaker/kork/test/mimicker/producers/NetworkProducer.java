@@ -28,11 +28,12 @@ public class NetworkProducer {
 
   public String getIpv4Address() {
     return format(
-        "%d.%d.%d.%d",
-        randomProducer.intValue(1, 255),
-        randomProducer.intValue(0, 255),
-        randomProducer.intValue(0, 255),
-        randomProducer.intValue(0, 255));
+      "%d.%d.%d.%d",
+      randomProducer.intValue(1, 255),
+      randomProducer.intValue(0, 255),
+      randomProducer.intValue(0, 255),
+      randomProducer.intValue(0, 255)
+    );
   }
 
   public String getIpv6Address() {

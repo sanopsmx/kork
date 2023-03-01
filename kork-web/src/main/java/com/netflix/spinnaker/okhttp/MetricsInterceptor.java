@@ -24,17 +24,17 @@ import org.springframework.util.StringUtils;
  * {@code MetricsInterceptor} is an encapsulation of common interception logic relevant to both
  * okhttp and okhttp3.
  *
- * <p>It is implemented as a single class with the expectation that legacy okhttp usage is on the
- * way out and the interceptor logic will not be necessary long term.
+ * <p>
+ * It is implemented as a single class with the expectation that legacy okhttp usage is on the way
+ * out and the interceptor logic will not be necessary long term.
  */
 class MetricsInterceptor {
   private final Provider<Registry> registry;
   private final OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties;
   private final Logger log;
 
-  MetricsInterceptor(
-      Provider<Registry> registry,
-      OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties) {
+  MetricsInterceptor(Provider<Registry> registry,
+                     OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties) {
     this.registry = registry;
     this.okHttpMetricsInterceptorProperties = okHttpMetricsInterceptorProperties;
     this.log = LoggerFactory.getLogger(getClass());
@@ -45,12 +45,10 @@ class MetricsInterceptor {
     boolean wasSuccessful = false;
     int statusCode = -1;
 
-    Interceptor.Chain chain =
-        (chainObject instanceof Interceptor.Chain) ? (Interceptor.Chain) chainObject : null;
-    okhttp3.Interceptor.Chain chain3 =
-        (chainObject instanceof okhttp3.Interceptor.Chain)
-            ? (okhttp3.Interceptor.Chain) chainObject
-            : null;
+    Interceptor.Chain chain = (chainObject instanceof Interceptor.Chain) ? (Interceptor.Chain) chainObject : null;
+    okhttp3.Interceptor.Chain chain3 = (chainObject instanceof okhttp3.Interceptor.Chain)
+      ? (okhttp3.Interceptor.Chain) chainObject
+      : null;
 
     Request request = (chain != null) ? chain.request() : null;
     okhttp3.Request request3 = (chain3 != null) ? chain3.request() : null;
@@ -77,10 +75,8 @@ class MetricsInterceptor {
 
       if (checkForHeaders(url.toString())) {
         for (Header header : Header.values()) {
-          String headerValue =
-              (request != null)
-                  ? request.header(header.getHeader())
-                  : request3.header(header.getHeader());
+          String headerValue = (request != null) ? request.header(header.getHeader())
+            : request3.header(header.getHeader());
 
           if (header.isRequired() && StringUtils.isEmpty(headerValue)) {
             missingHeaders.add(header.getHeader());
@@ -94,56 +90,44 @@ class MetricsInterceptor {
       boolean missingAuthHeaders = missingHeaders.size() > 0;
 
       if (missingAuthHeaders) {
-        List<String> stack =
-            Arrays.stream(Thread.currentThread().getStackTrace())
-                .map(StackTraceElement::toString)
-                .filter(x -> x.contains("com.netflix.spinnaker"))
-                .collect(Collectors.toList());
+        List<String> stack = Arrays.stream(Thread.currentThread().getStackTrace()).map(StackTraceElement::toString)
+          .filter(x -> x.contains("com.netflix.spinnaker")).collect(Collectors.toList());
 
         String stackTrace = String.join("\n\tat ", stack);
         log.warn(
-            String.format(
-                "Request %s:%s is missing %s authentication headers and will be treated as anonymous.\nRequest from: %s",
-                method, url, missingHeaders, stackTrace));
+          String.format(
+            "Request %s:%s is missing %s authentication headers and will be treated as anonymous.\nRequest from: %s",
+            method,
+            url,
+            missingHeaders,
+            stackTrace
+          )
+        );
       }
 
-      recordTimer(
-          registry.get(),
-          url,
-          System.nanoTime() - start,
-          statusCode,
-          wasSuccessful,
-          !missingAuthHeaders);
+      recordTimer(registry.get(), url, System.nanoTime() - start, statusCode, wasSuccessful, !missingAuthHeaders);
     }
   }
 
   private boolean checkForHeaders(String url) {
     String xSpinAnonymous = MDC.get(Header.XSpinnakerAnonymous);
-    Pattern endPointPatternForHeaderCheck =
-        okHttpMetricsInterceptorProperties.getEndPointPatternForHeaderCheck();
-    return xSpinAnonymous == null
-        && !okHttpMetricsInterceptorProperties.isSkipHeaderCheck()
-        && (endPointPatternForHeaderCheck == null
-            || endPointPatternForHeaderCheck.matcher(url).matches());
+    Pattern endPointPatternForHeaderCheck = okHttpMetricsInterceptorProperties.getEndPointPatternForHeaderCheck();
+    return xSpinAnonymous == null && !okHttpMetricsInterceptorProperties.isSkipHeaderCheck()
+      && (endPointPatternForHeaderCheck == null || endPointPatternForHeaderCheck.matcher(url).matches());
   }
 
-  private static void recordTimer(
-      Registry registry,
-      URL requestUrl,
-      Long durationNs,
-      int statusCode,
-      boolean wasSuccessful,
-      boolean hasAuthHeaders) {
-    registry
-        .timer(
-            registry
-                .createId("okhttp.requests")
-                .withTag("requestHost", requestUrl.getHost())
-                .withTag("statusCode", String.valueOf(statusCode))
-                .withTag("status", bucket(statusCode))
-                .withTag("success", wasSuccessful)
-                .withTag("authenticated", hasAuthHeaders))
-        .record(durationNs, TimeUnit.NANOSECONDS);
+  private static void recordTimer(Registry registry,
+                                  URL requestUrl,
+                                  Long durationNs,
+                                  int statusCode,
+                                  boolean wasSuccessful,
+                                  boolean hasAuthHeaders) {
+    registry.timer(
+      registry.createId("okhttp.requests").withTag("requestHost", requestUrl.getHost()).withTag(
+        "statusCode",
+        String.valueOf(statusCode)
+      ).withTag("status", bucket(statusCode)).withTag("success", wasSuccessful).withTag("authenticated", hasAuthHeaders)
+    ).record(durationNs, TimeUnit.NANOSECONDS);
   }
 
   private static String bucket(int statusCode) {

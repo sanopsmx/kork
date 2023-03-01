@@ -26,7 +26,8 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Basic AWS values.
  *
- * <p>This producer must not include AWS-specific models (so not to pollute the test classpath). If
+ * <p>
+ * This producer must not include AWS-specific models (so not to pollute the test classpath). If
  * your tests need to generate fake AWS models, create a Producer for that service (e.g.
  * clouddriver).
  */
@@ -36,8 +37,7 @@ public class AwsProducer {
   private final TextProducer textProducer;
   private final RandomProducer randomProducer;
 
-  public AwsProducer(
-      DataContainer dataContainer, TextProducer textProducer, RandomProducer randomProducer) {
+  public AwsProducer(DataContainer dataContainer, TextProducer textProducer, RandomProducer randomProducer) {
     this.dataContainer = dataContainer;
     this.textProducer = textProducer;
     this.randomProducer = randomProducer;

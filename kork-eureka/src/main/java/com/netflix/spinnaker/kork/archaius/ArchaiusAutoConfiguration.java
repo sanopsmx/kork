@@ -47,29 +47,28 @@ public class ArchaiusAutoConfiguration {
    * This is a BeanPostProcessor only to cause early initialization before any of the beans in
    * EurekaAutoConfiguration.
    *
-   * <p>We can't rely on the AutoConfiguration ordering annotations for bean instantiation ordering,
-   * they only serve to ensure bean definitions are registered so Conditional annotations work as
-   * expected.
+   * <p>
+   * We can't rely on the AutoConfiguration ordering annotations for bean instantiation ordering, they
+   * only serve to ensure bean definitions are registered so Conditional annotations work as expected.
    *
-   * <p>Since we don't have a direct dependency between the Eureka beans and these ones, we are at
-   * the mercy of the context if someone directly asks for a EurekaClient.
+   * <p>
+   * Since we don't have a direct dependency between the Eureka beans and these ones, we are at the
+   * mercy of the context if someone directly asks for a EurekaClient.
    */
   static class ArchaiusInitializer implements BeanPostProcessor {
     private final AbstractPollingScheduler pollingScheduler;
     private final DynamicConfiguration configurationInstance;
 
-    public ArchaiusInitializer(
-        ConfigurableApplicationContext applicationContext,
-        AbstractPollingScheduler pollingScheduler,
-        SpringEnvironmentPolledConfigurationSource polledConfigurationSource) {
+    public ArchaiusInitializer(ConfigurableApplicationContext applicationContext,
+                               AbstractPollingScheduler pollingScheduler,
+                               SpringEnvironmentPolledConfigurationSource polledConfigurationSource) {
       Objects.requireNonNull(applicationContext, "applicationContext");
       this.pollingScheduler = Objects.requireNonNull(pollingScheduler, "pollingScheduler");
       Objects.requireNonNull(polledConfigurationSource, "polledConfigurationSource");
 
       DynamicConfiguration installedConfiguration = null;
       if (!ConfigurationManager.isConfigurationInstalled()) {
-        installedConfiguration =
-            new DynamicConfiguration(polledConfigurationSource, pollingScheduler);
+        installedConfiguration = new DynamicConfiguration(polledConfigurationSource, pollingScheduler);
         CompositeConfiguration configuration = new CompositeConfiguration();
         configuration.addConfiguration(installedConfiguration);
         ConfigurationManager.install(configuration);
@@ -80,61 +79,52 @@ public class ArchaiusAutoConfiguration {
       AbstractConfiguration config = ConfigurationManager.getConfigInstance();
 
       applicationContext.getBeanFactory().registerSingleton("environmentBackedConfig", config);
-      applicationContext
-          .getBeanFactory()
-          .registerAlias("environmentBackedConfig", "abstractConfiguration");
+      applicationContext.getBeanFactory().registerAlias("environmentBackedConfig", "abstractConfiguration");
     }
 
     @PreDestroy
     public void shutdown() {
       if (configurationInstance != null) {
         pollingScheduler.stop();
-        ((CompositeConfiguration) ConfigurationManager.getConfigInstance())
-            .removeConfiguration(configurationInstance);
+        ((CompositeConfiguration) ConfigurationManager.getConfigInstance()).removeConfiguration(configurationInstance);
       }
     }
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName)
-        throws BeansException {
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
       return bean;
     }
 
     @Override
-    public Object postProcessAfterInitialization(Object bean, String beanName)
-        throws BeansException {
+    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
       return bean;
     }
   }
 
   @Bean
-  public static AbstractPollingScheduler pollingScheduler(
-      ConfigurableApplicationContext applicationContext) {
-    int initialDelayMillis =
-        applicationContext
-            .getEnvironment()
-            .getProperty(FixedDelayPollingScheduler.INITIAL_DELAY_PROPERTY, Integer.class, 0);
-    int delayMillis =
-        applicationContext
-            .getEnvironment()
-            .getProperty(
-                FixedDelayPollingScheduler.DELAY_PROPERTY,
-                Integer.class,
-                (int) TimeUnit.SECONDS.toMillis(15));
+  public static AbstractPollingScheduler pollingScheduler(ConfigurableApplicationContext applicationContext) {
+    int initialDelayMillis = applicationContext.getEnvironment().getProperty(
+      FixedDelayPollingScheduler.INITIAL_DELAY_PROPERTY,
+      Integer.class,
+      0
+    );
+    int delayMillis = applicationContext.getEnvironment().getProperty(
+      FixedDelayPollingScheduler.DELAY_PROPERTY,
+      Integer.class,
+      (int) TimeUnit.SECONDS.toMillis(15)
+    );
     return new FixedDelayPollingScheduler(initialDelayMillis, delayMillis, false);
   }
 
   @Bean
-  public static SpringEnvironmentPolledConfigurationSource polledConfigurationSource(
-      ConfigurableApplicationContext applicationContext) {
+  public static SpringEnvironmentPolledConfigurationSource polledConfigurationSource(ConfigurableApplicationContext applicationContext) {
     return new SpringEnvironmentPolledConfigurationSource(applicationContext.getEnvironment());
   }
 
   @Bean
-  public static ArchaiusInitializer archaiusInitializer(
-      ConfigurableApplicationContext applicationContext,
-      AbstractPollingScheduler pollingScheduler,
-      SpringEnvironmentPolledConfigurationSource polledConfigurationSource) {
+  public static ArchaiusInitializer archaiusInitializer(ConfigurableApplicationContext applicationContext,
+                                                        AbstractPollingScheduler pollingScheduler,
+                                                        SpringEnvironmentPolledConfigurationSource polledConfigurationSource) {
     return new ArchaiusInitializer(applicationContext, pollingScheduler, polledConfigurationSource);
   }
 }

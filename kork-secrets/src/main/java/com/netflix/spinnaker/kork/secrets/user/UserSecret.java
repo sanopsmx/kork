@@ -44,18 +44,17 @@ import org.springframework.security.core.authority.AuthorityUtils;
 @Builder
 public class UserSecret implements AccessControlled {
   /** Returns the metadata for this secret. */
-  @Delegate private final UserSecretMetadata metadata;
+  @Delegate
+  private final UserSecretMetadata metadata;
 
   /** Returns the user secret data contained in this secret. */
-  @Delegate private final UserSecretData data;
+  @Delegate
+  private final UserSecretData data;
 
   @Override
   public boolean isAuthorized(Authentication authentication, Object authorization) {
-    Set<String> userAuthorities =
-        AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-    Set<String> permittedAuthorities =
-        getRoles().stream().map(role -> "ROLE_" + role).collect(Collectors.toSet());
-    return permittedAuthorities.isEmpty()
-        || !Collections.disjoint(userAuthorities, permittedAuthorities);
+    Set<String> userAuthorities = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+    Set<String> permittedAuthorities = getRoles().stream().map(role -> "ROLE_" + role).collect(Collectors.toSet());
+    return permittedAuthorities.isEmpty() || !Collections.disjoint(userAuthorities, permittedAuthorities);
   }
 }

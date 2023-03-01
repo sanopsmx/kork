@@ -24,8 +24,9 @@ public interface SpinnakerApplicationEvent {
   /**
    * The originating object that created the event.
    *
-   * <p>IMPORTANT: Service developers should exercise caution setting this value, as it could leak
-   * an internal service class, establishing an unwanted implicit contract with plugin developers.
+   * <p>
+   * IMPORTANT: Service developers should exercise caution setting this value, as it could leak an
+   * internal service class, establishing an unwanted implicit contract with plugin developers.
    */
   @Nullable
   Object getSource();

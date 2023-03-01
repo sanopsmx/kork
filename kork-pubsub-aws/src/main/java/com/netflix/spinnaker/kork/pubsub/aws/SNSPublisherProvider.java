@@ -53,14 +53,13 @@ public class SNSPublisherProvider {
   private final DynamicConfigService dynamicConfig;
 
   @Autowired
-  public SNSPublisherProvider(
-      AWSCredentialsProvider awsCredentialsProvider,
-      AmazonPubsubProperties properties,
-      PubsubPublishers pubsubPublishers,
-      Registry registry,
-      RetrySupport retrySupport,
-      DiscoveryStatusListener discoveryStatus,
-      DynamicConfigService dynamicConfig) {
+  public SNSPublisherProvider(AWSCredentialsProvider awsCredentialsProvider,
+                              AmazonPubsubProperties properties,
+                              PubsubPublishers pubsubPublishers,
+                              Registry registry,
+                              RetrySupport retrySupport,
+                              DiscoveryStatusListener discoveryStatus,
+                              DynamicConfigService dynamicConfig) {
     this.awsCredentialsProvider = awsCredentialsProvider;
     this.properties = properties;
     this.pubsubPublishers = pubsubPublishers;
@@ -77,28 +76,19 @@ public class SNSPublisherProvider {
     }
 
     List<PubsubPublisher> publishers = new ArrayList<>();
-    properties
-        .getSubscriptions()
-        .forEach(
-            (AmazonPubsubProperties.AmazonPubsubSubscription subscription) -> {
-              ARN topicARN = new ARN(subscription.getTopicARN());
-              log.info("Bootstrapping SNS topic: {}", topicARN);
+    properties.getSubscriptions().forEach((AmazonPubsubProperties.AmazonPubsubSubscription subscription) -> {
+      ARN topicARN = new ARN(subscription.getTopicARN());
+      log.info("Bootstrapping SNS topic: {}", topicARN);
 
-              AmazonSNS amazonSNS =
-                  AmazonSNSClientBuilder.standard()
-                      .withCredentials(awsCredentialsProvider)
-                      .withClientConfiguration(new ClientConfiguration())
-                      .withRegion(topicARN.getRegion())
-                      .build();
+      AmazonSNS amazonSNS = AmazonSNSClientBuilder.standard().withCredentials(awsCredentialsProvider)
+        .withClientConfiguration(new ClientConfiguration()).withRegion(topicARN.getRegion()).build();
 
-              Supplier<Boolean> isEnabled =
-                  PubSubUtils.getEnabledSupplier(dynamicConfig, subscription, discoveryStatus);
+      Supplier<Boolean> isEnabled = PubSubUtils.getEnabledSupplier(dynamicConfig, subscription, discoveryStatus);
 
-              SNSPublisher publisher =
-                  new SNSPublisher(subscription, amazonSNS, isEnabled, registry, retrySupport);
+      SNSPublisher publisher = new SNSPublisher(subscription, amazonSNS, isEnabled, registry, retrySupport);
 
-              publishers.add(publisher);
-            });
+      publishers.add(publisher);
+    });
 
     pubsubPublishers.putAll(publishers);
   }

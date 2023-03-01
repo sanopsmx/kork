@@ -47,8 +47,8 @@ public class CloudConfigResourceService implements EnvironmentAware {
     this.environmentRepository = null;
   }
 
-  public CloudConfigResourceService(
-      ResourceRepository resourceRepository, EnvironmentRepository environmentRepository) {
+  public CloudConfigResourceService(ResourceRepository resourceRepository,
+                                    EnvironmentRepository environmentRepository) {
     this.resourceRepository = resourceRepository;
     this.environmentRepository = environmentRepository;
   }
@@ -60,29 +60,23 @@ public class CloudConfigResourceService implements EnvironmentAware {
 
   private String retrieveFromConfigServer(String path) {
     if (resourceRepository == null || environmentRepository == null) {
-      throw new ConfigFileLoadingException(
-          "Config Server repository not configured for resource \"" + path + "\"");
+      throw new ConfigFileLoadingException("Config Server repository not configured for resource \"" + path + "\"");
     }
 
     try {
       String fileName = getResourceName(path);
-      Resource resource =
-          this.resourceRepository.findOne(applicationName, profiles, null, fileName);
+      Resource resource = this.resourceRepository.findOne(applicationName, profiles, null, fileName);
       try (InputStream inputStream = resource.getInputStream()) {
-        Environment environment =
-            this.environmentRepository.findOne(applicationName, profiles, null);
+        Environment environment = this.environmentRepository.findOne(applicationName, profiles, null);
 
         String text = IOUtils.toString(inputStream, StandardCharsets.UTF_8);
-        StandardEnvironment preparedEnvironment =
-            EnvironmentPropertySource.prepareEnvironment(environment);
+        StandardEnvironment preparedEnvironment = EnvironmentPropertySource.prepareEnvironment(environment);
         return EnvironmentPropertySource.resolvePlaceholders(preparedEnvironment, text);
       }
     } catch (NoSuchResourceException e) {
-      throw new ConfigFileLoadingException(
-          "The resource \"" + path + "\" was not found in config server", e);
+      throw new ConfigFileLoadingException("The resource \"" + path + "\" was not found in config server", e);
     } catch (IOException e) {
-      throw new ConfigFileLoadingException(
-          "Exception reading config server resource \"" + path + "\"", e);
+      throw new ConfigFileLoadingException("Exception reading config server resource \"" + path + "\"", e);
     }
   }
 

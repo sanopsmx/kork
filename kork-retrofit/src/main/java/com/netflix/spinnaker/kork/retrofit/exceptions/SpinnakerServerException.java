@@ -42,10 +42,8 @@ public class SpinnakerServerException extends SpinnakerException {
    */
   public SpinnakerServerException(RetrofitError e) {
     super(e.getCause());
-    RetrofitErrorResponseBody body =
-        (RetrofitErrorResponseBody) e.getBodyAs(RetrofitErrorResponseBody.class);
-    this.rawMessage =
-        Optional.ofNullable(body).map(RetrofitErrorResponseBody::getMessage).orElse(e.getMessage());
+    RetrofitErrorResponseBody body = (RetrofitErrorResponseBody) e.getBodyAs(RetrofitErrorResponseBody.class);
+    this.rawMessage = Optional.ofNullable(body).map(RetrofitErrorResponseBody::getMessage).orElse(e.getMessage());
   }
 
   /**
@@ -53,9 +51,9 @@ public class SpinnakerServerException extends SpinnakerException {
    * response body.
    *
    * @param message the message
-   * @param cause the cause. Note that this is required (i.e. can't be null) since in the absence of
-   *     a cause or a RetrofitError that provides the cause, SpinnakerServerException is likely not
-   *     the appropriate exception class to use.
+   * @param cause the cause. Note that this is required (i.e. can't be null) since in the absence of a
+   *        cause or a RetrofitError that provides the cause, SpinnakerServerException is likely not
+   *        the appropriate exception class to use.
    */
   public SpinnakerServerException(String message, Throwable cause) {
     super(message, cause);
@@ -76,7 +74,7 @@ public class SpinnakerServerException extends SpinnakerException {
 
   @Getter
   // Use JsonIgnoreProperties because some responses contain properties that
-  // cannot be mapped to the RetrofitErrorResponseBody class.  If the default
+  // cannot be mapped to the RetrofitErrorResponseBody class. If the default
   // JacksonConverter (with no extra configurations) is used to deserialize the
   // response body and properties other than "message" exist in the JSON
   // response, there will be an UnrecognizedPropertyException.

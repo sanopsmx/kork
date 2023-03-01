@@ -43,7 +43,8 @@ public class ServiceVersion {
   /**
    * Resolve the application version.
    *
-   * <p>This call will never fail, although if the version cannot be resolved, "unknown" will be
+   * <p>
+   * This call will never fail, although if the version cannot be resolved, "unknown" will be
    * returned.
    */
   @Nonnull

@@ -33,10 +33,9 @@ public class RedisClientSelector {
 
   public RedisClientSelector(List<RedisClientDelegate> clients) {
     this.clients = clients;
-    clients.forEach(
-        client -> {
-          log.info("Configured {} using {}", client.name(), client.getClass().getSimpleName());
-        });
+    clients.forEach(client -> {
+      log.info("Configured {} using {}", client.name(), client.getClass().getSimpleName());
+    });
   }
 
   public RedisClientDelegate primary(String name) {
@@ -48,25 +47,21 @@ public class RedisClientSelector {
   }
 
   public RedisClientDelegate primary(String name, boolean fallbackToDefault) {
-    return select(name, true, fallbackToDefault)
-        .orElseThrow(
-            () ->
-                new RedisClientNotFound(
-                    "Could not find primary Redis client by name '"
-                        + name
-                        + "' and no default configured"));
+    return select(name, true, fallbackToDefault).orElseThrow(
+      () -> new RedisClientNotFound(
+        "Could not find primary Redis client by name '" + name + "' and no default configured"
+      )
+    );
   }
 
   public Optional<RedisClientDelegate> previous(String name, boolean fallbackToDefault) {
     return select(name, false, fallbackToDefault);
   }
 
-  private Optional<RedisClientDelegate> select(
-      String name, boolean primary, boolean fallbackToDefault) {
+  private Optional<RedisClientDelegate> select(String name, boolean primary, boolean fallbackToDefault) {
     String stdName = getName(primary, name);
 
-    Optional<RedisClientDelegate> client =
-        clients.stream().filter(it -> stdName.equals(it.name())).findFirst();
+    Optional<RedisClientDelegate> client = clients.stream().filter(it -> stdName.equals(it.name())).findFirst();
 
     if (!client.isPresent() && fallbackToDefault) {
       String defaultName = getName(primary, DEFAULT);

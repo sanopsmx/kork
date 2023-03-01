@@ -18,9 +18,9 @@ package com.netflix.spinnaker.kork.retrofit.exceptions;
 
 import com.netflix.spinnaker.kork.web.exceptions.BaseExceptionHandlers;
 import com.netflix.spinnaker.kork.web.exceptions.ExceptionMessageDecorator;
-import java.io.IOException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.Ordered;
@@ -38,28 +38,25 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 @ControllerAdvice
 @Order(Ordered.LOWEST_PRECEDENCE - 1)
 public class SpinnakerRetrofitExceptionHandlers extends BaseExceptionHandlers {
-  private static final Logger logger =
-      LoggerFactory.getLogger(SpinnakerRetrofitExceptionHandlers.class);
+  private static final Logger logger = LoggerFactory.getLogger(SpinnakerRetrofitExceptionHandlers.class);
 
   public SpinnakerRetrofitExceptionHandlers(ExceptionMessageDecorator exceptionMessageDecorator) {
     super(exceptionMessageDecorator);
   }
 
   @ExceptionHandler({SpinnakerServerException.class})
-  public void handleSpinnakerServerException(
-      SpinnakerServerException e, HttpServletResponse response, HttpServletRequest request)
-      throws IOException {
+  public void handleSpinnakerServerException(SpinnakerServerException e,
+                                             HttpServletResponse response,
+                                             HttpServletRequest request) throws IOException {
     storeException(request, response, e);
     logger.error(e.getMessage(), e);
-    response.sendError(
-        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        exceptionMessageDecorator.decorate(e, e.getMessage()));
+    response.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), exceptionMessageDecorator.decorate(e, e.getMessage()));
   }
 
   @ExceptionHandler({SpinnakerHttpException.class})
-  public void handleSpinnakerHttpException(
-      SpinnakerHttpException e, HttpServletResponse response, HttpServletRequest request)
-      throws IOException {
+  public void handleSpinnakerHttpException(SpinnakerHttpException e,
+                                           HttpServletResponse response,
+                                           HttpServletRequest request) throws IOException {
     // We made an http request that failed and nothing else handled that
     // failure, so generate our response based on the response we received.
     storeException(request, response, e);

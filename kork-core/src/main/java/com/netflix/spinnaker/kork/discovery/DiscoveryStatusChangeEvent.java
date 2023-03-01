@@ -35,13 +35,7 @@ public class DiscoveryStatusChangeEvent {
 
   @Override
   public String toString() {
-    return "DiscoveryStatusChangeEvent{"
-        + "timestamp="
-        + timestamp
-        + ", current="
-        + status
-        + ", previous="
-        + previousStatus
-        + '}';
+    return "DiscoveryStatusChangeEvent{" + "timestamp=" + timestamp + ", current=" + status + ", previous="
+      + previousStatus + '}';
   }
 }

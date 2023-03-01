@@ -31,18 +31,17 @@ public class AbstractStorageEngineTest {
 
   @Before
   public void init() {
-    engine =
-        new AbstractStorageSecretEngine() {
-          @Override
-          protected InputStream downloadRemoteFile(EncryptedSecret encryptedSecret) {
-            return null;
-          }
+    engine = new AbstractStorageSecretEngine() {
+      @Override
+      protected InputStream downloadRemoteFile(EncryptedSecret encryptedSecret) {
+        return null;
+      }
 
-          @Override
-          public String identifier() {
-            return "test";
-          }
-        };
+      @Override
+      public String identifier() {
+        return "test";
+      }
+    };
   }
 
   protected ByteArrayInputStream readStream(String value) {

@@ -36,7 +36,8 @@ import org.slf4j.LoggerFactory;
 /**
  * Manages the custom MetricDescriptors to use with Stackdriver.
  *
- * <p>This isnt really a cache anymore. It just knows how to map between spectator and custom metric
+ * <p>
+ * This isnt really a cache anymore. It just knows how to map between spectator and custom metric
  * descriptors, and to manipulate custom metric descriptors if needed.
  */
 public class MetricDescriptorCache {
@@ -53,10 +54,11 @@ public class MetricDescriptorCache {
   private final Logger log = LoggerFactory.getLogger("StackdriverMdCache");
 
   /**
-   * The prefix used when declaring Stackdriver Custom Metric types. This has to look a particular
-   * way so we'll capture that here.
+   * The prefix used when declaring Stackdriver Custom Metric types. This has to look a particular way
+   * so we'll capture that here.
    *
-   * <p>The postfix will be the Spectator measurement name.
+   * <p>
+   * The postfix will be the Spectator measurement name.
    */
   private String baseStackdriverMetricTypeName;
 
@@ -75,18 +77,19 @@ public class MetricDescriptorCache {
     service = configParams.getStackdriverStub();
     projectResourceName = "projects/" + configParams.getProjectName();
 
-    baseStackdriverMetricTypeName =
-        String.format(
-            "custom.googleapis.com/%s/%s/",
-            configParams.getCustomTypeNamespace(), configParams.getApplicationName());
+    baseStackdriverMetricTypeName = String.format(
+      "custom.googleapis.com/%s/%s/",
+      configParams.getCustomTypeNamespace(),
+      configParams.getApplicationName()
+    );
   }
 
   /**
    * Convert a Spectator ID into a Stackdriver Custom Descriptor Type name.
    *
    * @param id Spectator measurement id
-   * @return Fully qualified Stackdriver custom Metric Descriptor type. This always returns the
-   *     type, independent of filtering.
+   * @return Fully qualified Stackdriver custom Metric Descriptor type. This always returns the type,
+   *         independent of filtering.
    */
   public String idToDescriptorType(Id id) {
     return baseStackdriverMetricTypeName + id.name();
@@ -100,12 +103,14 @@ public class MetricDescriptorCache {
   /**
    * Specifies a label binding to be added to every custom metric TimeSeries.
    *
-   * <p>This also adds the labels to every custom MetricDescriptor created.
+   * <p>
+   * This also adds the labels to every custom MetricDescriptor created.
    *
-   * <p>Therefore this method should only be called before any Stackdriver activity. This is awkward
-   * to enfore here because in practice the labels are needed once we determine the Stackdriver
-   * Monitored Resource, however that can be deferred until after we construct the cache in the
-   * event that Stackdriver was not available when we needed to create a custom MonitoredResource.
+   * <p>
+   * Therefore this method should only be called before any Stackdriver activity. This is awkward to
+   * enfore here because in practice the labels are needed once we determine the Stackdriver Monitored
+   * Resource, however that can be deferred until after we construct the cache in the event that
+   * Stackdriver was not available when we needed to create a custom MonitoredResource.
    */
   public void addExtraTimeSeriesLabel(String key, String value) {
     extraTimeSeriesLabels.put(key, value);
@@ -134,7 +139,7 @@ public class MetricDescriptorCache {
    * @param descriptorType The Stackdriver custom descriptor ype name for the labels.
    * @param tags The Spectator Measurement tags for the data.
    * @return A map of label key, value bindings may include fewer or more tags than those provided
-   *     depending on the extra tags and configured custom descriptor hints.
+   *         depending on the extra tags and configured custom descriptor hints.
    */
   public Map<String, String> tagsToTimeSeriesLabels(String descriptorType, Iterable<Tag> tags) {
     HashMap<String, String> labels = new HashMap<String, String>(extraTimeSeriesLabels);
@@ -146,8 +151,7 @@ public class MetricDescriptorCache {
   }
 
   /** Helper function providing a hook to fix or omit bad labels. */
-  private void addSanitizedLabel(
-      MetricDescriptor descriptor, Tag tag, Map<String, String> labels) {}
+  private void addSanitizedLabel(MetricDescriptor descriptor, Tag tag, Map<String, String> labels) {}
 
   /**
    * Remember the analysis of meters to determine if they are timers or not. This is because
@@ -163,43 +167,41 @@ public class MetricDescriptorCache {
 
   /** Determine if meter is a Timer or not. */
   public boolean meterIsTimer(Registry registry, Meter meter) {
-    return idToTimer.computeIfAbsent(
-        meter.id(),
-        k -> {
-          try {
-            return registry.timers().anyMatch(m -> m.id().equals(meter.id()));
-          } catch (ArrayIndexOutOfBoundsException aoex) {
-            // !!! 20160929
-            // !!! I dont know if this is a bug or what
-            // !!! but the tests all get an array out of bounds calling stream()
-            return meter instanceof Timer;
-          }
-        });
+    return idToTimer.computeIfAbsent(meter.id(), k -> {
+      try {
+        return registry.timers().anyMatch(m -> m.id().equals(meter.id()));
+      } catch (ArrayIndexOutOfBoundsException aoex) {
+        // !!! 20160929
+        // !!! I dont know if this is a bug or what
+        // !!! but the tests all get an array out of bounds calling stream()
+        return meter instanceof Timer;
+      }
+    });
   }
 
   /** Determine the Stackdriver Custom Metric Desctiptor Kind to use. */
   public String descriptorTypeToKind(String descriptorType, Registry registry, Meter meter) {
-    return typeToKind.computeIfAbsent(
-        descriptorType,
-        k -> {
-          return meterToKind(registry, meter);
-        });
+    return typeToKind.computeIfAbsent(descriptorType, k -> {
+      return meterToKind(registry, meter);
+    });
   }
 
   /**
    * Hack another label into an existing Stackdriver Custom Metric Descriptor.
    *
-   * <p>This may lose historic time series data. It returns the new descriptor (result from create)
-   * only for testing purposes.
+   * <p>
+   * This may lose historic time series data. It returns the new descriptor (result from create) only
+   * for testing purposes.
    */
   public MetricDescriptor addLabel(String descriptorType, String newLabel) {
     String descriptorName = projectResourceName + "/metricDescriptors/" + descriptorType;
     MetricDescriptor descriptor;
 
     log.info(
-        "Adding label '{}' to stackdriver descriptor '{}'. This may lose existing metric data",
-        newLabel,
-        descriptorName);
+      "Adding label '{}' to stackdriver descriptor '{}'. This may lose existing metric data",
+      newLabel,
+      descriptorName
+    );
     try {
       descriptor = service.projects().metricDescriptors().get(descriptorName).execute();
     } catch (IOException ioex) {
@@ -224,8 +226,9 @@ public class MetricDescriptorCache {
     labelDescriptor.setValueType("STRING");
     descriptor.getLabels().add(labelDescriptor);
 
-    /* Catch but ignore errors. Assume there is another process making mods too.
-     * We may overwrite theirs, but they'll just have to make them again later.
+    /*
+     * Catch but ignore errors. Assume there is another process making mods too. We may overwrite
+     * theirs, but they'll just have to make them again later.
      */
     try {
       log.info("Deleting existing stackdriver descriptor {}", descriptorName);
@@ -236,11 +239,7 @@ public class MetricDescriptorCache {
 
     try {
       log.info("Adding new descriptor for {}", descriptorName);
-      return service
-          .projects()
-          .metricDescriptors()
-          .create(projectResourceName, descriptor)
-          .execute();
+      return service.projects().metricDescriptors().create(projectResourceName, descriptor).execute();
     } catch (IOException ioex) {
       log.error("Failed to update the descriptor definition: " + ioex);
       return null;

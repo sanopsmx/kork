@@ -35,23 +35,24 @@ public class TomcatConfigurationProperties {
 
   // Defaults from https://wiki.mozilla.org/Security/Server_Side_TLS#Modern_compatibility
   // with some extra ciphers (non SHA384/256) to support TLSv1.1 and some non EC ciphers
-  private List<String> cipherSuites =
-      new ArrayList<>(
-          Arrays.asList(
-              "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
-              "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
-              "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
-              "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
-              "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
-              "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
-              "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
-              "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
-              "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
-              "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
-              "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
-              "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
-              "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
-              "TLS_DHE_RSA_WITH_AES_128_CBC_SHA"));
+  private List<String> cipherSuites = new ArrayList<>(
+    Arrays.asList(
+      "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384",
+      "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256",
+      "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256",
+      "TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA",
+      "TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA",
+      "TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA",
+      "TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA",
+      "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
+      "TLS_DHE_RSA_WITH_AES_128_CBC_SHA"
+    )
+  );
 
   private Boolean rejectIllegalHeader;
 

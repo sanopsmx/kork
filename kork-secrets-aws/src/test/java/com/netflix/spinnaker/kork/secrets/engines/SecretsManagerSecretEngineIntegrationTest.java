@@ -48,28 +48,25 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest(classes = SecretConfiguration.class)
 public class SecretsManagerSecretEngineIntegrationTest {
 
-  @Autowired private LocalStackContainer container;
+  @Autowired
+  private LocalStackContainer container;
 
   // for setting up test data
-  @Autowired private UserSecretSerdeFactory serdeFactory;
+  @Autowired
+  private UserSecretSerdeFactory serdeFactory;
 
-  @Autowired private UserSecretManager userSecretManager;
+  @Autowired
+  private UserSecretManager userSecretManager;
 
   @Test
   public void canDecryptUserSecret() {
-    AWSSecretsManager client =
-        AWSSecretsManagerClientBuilder.standard()
-            .withEndpointConfiguration(
-                container.getEndpointConfiguration(LocalStackContainer.Service.SECRETSMANAGER))
-            .withCredentials(container.getDefaultCredentialsProvider())
-            .build();
+    AWSSecretsManager client = AWSSecretsManagerClientBuilder.standard().withEndpointConfiguration(
+      container.getEndpointConfiguration(LocalStackContainer.Service.SECRETSMANAGER)
+    ).withCredentials(container.getDefaultCredentialsProvider()).build();
 
-    UserSecretMetadata metadata =
-        UserSecretMetadata.builder()
-            .type("opaque")
-            .encoding("cbor")
-            .roles(List.of("admin", "sre", "dev"))
-            .build();
+    UserSecretMetadata metadata = UserSecretMetadata.builder().type("opaque").encoding("cbor").roles(
+      List.of("admin", "sre", "dev")
+    ).build();
     UserSecretSerde serde = serdeFactory.serdeFor(metadata);
 
     Map<String, String> secretMap = Map.of("username", "blade", "password", "hunter2");
@@ -77,14 +74,14 @@ public class SecretsManagerSecretEngineIntegrationTest {
     ByteBuffer serializedSecretPayload = ByteBuffer.wrap(serde.serialize(data, metadata));
 
     client.createSecret(
-        new CreateSecretRequest()
-            .withName("my-user-secret")
-            .withSecretBinary(serializedSecretPayload)
-            .withTags(tagsForMetadata(metadata)));
+      new CreateSecretRequest().withName("my-user-secret").withSecretBinary(serializedSecretPayload).withTags(
+        tagsForMetadata(metadata)
+      )
+    );
 
-    UserSecretReference ref =
-        UserSecretReference.parse(
-            String.format("secret://secrets-manager?r=%s&s=my-user-secret", container.getRegion()));
+    UserSecretReference ref = UserSecretReference.parse(
+      String.format("secret://secrets-manager?r=%s&s=my-user-secret", container.getRegion())
+    );
     UserSecret userSecret = userSecretManager.getUserSecret(ref);
 
     assertEquals(metadata.getType(), userSecret.getType());
@@ -95,10 +92,10 @@ public class SecretsManagerSecretEngineIntegrationTest {
 
   private static Collection<Tag> tagsForMetadata(UserSecretMetadata metadata) {
     return List.of(
-        tagForField(UserSecretMetadataField.TYPE).withValue(metadata.getType()),
-        tagForField(UserSecretMetadataField.ENCODING).withValue(metadata.getEncoding()),
-        tagForField(UserSecretMetadataField.ROLES)
-            .withValue(String.join(", ", metadata.getRoles())));
+      tagForField(UserSecretMetadataField.TYPE).withValue(metadata.getType()),
+      tagForField(UserSecretMetadataField.ENCODING).withValue(metadata.getEncoding()),
+      tagForField(UserSecretMetadataField.ROLES).withValue(String.join(", ", metadata.getRoles()))
+    );
   }
 
   private static Tag tagForField(UserSecretMetadataField field) {
@@ -107,23 +104,18 @@ public class SecretsManagerSecretEngineIntegrationTest {
 
   @TestConfiguration
   public static class IntegrationTestConfig {
-    private static final DockerImageName DOCKER_IMAGE =
-        DockerImageName.parse("localstack/localstack:0.11.3");
+    private static final DockerImageName DOCKER_IMAGE = DockerImageName.parse("localstack/localstack:0.11.3");
 
     @Bean(initMethod = "start", destroyMethod = "stop")
     public LocalStackContainer localStackContainer() {
-      return new LocalStackContainer(DOCKER_IMAGE)
-          .withServices(LocalStackContainer.Service.SECRETSMANAGER);
+      return new LocalStackContainer(DOCKER_IMAGE).withServices(LocalStackContainer.Service.SECRETSMANAGER);
     }
 
     @Bean
     public SecretsManagerClientProvider localstackClientProvider(LocalStackContainer container) {
-      return (params) ->
-          AWSSecretsManagerClientBuilder.standard()
-              .withEndpointConfiguration(
-                  container.getEndpointConfiguration(LocalStackContainer.Service.SECRETSMANAGER))
-              .withCredentials(container.getDefaultCredentialsProvider())
-              .build();
+      return (params) -> AWSSecretsManagerClientBuilder.standard().withEndpointConfiguration(
+        container.getEndpointConfiguration(LocalStackContainer.Service.SECRETSMANAGER)
+      ).withCredentials(container.getDefaultCredentialsProvider()).build();
     }
 
     @Bean

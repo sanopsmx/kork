@@ -18,32 +18,33 @@ package com.netflix.spinnaker.credentials;
 
 /**
  * After {@link Credentials} have been parsed, they can be activated, refreshed, or retired - e.g.
- * adding agents. This happens before credentials are added or updated in the {@link
- * CredentialsRepository} and after credentials are removed from the {@link CredentialsRepository}.
+ * adding agents. This happens before credentials are added or updated in the
+ * {@link CredentialsRepository} and after credentials are removed from the
+ * {@link CredentialsRepository}.
  *
  * @param <T>
  */
 public interface CredentialsLifecycleHandler<T extends Credentials> {
 
   /**
-   * Credentials have been added. This is called before credentials are available in {@link
-   * CredentialsRepository}
+   * Credentials have been added. This is called before credentials are available in
+   * {@link CredentialsRepository}
    *
    * @param credentials
    */
   void credentialsAdded(T credentials);
 
   /**
-   * Credentials have been updated. This is called before credentials are updated in {@link
-   * CredentialsRepository}
+   * Credentials have been updated. This is called before credentials are updated in
+   * {@link CredentialsRepository}
    *
    * @param credentials
    */
   void credentialsUpdated(T credentials);
 
   /**
-   * Credentials have been deleted. This is called after credentials are removed from {@link
-   * CredentialsRepository}
+   * Credentials have been deleted. This is called after credentials are removed from
+   * {@link CredentialsRepository}
    *
    * @param credentials
    */

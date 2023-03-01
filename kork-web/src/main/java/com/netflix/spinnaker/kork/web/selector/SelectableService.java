@@ -29,11 +29,9 @@ public class SelectableService<T> {
   public T getService(Criteria criteria) {
     Assert.notNull(criteria, "Criteria is required to select a service");
 
-    return serviceSelectors.stream()
-        .filter(it -> it.supports(criteria))
-        .min((a, b) -> b.getPriority() - a.getPriority())
-        .map(ServiceSelector::getService)
-        .orElse(serviceSelectors.get(0).getService());
+    return serviceSelectors.stream().filter(it -> it.supports(criteria)).min(
+      (a, b) -> b.getPriority() - a.getPriority()
+    ).map(ServiceSelector::getService).orElse(serviceSelectors.get(0).getService());
   }
 
   public static class Criteria {

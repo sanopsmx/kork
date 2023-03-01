@@ -26,19 +26,23 @@ import javax.annotation.Nonnull;
 /**
  * A convenience interface for accessing plugin SDK services.
  *
- * <p>If an extension needs any services, this interface can be included as a constructor parameter
- * and the implementation will be injected into the extension.
+ * <p>
+ * If an extension needs any services, this interface can be included as a constructor parameter and
+ * the implementation will be injected into the extension.
  *
- * <pre>{@code
- * public class MyExtension {
+ * <pre>
+ * {
+ *   &#64;code
+ *   public class MyExtension {
  *
- *   private final PluginSdks pluginSdks;
+ *     private final PluginSdks pluginSdks;
  *
- *   public MyExtension(PluginSdks pluginSdks) {
- *     this.pluginSdks = pluginSdks;
+ *     public MyExtension(PluginSdks pluginSdks) {
+ *       this.pluginSdks = pluginSdks;
+ *     }
  *   }
  * }
- * }</pre>
+ * </pre>
  */
 public interface PluginSdks {
 
@@ -60,7 +64,8 @@ public interface PluginSdks {
   /**
    * Entry point for service-specific SDKs.
    *
-   * <p>A service may register its own specialized SDK to help plugin developers write extensions.
+   * <p>
+   * A service may register its own specialized SDK to help plugin developers write extensions.
    *
    * @param <T> The service SDK type. There will only be one of these per-service.
    */

@@ -27,9 +27,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = SecretConfiguration.class)
 @RequiredArgsConstructor
 class SecretsManagerConfigurationTest {
-  @Autowired SecretsManagerSecretEngine engine;
+  @Autowired
+  SecretsManagerSecretEngine engine;
 
-  /* 
+  /*
    //commented for PR3 porting
   @Test
   void contextLoads() {

@@ -28,6 +28,7 @@ import com.netflix.spinnaker.kork.lock.RefreshableLockManager;
 import java.io.IOException;
 import java.time.Clock;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -348,7 +349,9 @@ public class RedisLockManager implements RefreshableLockManager {
   }
 
   private Lock findAuthoritativeLockOrNull(Lock lock) {
-    Object payload = null;
+    Object payload = redisClientDelegate.withScriptingClient(c -> {
+      return c.eval(FIND_SCRIPT, Arrays.asList(lockKey(lock.getName())), Arrays.asList(ownerName));
+    });
     if (payload == null) {
       return null;
     }
@@ -365,7 +368,23 @@ public class RedisLockManager implements RefreshableLockManager {
   public Lock tryCreateLock(final LockOptions lockOptions) {
     try {
       List<String> attributes = Optional.ofNullable(lockOptions.getAttributes()).orElse(Collections.emptyList());
-      Object payload = null;
+      Object payload = redisClientDelegate.withScriptingClient(c -> {
+        return c.eval(
+          ACQUIRE_SCRIPT,
+          Arrays.asList(lockKey(lockOptions.getLockName())),
+          Arrays.asList(
+            Long.toString(Duration.ofMillis(leaseDurationMillis).toMillis()),
+            Long.toString(Duration.ofMillis(leaseDurationMillis).getSeconds()),
+            Long.toString(lockOptions.getSuccessInterval().toMillis()),
+            Long.toString(lockOptions.getFailureInterval().toMillis()),
+            ownerName,
+            Long.toString(clock.millis()),
+            String.valueOf(lockOptions.getVersion()),
+            lockOptions.getLockName(),
+            String.join(";", attributes)
+          )
+        );
+      });
       if (payload == null) {
         throw new LockNotAcquiredException(String.format("Lock not acquired %s", lockOptions));
       }
@@ -379,15 +398,35 @@ public class RedisLockManager implements RefreshableLockManager {
   private String tryReleaseLock(final Lock lock, boolean wasWorkSuccessful) {
     long releaseTtl = wasWorkSuccessful ? lock.getSuccessIntervalMillis() : lock.getFailureIntervalMillis();
 
-    Object payload = null;
-    if (payload == null) {
-      return "";
-    }
-    return null;
+    Object payload = redisClientDelegate.withScriptingClient(c -> {
+      return c.eval(
+        RELEASE_SCRIPT,
+        Arrays.asList(lockKey(lock.getName())),
+        Arrays.asList(
+          ownerName,
+          String.valueOf(lock.getVersion()),
+          String.valueOf(Duration.ofMillis(releaseTtl).getSeconds())
+        )
+      );
+    });
+
+    return payload.toString();
   }
 
   private Lock tryUpdateLock(final Lock lock, final long nextVersion) {
-    Object payload = null;
+    Object payload = redisClientDelegate.withScriptingClient(c -> {
+      return c.eval(
+        HEARTBEAT_SCRIPT,
+        Arrays.asList(lockKey(lock.getName())),
+        Arrays.asList(
+          ownerName,
+          String.valueOf(lock.getVersion()),
+          String.valueOf(nextVersion),
+          Long.toString(lock.getLeaseDurationMillis()),
+          Long.toString(clock.millis())
+        )
+      );
+    });
     if (payload == null) {
       throw new LockExpiredException(String.format("Lock expired %s", lock));
     }

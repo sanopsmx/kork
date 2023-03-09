@@ -10,7 +10,7 @@ dependencies {
 
   //Test framework dependencies
   api("io.strikt:strikt-jvm")
-  api("dev.minutest:minutest:2.0.0-rc4")
+  api("dev.minutest:minutest:1.13.0")
   api("io.mockk:mockk:1.13.4")
   api("org.springframework.boot:spring-boot-starter-test")
   api("org.springframework.security:spring-security-test")

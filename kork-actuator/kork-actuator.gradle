@@ -32,4 +32,14 @@ dependencies {
   testImplementation "org.springframework.boot:spring-boot-starter-test"
   testRuntimeOnly "cglib:cglib-nodep"
   testRuntimeOnly "org.objenesis:objenesis"
+  testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.2"
+  testImplementation "dev.minutest:minutest:1.13.0"
+  testImplementation "io.mockk:mockk:1.10.5"
+  testImplementation group: 'org.assertj', name: 'assertj-core', version: '3.24.2'
+  testImplementation group: 'io.strikt', name: 'strikt-core', version: '0.34.1'
+  testImplementation group: 'org.spockframework', name: 'spock-core', version: '2.4-M1-groovy-4.0'
+  testImplementation group: 'org.spockframework', name: 'spock-spring', version: '2.4-M1-groovy-4.0'
+  testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.0.4'
+  testImplementation group: 'com.netflix.spectator', name: 'spectator-reg-micrometer', version: '1.5.4'
+
 }

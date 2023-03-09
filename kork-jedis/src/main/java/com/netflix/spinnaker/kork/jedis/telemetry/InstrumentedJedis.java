@@ -23,11 +23,12 @@ import com.netflix.spectator.api.histogram.PercentileTimer;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
 
 /**
  * Instruments: - Timer for each command - Distribution summary for all payload sizes - Error rates
  */
-public class InstrumentedJedis {
+public class InstrumentedJedis extends Jedis {
 
   private final Registry registry;
   private final Jedis delegated;
@@ -1160,10 +1161,17 @@ public class InstrumentedJedis {
    *
    * @Override public String auth(String password) { String command = "auth"; return
    * instrumented(command, () -> delegated.auth(password)); }
-   *
-   * @Override public Pipeline pipelined() { String command = "pipelined"; return instrumented(
-   * command, () -> new InstrumentedPipeline(registry, delegated.pipelined(), poolName)); }
-   *
+   */
+  @Override
+  public Pipeline pipelined() {
+    String command = "pipelined";
+    InstrumentedPipeline pipeline = new InstrumentedPipeline(delegated);
+    pipeline.setPoolName(poolName);
+    pipeline.setRegistry(registry);
+
+    return instrumented(command, () -> pipeline);
+  }
+  /*
    * @Override public Long zcount(byte[] key, double min, double max) { String command = "zcount";
    * return instrumented(command, () -> delegated.zcount(key, min, max)); }
    *

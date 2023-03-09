@@ -21,9 +21,14 @@ import com.netflix.spectator.api.Registry;
 import com.netflix.spectator.controllers.filter.PrototypeMeasurementFilter;
 import com.netflix.spectator.stackdriver.ConfigParams;
 import com.netflix.spectator.stackdriver.StackdriverWriter;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -195,12 +200,12 @@ public class StackdriverConfig {
 
     stackdriver = new StackdriverWriter(params);
 
-    /*
-     * Scheduler scheduler = Schedulers.from(Executors.newFixedThreadPool(1));
-     *
-     * Observable.timer( spectatorStackdriverConfigurationProperties.getStackdriver().getPeriod(),
-     * TimeUnit.SECONDS) .repeat() .subscribe( interval -> { stackdriver.writeRegistry(registry); });
-     */
+    Scheduler scheduler = Schedulers.from(Executors.newFixedThreadPool(1));
+
+    Observable.timer(spectatorStackdriverConfigurationProperties.getStackdriver().getPeriod(), TimeUnit.SECONDS)
+      .repeat().subscribe(interval -> {
+        stackdriver.writeRegistry(registry);
+      });
 
     return stackdriver;
   }

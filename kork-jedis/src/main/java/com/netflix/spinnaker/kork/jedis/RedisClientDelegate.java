@@ -35,19 +35,19 @@ public interface RedisClientDelegate {
 
   void withCommandsClient(Consumer<JedisCommands> f);
 
-  // <R> R withMultiClient(Function<MultiKeyCommands, R> f);
+  <R> R withMultiClient(Function<JedisCommands, R> f);
 
-  // void withMultiClient(Consumer<MultiKeyCommands> f);
+  void withMultiClient(Consumer<Transaction> f);
 
   // <R> R withBinaryClient(Function<BinaryJedisCommands, R> f);
-
+  //
   // void withBinaryClient(Consumer<BinaryJedisCommands> f);
 
-  // void withPipeline(Consumer<RedisPipeline> f);
+  void withPipeline(Consumer<Pipeline> f);
 
-  // <R> R withPipeline(Function<RedisPipeline, R> f);
+  <R> R withPipeline(Function<Pipeline, R> f);
 
-  // void syncPipeline(RedisPipeline p);
+  void syncPipeline(Pipeline p);
 
   boolean supportsMultiKeyPipelines();
 
@@ -63,9 +63,9 @@ public interface RedisClientDelegate {
 
   boolean supportsScripting();
 
-  // void withScriptingClient(Consumer<ScriptingCommands> f);
+  void withScriptingClient(Consumer<JedisCommands> f);
 
-  // <R> R withScriptingClient(Function<ScriptingCommands, R> f);
+  <R> R withScriptingClient(Function<JedisCommands, R> f);
 
   void withKeyScan(String pattern, int count, Consumer<RedisScanResult> f);
 }

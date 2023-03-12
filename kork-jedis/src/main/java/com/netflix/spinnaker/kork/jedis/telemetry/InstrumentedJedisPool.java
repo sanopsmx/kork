@@ -57,7 +57,7 @@ public class InstrumentedJedisPool extends JedisPool {
 
   @Override
   public Jedis getResource() {
-    return null;
+    return new InstrumentedJedis(registry, delegated.getResource(), poolName).unwrap();
   }
 
   // @Override
@@ -75,12 +75,10 @@ public class InstrumentedJedisPool extends JedisPool {
     delegated.close();
   }
 
-  // @Override
-  /*
-   * public boolean isClosed() { return delegated.isClosed(); }
-   */
+  // public boolean isClosed() {
+  // return delegated.isClosed();
+  // }
 
-  // @Override
   public void initPool(GenericObjectPoolConfig poolConfig, PooledObjectFactory<Jedis> factory) {
     // Explicitly not initializing the pool here, as the delegated pool will initialize itself
   }
@@ -90,7 +88,6 @@ public class InstrumentedJedisPool extends JedisPool {
     delegated.destroy();
   }
 
-  // @Override
   protected void closeInternalPool() {
     // Explicitly not calling this; destroy and initPool are the only references to this method
   }
@@ -111,16 +108,24 @@ public class InstrumentedJedisPool extends JedisPool {
   }
 
   // @Override
-  /*
-   * public long getMeanBorrowWaitTimeMillis() { return
-   * getInternalPoolReference().getMeanBorrowWaitTimeMillis(); }
-   *
-   * //@Override public long getMaxBorrowWaitTimeMillis() { return
-   * getInternalPoolReference().getMaxBorrowWaitTimeMillis(); }
-   */
+  // public long getMeanBorrowWaitTimeMillis() {
+  // return getInternalPoolReference().getMeanBorrowWaitTimeMillis();
+  // }
+  //
+  // @Override
+  // public long getMaxBorrowWaitTimeMillis() {
+  // return getInternalPoolReference().getMaxBorrowWaitTimeMillis();
+  // }
 
   @Override
   public void addObjects(int count) {
     delegated.addObjects(count);
   }
+
+  // private Jedis unwrapResource(Jedis jedis) {
+  // if (jedis instanceof InstrumentedJedis) {
+  // return ((InstrumentedJedis) jedis).unwrap();
+  // }
+  // return jedis;
+  // }
 }

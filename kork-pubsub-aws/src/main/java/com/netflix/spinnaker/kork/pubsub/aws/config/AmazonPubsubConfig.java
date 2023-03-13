@@ -45,9 +45,7 @@ import org.springframework.context.annotation.Import;
 public class AmazonPubsubConfig {
   public static final String SYSTEM = "amazon";
 
-  @Valid
-  @Autowired
-  private AmazonPubsubProperties amazonPubsubProperties;
+  @Valid @Autowired private AmazonPubsubProperties amazonPubsubProperties;
 
   @Bean
   @ConditionalOnMissingBean(AmazonMessageAcknowledger.class)
@@ -56,30 +54,42 @@ public class AmazonPubsubConfig {
   }
 
   @Bean
-  SQSSubscriberProvider subscriberProvider(AWSCredentialsProvider awsCredentialsProvider,
-                                           AmazonPubsubProperties properties,
-                                           PubsubSubscribers subscribers,
-                                           AmazonPubsubMessageHandlerFactory messageHandlerFactory,
-                                           AmazonMessageAcknowledger messageAcknowledger,
-                                           Registry registry,
-                                           DiscoveryStatusListener discoveryStatus,
-                                           DynamicConfigService dynamicConfig) {
+  SQSSubscriberProvider subscriberProvider(
+      AWSCredentialsProvider awsCredentialsProvider,
+      AmazonPubsubProperties properties,
+      PubsubSubscribers subscribers,
+      AmazonPubsubMessageHandlerFactory messageHandlerFactory,
+      AmazonMessageAcknowledger messageAcknowledger,
+      Registry registry,
+      DiscoveryStatusListener discoveryStatus,
+      DynamicConfigService dynamicConfig) {
     return new SQSSubscriberProvider(
-      awsCredentialsProvider, properties, subscribers, messageHandlerFactory, messageAcknowledger, registry,
-      discoveryStatus, dynamicConfig
-    );
+        awsCredentialsProvider,
+        properties,
+        subscribers,
+        messageHandlerFactory,
+        messageAcknowledger,
+        registry,
+        discoveryStatus,
+        dynamicConfig);
   }
 
   @Bean
-  SNSPublisherProvider publisherProvider(AWSCredentialsProvider awsCredentialsProvider,
-                                         AmazonPubsubProperties properties,
-                                         PubsubPublishers pubsubPublishers,
-                                         Registry registry,
-                                         RetrySupport retrySupport,
-                                         DiscoveryStatusListener discoveryStatus,
-                                         DynamicConfigService dynamicConfig) {
+  SNSPublisherProvider publisherProvider(
+      AWSCredentialsProvider awsCredentialsProvider,
+      AmazonPubsubProperties properties,
+      PubsubPublishers pubsubPublishers,
+      Registry registry,
+      RetrySupport retrySupport,
+      DiscoveryStatusListener discoveryStatus,
+      DynamicConfigService dynamicConfig) {
     return new SNSPublisherProvider(
-      awsCredentialsProvider, properties, pubsubPublishers, registry, retrySupport, discoveryStatus, dynamicConfig
-    );
+        awsCredentialsProvider,
+        properties,
+        pubsubPublishers,
+        registry,
+        retrySupport,
+        discoveryStatus,
+        dynamicConfig);
   }
 }

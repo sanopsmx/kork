@@ -19,12 +19,13 @@ package com.netflix.spinnaker.kork.secrets.user;
 import lombok.Getter;
 
 public enum UserSecretMetadataField {
-  TYPE("type"), ENCODING("encoding"), ROLES("roles");
+  TYPE("type"),
+  ENCODING("encoding"),
+  ROLES("roles");
 
   public static final String PREFIX = "spinnaker:";
 
-  @Getter
-  private final String tagKey;
+  @Getter private final String tagKey;
 
   UserSecretMetadataField(String tagKey) {
     this.tagKey = PREFIX + tagKey;

@@ -45,7 +45,9 @@ public class RedisClientConnectionProperties {
   }
 
   public int database() {
-    if (connection.getPath() == null || connection.getPath().equals("") || connection.getPath().equals("/")) {
+    if (connection.getPath() == null
+        || connection.getPath().equals("")
+        || connection.getPath().equals("/")) {
       return Protocol.DEFAULT_DATABASE;
     }
     return Integer.parseInt(connection.getPath().substring(1));

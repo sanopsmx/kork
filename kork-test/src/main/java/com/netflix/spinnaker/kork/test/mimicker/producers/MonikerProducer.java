@@ -25,8 +25,7 @@ public class MonikerProducer {
 
   private static final int BOUND_MAX = 32;
 
-  @NotNull
-  private final RandomProducer randomProducer;
+  @NotNull private final RandomProducer randomProducer;
 
   public MonikerProducer(@NotNull RandomProducer randomProducer) {
     this.randomProducer = randomProducer;

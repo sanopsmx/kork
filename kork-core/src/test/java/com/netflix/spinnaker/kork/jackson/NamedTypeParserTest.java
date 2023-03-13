@@ -34,21 +34,22 @@ class NamedTypeParserTest {
   @Test
   void customNamedTypeDiscriminator() throws JsonProcessingException {
     var mapper = new ObjectMapper();
-    NamedTypeParser parser = type -> Optional.ofNullable(type.getAnnotation(TypeDiscriminator.class)).map(
-      TypeDiscriminator::value
-    ).map(name -> new NamedType(type, name)).orElse(null);
+    NamedTypeParser parser =
+        type ->
+            Optional.ofNullable(type.getAnnotation(TypeDiscriminator.class))
+                .map(TypeDiscriminator::value)
+                .map(name -> new NamedType(type, name))
+                .orElse(null);
 
-    new ObjectMapperSubtypeConfigurer(parser).registerSubtype(
-      mapper,
-      new ObjectMapperSubtypeConfigurer.ClassSubtypeLocator(
-        UncleType.class, List.of("com.netflix.spinnaker.kork.jackson")
-      )
-    );
+    new ObjectMapperSubtypeConfigurer(parser)
+        .registerSubtype(
+            mapper,
+            new ObjectMapperSubtypeConfigurer.ClassSubtypeLocator(
+                UncleType.class, List.of("com.netflix.spinnaker.kork.jackson")));
 
     assertEquals("{\"kind\":\"niece\"}", mapper.writeValueAsString(new NieceType()));
   }
 }
-
 
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -56,12 +57,8 @@ class NamedTypeParserTest {
   String value();
 }
 
-
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "kind")
-abstract class UncleType {
-}
-
+abstract class UncleType {}
 
 @TypeDiscriminator("niece")
-class NieceType extends UncleType {
-}
+class NieceType extends UncleType {}

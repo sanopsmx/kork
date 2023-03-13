@@ -37,14 +37,13 @@ public class EurekaStatusSubscriber implements DiscoveryStatusPublisher {
   private final ApplicationEventPublisher publisher;
   private final EventBus eventBus;
 
-  public EurekaStatusSubscriber(ApplicationEventPublisher publisher,
-                                EventBus eventBus,
-                                DiscoveryClient discoveryClient) {
+  public EurekaStatusSubscriber(
+      ApplicationEventPublisher publisher, EventBus eventBus, DiscoveryClient discoveryClient) {
     this.publisher = Objects.requireNonNull(publisher, "publisher");
     this.eventBus = Objects.requireNonNull(eventBus, "eventBus");
     publish(
-      new DiscoveryStatusChangeEvent(InstanceStatus.UNKNOWN, fromEureka(discoveryClient.getInstanceRemoteStatus()))
-    );
+        new DiscoveryStatusChangeEvent(
+            InstanceStatus.UNKNOWN, fromEureka(discoveryClient.getInstanceRemoteStatus())));
     try {
       eventBus.registerSubscriber(this);
     } catch (InvalidSubscriberException ise) {
@@ -63,6 +62,8 @@ public class EurekaStatusSubscriber implements DiscoveryStatusPublisher {
 
   @Subscribe(name = "eurekaStatusSubscriber")
   public void onStatusChange(StatusChangeEvent event) {
-    publish(new DiscoveryStatusChangeEvent(fromEureka(event.getPreviousStatus()), fromEureka(event.getStatus())));
+    publish(
+        new DiscoveryStatusChangeEvent(
+            fromEureka(event.getPreviousStatus()), fromEureka(event.getStatus())));
   }
 }

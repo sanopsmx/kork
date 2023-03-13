@@ -16,7 +16,8 @@ public class ExceptionMessageDecorator {
   private final ObjectProvider<List<ExceptionMessage>> exceptionMessagesProvider;
   private final String NEWLINE = "\n\n";
 
-  public ExceptionMessageDecorator(ObjectProvider<List<ExceptionMessage>> exceptionMessagesProvider) {
+  public ExceptionMessageDecorator(
+      ObjectProvider<List<ExceptionMessage>> exceptionMessagesProvider) {
     this.exceptionMessagesProvider = exceptionMessagesProvider;
   }
 
@@ -25,11 +26,12 @@ public class ExceptionMessageDecorator {
    *
    * @param throwable {@link Throwable}
    * @param message The exception message (which can be different from the message on the thrown
-   *        exception).
+   *     exception).
    * @param exceptionDetails Additional {@link ExceptionDetails} about the exception.
    * @return The final exception message for the end-user.
    */
-  public String decorate(Throwable throwable, String message, @Nullable ExceptionDetails exceptionDetails) {
+  public String decorate(
+      Throwable throwable, String message, @Nullable ExceptionDetails exceptionDetails) {
     return decorate(throwable, null, message, exceptionDetails);
   }
 
@@ -41,7 +43,8 @@ public class ExceptionMessageDecorator {
    * @param exceptionDetails Additional {@link ExceptionDetails} about the exception.
    * @return The final exception message for the end-user.
    */
-  public String decorate(String errorCode, String message, @Nullable ExceptionDetails exceptionDetails) {
+  public String decorate(
+      String errorCode, String message, @Nullable ExceptionDetails exceptionDetails) {
     return decorate(null, errorCode, message, exceptionDetails);
   }
 
@@ -53,10 +56,11 @@ public class ExceptionMessageDecorator {
     return decorate(errorCode, message, null);
   }
 
-  private String decorate(@Nullable Throwable throwable,
-                          @Nullable String errorCode,
-                          String message,
-                          @Nullable ExceptionDetails exceptionDetails) {
+  private String decorate(
+      @Nullable Throwable throwable,
+      @Nullable String errorCode,
+      String message,
+      @Nullable ExceptionDetails exceptionDetails) {
 
     StringBuilder sb = new StringBuilder().append(message);
 
@@ -64,10 +68,14 @@ public class ExceptionMessageDecorator {
     if (exceptionMessages != null && !exceptionMessages.isEmpty()) {
       for (ExceptionMessage exceptionMessage : exceptionMessages) {
         if (throwable != null) {
-          exceptionMessage.message(throwable, exceptionDetails).ifPresent(s -> sb.append(NEWLINE).append(s));
+          exceptionMessage
+              .message(throwable, exceptionDetails)
+              .ifPresent(s -> sb.append(NEWLINE).append(s));
         }
         if (errorCode != null) {
-          exceptionMessage.message(errorCode, exceptionDetails).ifPresent(s -> sb.append(NEWLINE).append(s));
+          exceptionMessage
+              .message(errorCode, exceptionDetails)
+              .ifPresent(s -> sb.append(NEWLINE).append(s));
         }
       }
     }

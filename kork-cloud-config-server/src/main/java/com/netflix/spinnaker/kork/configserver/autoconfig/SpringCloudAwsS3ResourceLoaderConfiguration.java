@@ -17,8 +17,7 @@ import org.springframework.context.annotation.Profile;
  * support is properly initialized and available before Spring starts to load configuration
  * properties.
  *
- * <p>
- * See
+ * <p>See
  * https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/core/io/ResourceLoader.html
  * See
  * https://cloud.spring.io/spring-cloud-static/spring-cloud-aws/2.1.3.RELEASE/single/spring-cloud-aws.html#_resource_handling
@@ -37,9 +36,11 @@ class SpringCloudAwsS3ResourceLoaderConfiguration {
     public AwsS3ResourceLoaderBeanPostProcessor() {}
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory)
+        throws BeansException {
 
-      String[] beanNames = beanFactory.getBeanNamesForType(SimpleStorageProtocolResolverConfigurer.class);
+      String[] beanNames =
+          beanFactory.getBeanNamesForType(SimpleStorageProtocolResolverConfigurer.class);
       for (String beanName : beanNames) {
         beanFactory.getBean(beanName);
       }

@@ -20,8 +20,8 @@ import com.netflix.appinfo.InstanceInfo;
 import com.netflix.spinnaker.kork.discovery.InstanceStatus;
 
 /**
- * Maps between Spinnaker's {@link InstanceStatus} and Eureka's
- * {@link com.netflix.appinfo.InstanceInfo.InstanceStatus}.
+ * Maps between Spinnaker's {@link InstanceStatus} and Eureka's {@link
+ * com.netflix.appinfo.InstanceInfo.InstanceStatus}.
  */
 public class InstanceStatusUtil {
 

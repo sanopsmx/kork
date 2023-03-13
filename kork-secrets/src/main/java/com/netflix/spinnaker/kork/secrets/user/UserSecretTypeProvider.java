@@ -27,9 +27,9 @@ import org.springframework.util.ClassUtils;
 
 /**
  * Provides subtypes of {@link UserSecretData} for registration as user secret types. All beans of
- * this type contribute zero or more user secret classes. Classes must be annotated with
- * {@link UserSecretType} to indicate their secret type as said type is externalized into metadata
- * from a secret engine.
+ * this type contribute zero or more user secret classes. Classes must be annotated with {@link
+ * UserSecretType} to indicate their secret type as said type is externalized into metadata from a
+ * secret engine.
  */
 public interface UserSecretTypeProvider {
   Stream<? extends Class<? extends UserSecretData>> getUserSecretTypes();
@@ -38,20 +38,25 @@ public interface UserSecretTypeProvider {
     var provider = new ClassPathScanningCandidateComponentProvider(false);
     provider.setResourceLoader(loader);
     provider.addIncludeFilter(new AssignableTypeFilter(UserSecretData.class));
-    return () -> provider.findCandidateComponents(basePackage).stream().map(BeanDefinition::getBeanClassName).filter(
-      Objects::nonNull
-    ).map(className -> {
-      Class<? extends UserSecretData> type = null;
-      try {
-        type = ClassUtils.forName(className, loader.getClassLoader()).asSubclass(UserSecretData.class);
-      } catch (ClassNotFoundException e) {
-        LogManager.getLogger().error(
-          "Unable to load discovered UserSecret class {}. User secrets with this type will not be parseable.",
-          className,
-          e
-        );
-      }
-      return type;
-    });
+    return () ->
+        provider.findCandidateComponents(basePackage).stream()
+            .map(BeanDefinition::getBeanClassName)
+            .filter(Objects::nonNull)
+            .map(
+                className -> {
+                  Class<? extends UserSecretData> type = null;
+                  try {
+                    type =
+                        ClassUtils.forName(className, loader.getClassLoader())
+                            .asSubclass(UserSecretData.class);
+                  } catch (ClassNotFoundException e) {
+                    LogManager.getLogger()
+                        .error(
+                            "Unable to load discovered UserSecret class {}. User secrets with this type will not be parseable.",
+                            className,
+                            e);
+                  }
+                  return type;
+                });
   }
 }

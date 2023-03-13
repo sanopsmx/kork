@@ -21,7 +21,8 @@ import org.slf4j.LoggerFactory;
 
 /** Provides instance discovery status. */
 public enum InstanceStatus {
-  UNKNOWN, UP, // Ready to receive traffic
+  UNKNOWN,
+  UP, // Ready to receive traffic
   DOWN, // Do not send traffic - healthcheck callback failed
   STARTING, // Do not send traffic - initializations are underway
   OUT_OF_SERVICE; // Do not send traffic - Intentionally shutdown
@@ -33,7 +34,10 @@ public enum InstanceStatus {
       try {
         return InstanceStatus.valueOf(s.toUpperCase());
       } catch (IllegalArgumentException e) {
-        log.debug("Illegal argument supplied to InstanceStatus.valueOf: {}, defaulting to {}", s, UNKNOWN);
+        log.debug(
+            "Illegal argument supplied to InstanceStatus.valueOf: {}, defaulting to {}",
+            s,
+            UNKNOWN);
       }
     }
     return UNKNOWN;

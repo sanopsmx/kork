@@ -42,9 +42,12 @@ public class Retrofit2ServiceFactory implements ServiceClientFactory {
   public <T> T create(Class<T> type, ServiceEndpoint serviceEndpoint, ObjectMapper objectMapper) {
     OkHttpClient okHttpClient = clientProvider.getClient(serviceEndpoint);
 
-    return new Retrofit.Builder().baseUrl(Objects.requireNonNull(HttpUrl.parse(serviceEndpoint.getBaseUrl()))).client(
-      okHttpClient
-    ).addConverterFactory(JacksonConverterFactory.create(objectMapper)).build().create(type);
+    return new Retrofit.Builder()
+        .baseUrl(Objects.requireNonNull(HttpUrl.parse(serviceEndpoint.getBaseUrl())))
+        .client(okHttpClient)
+        .addConverterFactory(JacksonConverterFactory.create(objectMapper))
+        .build()
+        .create(type);
   }
 
   @Override

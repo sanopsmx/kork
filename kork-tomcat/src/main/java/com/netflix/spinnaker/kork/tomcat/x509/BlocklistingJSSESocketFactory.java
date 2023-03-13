@@ -33,10 +33,11 @@ public class BlocklistingJSSESocketFactory extends JSSEUtil {
   public BlocklistingJSSESocketFactory(SSLHostConfigCertificate certificate, Registry registry) {
     super(certificate);
     this.registry = Objects.requireNonNull(registry);
-    String blocklistFile = Optional.ofNullable(certificate.getSSLHostConfig().getCertificateRevocationListFile())
-      .filter(file -> file.startsWith(BLOCKLIST_PREFIX)).map(file -> file.substring(BLOCKLIST_PREFIX.length())).orElse(
-        null
-      );
+    String blocklistFile =
+        Optional.ofNullable(certificate.getSSLHostConfig().getCertificateRevocationListFile())
+            .filter(file -> file.startsWith(BLOCKLIST_PREFIX))
+            .map(file -> file.substring(BLOCKLIST_PREFIX.length()))
+            .orElse(null);
 
     if (blocklistFile != null) {
       certificate.getSSLHostConfig().setCertificateRevocationListFile(null);
@@ -54,7 +55,8 @@ public class BlocklistingJSSESocketFactory extends JSSEUtil {
       for (int i = 0; i < trustManagers.length; i++) {
         TrustManager tm = trustManagers[i];
         if (tm instanceof X509TrustManager) {
-          trustManagers[i] = new BlocklistingX509TrustManager((X509TrustManager) tm, blocklist, registry);
+          trustManagers[i] =
+              new BlocklistingX509TrustManager((X509TrustManager) tm, blocklist, registry);
           delegatedCount++;
         }
       }

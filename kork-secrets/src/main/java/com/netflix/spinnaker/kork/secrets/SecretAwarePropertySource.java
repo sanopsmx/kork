@@ -21,9 +21,7 @@ import lombok.Setter;
 import org.springframework.core.env.EnumerablePropertySource;
 
 public class SecretAwarePropertySource extends EnumerablePropertySource<EnumerablePropertySource> {
-  @Setter
-  @Getter
-  private SecretManager secretManager;
+  @Setter @Getter private SecretManager secretManager;
 
   public SecretAwarePropertySource(EnumerablePropertySource source, SecretManager secretManager) {
     super(source.getName(), source);

@@ -34,14 +34,18 @@ public class MethodInstrumentation {
   public static boolean isMethodAllowed(Method method) {
     return
     // Only instrument public methods
-    Modifier.isPublic(method.getModifiers()) &&
-    // Ignore any methods from the root Object class
-      Arrays.stream(Object.class.getDeclaredMethods()).noneMatch(m -> m.getName().equals(method.getName()));
+    Modifier.isPublic(method.getModifiers())
+        &&
+        // Ignore any methods from the root Object class
+        Arrays.stream(Object.class.getDeclaredMethods())
+            .noneMatch(m -> m.getName().equals(method.getName()));
   }
 
   public static String toMetricId(String metricNamespace, Method method, String metricName) {
-    String methodName = (method.getParameterCount() == 0) ? method.getName()
-      : format("%s%d", method.getName(), method.getParameterCount());
+    String methodName =
+        (method.getParameterCount() == 0)
+            ? method.getName()
+            : format("%s%d", method.getName(), method.getParameterCount());
     return toMetricId(metricNamespace, methodName, metricName);
   }
 
@@ -49,10 +53,8 @@ public class MethodInstrumentation {
     return format("%s.%s.%s", metricNamespace, methodName, metricName);
   }
 
-  public static Map<String, String> coalesceTags(Object target,
-                                                 Method method,
-                                                 Map<String, String> defaultTags,
-                                                 String[] methodTags) {
+  public static Map<String, String> coalesceTags(
+      Object target, Method method, Map<String, String> defaultTags, String[] methodTags) {
     if (methodTags.length % 2 != 0) {
       throw new UnevenTagSequenceException(target, method.toGenericString());
     }
@@ -66,26 +68,22 @@ public class MethodInstrumentation {
   private static class UnevenTagSequenceException extends IllegalStateException {
     public UnevenTagSequenceException(Object target, String method) {
       super(
-        format(
-          "There are an uneven number of values provided for tags on method '%s' in '%s'",
-          method,
-          target.getClass().getSimpleName()
-        )
-      );
+          format(
+              "There are an uneven number of values provided for tags on method '%s' in '%s'",
+              method, target.getClass().getSimpleName()));
     }
   }
 
   public static class MetricNameCollisionException extends IllegalStateException {
-    public MetricNameCollisionException(Object target, String metricName, Method method1, Method method2) {
+    public MetricNameCollisionException(
+        Object target, String metricName, Method method1, Method method2) {
       super(
-        format(
-          "Metric name (%s) collision detected between methods '%s' and '%s' in '%s'",
-          metricName,
-          method1.toGenericString(),
-          method2.toGenericString(),
-          target.getClass().getSimpleName()
-        )
-      );
+          format(
+              "Metric name (%s) collision detected between methods '%s' and '%s' in '%s'",
+              metricName,
+              method1.toGenericString(),
+              method2.toGenericString(),
+              target.getClass().getSimpleName()));
     }
   }
 }

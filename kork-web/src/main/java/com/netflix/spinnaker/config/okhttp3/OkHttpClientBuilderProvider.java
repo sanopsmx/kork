@@ -21,8 +21,8 @@ import com.netflix.spinnaker.config.ServiceEndpoint;
 import okhttp3.OkHttpClient;
 
 /**
- * Provider interface that concrete implementations will use to provide a customized
- * {@link OkHttpClient.Builder}.
+ * Provider interface that concrete implementations will use to provide a customized {@link
+ * OkHttpClient.Builder}.
  */
 public interface OkHttpClientBuilderProvider {
 
@@ -33,8 +33,9 @@ public interface OkHttpClientBuilderProvider {
    * @return true if supports the url given
    */
   default Boolean supports(ServiceEndpoint service) {
-    return ((service.getBaseUrl().startsWith("http://") || service.getBaseUrl().startsWith("https://")) && service
-      .isSecure());
+    return ((service.getBaseUrl().startsWith("http://")
+            || service.getBaseUrl().startsWith("https://"))
+        && service.isSecure());
   }
 
   /**

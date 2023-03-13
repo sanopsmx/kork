@@ -36,7 +36,8 @@ public class BlocklistingX509TrustManager implements X509TrustManager {
   private final Registry registry;
   private final Id checkClientTrusted;
 
-  public BlocklistingX509TrustManager(X509TrustManager delegate, Blocklist blocklist, Registry registry) {
+  public BlocklistingX509TrustManager(
+      X509TrustManager delegate, Blocklist blocklist, Registry registry) {
     this.delegate = Objects.requireNonNull(delegate);
     this.blocklist = Objects.requireNonNull(blocklist);
     this.registry = Objects.requireNonNull(registry);
@@ -44,7 +45,8 @@ public class BlocklistingX509TrustManager implements X509TrustManager {
   }
 
   @Override
-  public void checkClientTrusted(X509Certificate[] x509Certificates, String authType) throws CertificateException {
+  public void checkClientTrusted(X509Certificate[] x509Certificates, String authType)
+      throws CertificateException {
     if (BLOCKLIST_ENABLED.get()) {
       boolean rejected = false;
       try {
@@ -53,13 +55,17 @@ public class BlocklistingX509TrustManager implements X509TrustManager {
             if (blocklist.isBlocklisted(cert)) {
               rejected = true;
               throw new CertificateRevokedException(
-                new Date(), CRLReason.UNSPECIFIED, cert.getIssuerX500Principal(), Collections.emptyMap()
-              );
+                  new Date(),
+                  CRLReason.UNSPECIFIED,
+                  cert.getIssuerX500Principal(),
+                  Collections.emptyMap());
             }
           }
         }
       } finally {
-        registry.counter(checkClientTrusted.withTag("rejected", Boolean.toString(rejected))).increment();
+        registry
+            .counter(checkClientTrusted.withTag("rejected", Boolean.toString(rejected)))
+            .increment();
       }
     }
 
@@ -67,7 +73,8 @@ public class BlocklistingX509TrustManager implements X509TrustManager {
   }
 
   @Override
-  public void checkServerTrusted(X509Certificate[] x509Certificates, String authType) throws CertificateException {
+  public void checkServerTrusted(X509Certificate[] x509Certificates, String authType)
+      throws CertificateException {
     delegate.checkServerTrusted(x509Certificates, authType);
   }
 

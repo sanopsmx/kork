@@ -25,13 +25,17 @@ import java.lang.annotation.Target;
  * Declares that a public API is subject to incompatible changes or even removal in a future
  * release.
  *
- * <p>
- * Features that are in an Alpha state are disabled by default and enabling may introduce bugs. They
- * further do not carry long-term support and may be dropped at any time and without notice. There
- * are no requirements for backwards compatibility.
+ * <p>Features that are in an Alpha state are disabled by default and enabling may introduce bugs.
+ * They further do not carry long-term support and may be dropped at any time and without notice.
+ * There are no requirements for backwards compatibility.
  */
 @Retention(RetentionPolicy.CLASS)
-@Target({ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.FIELD, ElementType.METHOD, ElementType.TYPE})
+@Target({
+  ElementType.ANNOTATION_TYPE,
+  ElementType.CONSTRUCTOR,
+  ElementType.FIELD,
+  ElementType.METHOD,
+  ElementType.TYPE
+})
 @Documented
-public @interface Alpha {
-}
+public @interface Alpha {}

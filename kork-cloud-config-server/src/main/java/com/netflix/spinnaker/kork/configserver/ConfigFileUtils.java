@@ -30,18 +30,17 @@ public class ConfigFileUtils {
       Path tempDirPath = Paths.get(System.getProperty("java.io.tmpdir"), resourceName);
       createParentDirsIfNecessary(tempDirPath);
       Files.write(
-        tempDirPath,
-        contents.getBytes(),
-        StandardOpenOption.WRITE,
-        StandardOpenOption.CREATE,
-        StandardOpenOption.TRUNCATE_EXISTING
-      );
+          tempDirPath,
+          contents.getBytes(),
+          StandardOpenOption.WRITE,
+          StandardOpenOption.CREATE,
+          StandardOpenOption.TRUNCATE_EXISTING);
 
       return tempDirPath.toString();
     } catch (IOException e) {
       throw new ConfigFileLoadingException(
-        "Exception writing local file for resource \"" + resourceName + "\": " + e.getMessage(), e
-      );
+          "Exception writing local file for resource \"" + resourceName + "\": " + e.getMessage(),
+          e);
     }
   }
 

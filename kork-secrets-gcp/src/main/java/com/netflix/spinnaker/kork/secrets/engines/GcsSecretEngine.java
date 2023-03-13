@@ -48,10 +48,12 @@ public class GcsSecretEngine extends AbstractStorageSecretEngine {
   public void validate(EncryptedSecret encryptedSecret) throws InvalidSecretFormatException {
     Set<String> paramNames = encryptedSecret.getParams().keySet();
     if (!paramNames.contains(STORAGE_BUCKET)) {
-      throw new InvalidSecretFormatException("Storage bucket parameter is missing (" + STORAGE_BUCKET + "=...)");
+      throw new InvalidSecretFormatException(
+          "Storage bucket parameter is missing (" + STORAGE_BUCKET + "=...)");
     }
     if (!paramNames.contains(STORAGE_FILE_URI)) {
-      throw new InvalidSecretFormatException("Storage file parameter is missing (" + STORAGE_FILE_URI + "=...)");
+      throw new InvalidSecretFormatException(
+          "Storage file parameter is missing (" + STORAGE_FILE_URI + "=...)");
     }
   }
 
@@ -69,13 +71,9 @@ public class GcsSecretEngine extends AbstractStorageSecretEngine {
       return storage.objects().get(bucket, objName).executeMediaAsInputStream();
     } catch (IOException e) {
       throw new SecretException(
-        String.format(
-          "Error reading contents of GCS. Bucket: %s, Object: %s.\nError: %s",
-          bucket,
-          objName,
-          e.toString()
-        )
-      );
+          String.format(
+              "Error reading contents of GCS. Bucket: %s, Object: %s.\nError: %s",
+              bucket, objName, e.toString()));
     }
   }
 
@@ -86,10 +84,13 @@ public class GcsSecretEngine extends AbstractStorageSecretEngine {
       HttpTransport httpTransport = GoogleUtils.buildHttpTransport();
       JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
       GoogleCredentials credentials = GoogleUtils.buildGoogleCredentials();
-      HttpRequestInitializer requestInitializer = GoogleUtils.setTimeoutsAndRetryBehavior(credentials);
+      HttpRequestInitializer requestInitializer =
+          GoogleUtils.setTimeoutsAndRetryBehavior(credentials);
 
-      storage = new Storage.Builder(httpTransport, jsonFactory, requestInitializer).setApplicationName(APPLICATION_NAME)
-        .build();
+      storage =
+          new Storage.Builder(httpTransport, jsonFactory, requestInitializer)
+              .setApplicationName(APPLICATION_NAME)
+              .build();
 
       googleStorage.compareAndSet(null, storage);
     }

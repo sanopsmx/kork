@@ -32,18 +32,15 @@ import org.springframework.util.StringUtils;
 /**
  * A UserDetails implementation to hook into Spring Security framework.
  *
- * <p>
- * User exists to propagate the allowedAccounts.
+ * <p>User exists to propagate the allowedAccounts.
  *
- * <p>
- * This class is deprecated in favor of encoding allowed accounts as granted authorities, and using
- * the spring frameworks built in User object and preferring the UserDetails interface when
+ * <p>This class is deprecated in favor of encoding allowed accounts as granted authorities, and
+ * using the spring frameworks built in User object and preferring the UserDetails interface when
  * interacting.
  *
  * @deprecated use org.springframework.security.core.userdetails.User and AllowedAccountsAuthorities
- *             to encode allowed accounts callers should program against UserDetails interface use
- *             runAs on AuthenticatedRequest to switch users rather than supplying a principal
- *             directly.
+ *     to encode allowed accounts callers should program against UserDetails interface use runAs on
+ *     AuthenticatedRequest to switch users rather than supplying a principal directly.
  */
 @Deprecated
 public class User implements UserDetails {
@@ -60,7 +57,10 @@ public class User implements UserDetails {
 
   @Override
   public List<? extends GrantedAuthority> getAuthorities() {
-    return roles.stream().filter(StringUtils::hasText).map(SimpleGrantedAuthority::new).collect(toList());
+    return roles.stream()
+        .filter(StringUtils::hasText)
+        .map(SimpleGrantedAuthority::new)
+        .collect(toList());
   }
 
   /** Not used */

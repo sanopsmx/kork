@@ -47,23 +47,23 @@ public final class Artifact {
   private final String version;
   private final String location;
   private final String reference;
-  @Nonnull
-  private final Map<String, Object> metadata;
+  @Nonnull private final Map<String, Object> metadata;
   private final String artifactAccount;
   private final String provenance;
   private final String uuid;
 
   @Builder(toBuilder = true)
-  private Artifact(String type,
-                   boolean customKind,
-                   String name,
-                   String version,
-                   String location,
-                   String reference,
-                   Map<String, Object> metadata,
-                   String artifactAccount,
-                   String provenance,
-                   String uuid) {
+  private Artifact(
+      String type,
+      boolean customKind,
+      String name,
+      String version,
+      String location,
+      String reference,
+      Map<String, Object> metadata,
+      String artifactAccount,
+      String provenance,
+      String uuid) {
     this.type = type;
     this.customKind = customKind;
     this.name = name;
@@ -88,8 +88,7 @@ public final class Artifact {
   @MethodsReturnNonnullByDefault
   @JsonNaming
   public static class ArtifactBuilder {
-    @Nonnull
-    private Map<String, Object> metadata = new HashMap<>();
+    @Nonnull private Map<String, Object> metadata = new HashMap<>();
 
     public ArtifactBuilder metadata(@Nullable Map<String, Object> metadata) {
       this.metadata = Optional.ofNullable(metadata).orElseGet(HashMap::new);

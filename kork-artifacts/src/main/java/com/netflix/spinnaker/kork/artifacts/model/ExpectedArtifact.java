@@ -35,21 +35,21 @@ public final class ExpectedArtifact {
   private final Artifact matchArtifact;
   private final boolean usePriorArtifact;
   private final boolean useDefaultArtifact;
-  @Nullable
-  private final Artifact defaultArtifact;
+  @Nullable private final Artifact defaultArtifact;
   private final String id; // UUID to use this ExpectedArtifact by reference in Pipelines.
-  @Nullable
-  private final Artifact boundArtifact;
+  @Nullable private final Artifact boundArtifact;
 
   @Builder(toBuilder = true)
   @ParametersAreNullableByDefault
-  private ExpectedArtifact(Artifact matchArtifact,
-                           boolean usePriorArtifact,
-                           boolean useDefaultArtifact,
-                           Artifact defaultArtifact,
-                           String id,
-                           Artifact boundArtifact) {
-    this.matchArtifact = Optional.ofNullable(matchArtifact).orElseGet(() -> Artifact.builder().build());
+  private ExpectedArtifact(
+      Artifact matchArtifact,
+      boolean usePriorArtifact,
+      boolean useDefaultArtifact,
+      Artifact defaultArtifact,
+      String id,
+      Artifact boundArtifact) {
+    this.matchArtifact =
+        Optional.ofNullable(matchArtifact).orElseGet(() -> Artifact.builder().build());
     this.usePriorArtifact = usePriorArtifact;
     this.useDefaultArtifact = useDefaultArtifact;
     this.defaultArtifact = defaultArtifact;
@@ -109,6 +109,5 @@ public final class ExpectedArtifact {
   }
 
   @JsonPOJOBuilder(withPrefix = "")
-  public static final class ExpectedArtifactBuilder {
-  }
+  public static final class ExpectedArtifactBuilder {}
 }

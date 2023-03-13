@@ -27,20 +27,17 @@ public class SpinnakerException extends RuntimeException implements HasAdditiona
   /**
    * An optional, end-user friendly message.
    *
-   * <p>
-   * In most cases, an exception message is more suitable for developers and operators, but can be
-   * confusing for an end-user. This field provides a standard method of propagating messaging up to
-   * the edge.
+   * <p>In most cases, an exception message is more suitable for developers and operators, but can
+   * be confusing for an end-user. This field provides a standard method of propagating messaging up
+   * to the edge.
    */
-  @Nullable
-  private String userMessage;
+  @Nullable private String userMessage;
 
   /**
    * Whether or not the exception is explicitly known to be retryable.
    *
-   * <p>
-   * If the result is NULL, the exception's retry characteristics are undefined and thus retries on
-   * the original logic that caused the exception may have undefined behavior.
+   * <p>If the result is NULL, the exception's retry characteristics are undefined and thus retries
+   * on the original logic that caused the exception may have undefined behavior.
    */
   @Setter
   @Nullable
@@ -76,7 +73,8 @@ public class SpinnakerException extends RuntimeException implements HasAdditiona
     this.userMessage = userMessage;
   }
 
-  public SpinnakerException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+  public SpinnakerException(
+      String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
   }
 }

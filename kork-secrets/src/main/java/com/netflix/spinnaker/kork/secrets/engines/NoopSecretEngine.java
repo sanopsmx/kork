@@ -49,9 +49,11 @@ public class NoopSecretEngine implements SecretEngine {
   @Override
   @Nonnull
   public UserSecret decrypt(@Nonnull UserSecretReference reference) {
-    return UserSecret.builder().data(new OpaqueUserSecretData(Map.copyOf(reference.getParameters()))).metadata(
-      UserSecretMetadata.builder().type("opaque").encoding("json").roles(List.of()).build()
-    ).build();
+    return UserSecret.builder()
+        .data(new OpaqueUserSecretData(Map.copyOf(reference.getParameters())))
+        .metadata(
+            UserSecretMetadata.builder().type("opaque").encoding("json").roles(List.of()).build())
+        .build();
   }
 
   @Override

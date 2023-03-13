@@ -26,9 +26,8 @@ import org.springframework.security.core.Authentication;
 public interface AccessControlled {
   /**
    * Checks if the authenticated user has a particular authorization on this object. Note that
-   * checking if the user is an admin should be performed by a
-   * {@link org.springframework.security.access.PermissionEvaluator} rather than in these domain
-   * objects.
+   * checking if the user is an admin should be performed by a {@link
+   * org.springframework.security.access.PermissionEvaluator} rather than in these domain objects.
    */
   boolean isAuthorized(Authentication authentication, Object authorization);
 }

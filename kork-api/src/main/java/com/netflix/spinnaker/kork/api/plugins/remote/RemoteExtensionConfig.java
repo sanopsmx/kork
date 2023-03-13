@@ -29,14 +29,12 @@ import lombok.NoArgsConstructor;
 /**
  * A Spinnaker plugin's remote extension configuration.
  *
- * <p>
- * This model is used by Spinnaker to determine which extension points and services require remote
- * extension point configuration.
+ * <p>This model is used by Spinnaker to determine which extension points and services require
+ * remote extension point configuration.
  *
- * <p>
- * The plugin release {@link SpinnakerPluginInfo.Release#requires} field is used to inform Spinnaker
- * which service to use in configuring the extension point {@link #type} and additionally if the
- * remote extension is compatible with the running version of the Spinnaker service.
+ * <p>The plugin release {@link SpinnakerPluginInfo.Release#requires} field is used to inform
+ * Spinnaker which service to use in configuring the extension point {@link #type} and additionally
+ * if the remote extension is compatible with the running version of the Spinnaker service.
  */
 @Data
 @NoArgsConstructor
@@ -45,34 +43,29 @@ import lombok.NoArgsConstructor;
 public class RemoteExtensionConfig {
 
   /**
-   * The remote extension type. The remote extension is configured in the service that implements this
-   * extension type.
+   * The remote extension type. The remote extension is configured in the service that implements
+   * this extension type.
    */
-  @Nonnull
-  private String type;
+  @Nonnull private String type;
 
   /** Identifier of the remote extension. Used for tracing. */
-  @Nonnull
-  private String id;
+  @Nonnull private String id;
 
   /**
-   * Outbound transport configuration for the remote extension point; the protocol to address it with
-   * and the necessary configuration.
+   * Outbound transport configuration for the remote extension point; the protocol to address it
+   * with and the necessary configuration.
    */
-  @Nonnull
-  private RemoteExtensionTransportConfig transport = new RemoteExtensionTransportConfig();
+  @Nonnull private RemoteExtensionTransportConfig transport = new RemoteExtensionTransportConfig();
 
   /** Configures the remote extension point. */
-  @Nullable
-  private Map<String, Object> config;
+  @Nullable private Map<String, Object> config;
 
   @Data
   @NoArgsConstructor
   @AllArgsConstructor
   public static class RemoteExtensionTransportConfig {
 
-    @Nonnull
-    private Http http = new Http();
+    @Nonnull private Http http = new Http();
 
     @Data
     @NoArgsConstructor
@@ -80,31 +73,24 @@ public class RemoteExtensionConfig {
     public static class Http {
 
       /** URL for remote extension invocation. */
-      @Nonnull
-      private String url;
+      @Nonnull private String url;
 
       /** Any query parameters necessary to invoke the extension. */
-      @Nonnull
-      private Map<String, String> queryParams = new HashMap<>();
+      @Nonnull private Map<String, String> queryParams = new HashMap<>();
 
       /** A placeholder for misc. configuration for the underlying HTTP client. */
-      @Nonnull
-      private Map<String, String> config = new HashMap<>();
+      @Nonnull private Map<String, String> config = new HashMap<>();
 
       /** Headers for the various invocation types. */
-      @Nonnull
-      private Headers headers = new Headers();
+      @Nonnull private Headers headers = new Headers();
 
       @Data
       @NoArgsConstructor
       @AllArgsConstructor
       public static class Headers {
-        @Nonnull
-        private Map<String, String> invokeHeaders = new HashMap<>();
-        @Nonnull
-        private Map<String, String> writeHeaders = new HashMap<>();
-        @Nonnull
-        private Map<String, String> readHeaders = new HashMap<>();
+        @Nonnull private Map<String, String> invokeHeaders = new HashMap<>();
+        @Nonnull private Map<String, String> writeHeaders = new HashMap<>();
+        @Nonnull private Map<String, String> readHeaders = new HashMap<>();
       }
     }
   }

@@ -36,10 +36,11 @@ public class SpringLoader implements ApplicationContextAware {
   private final List<Class> classesToRegister;
   private final AnnotationConfigApplicationContext pluginContext;
 
-  public SpringLoader(AnnotationConfigApplicationContext pluginContext,
-                      ClassLoader pluginClassLoader,
-                      List<String> packagesToScan,
-                      List<Class> classesToRegister) {
+  public SpringLoader(
+      AnnotationConfigApplicationContext pluginContext,
+      ClassLoader pluginClassLoader,
+      List<String> packagesToScan,
+      List<Class> classesToRegister) {
     this.pluginClassLoader = pluginClassLoader;
     this.packagesToScan = packagesToScan;
     this.classesToRegister = classesToRegister;
@@ -49,22 +50,28 @@ public class SpringLoader implements ApplicationContextAware {
   @Override
   public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
     final GenericApplicationContext appContext = (GenericApplicationContext) applicationContext;
-    final BeanPromoter beanPromoter = new BeanPromoter() {
-      @Override
-      public void promote(String beanName, Object bean, Class beanClass, boolean isPrimary) {
-        appContext.registerBean(beanName, beanClass, () -> bean, b -> {
-          if (isPrimary) {
-            b.setPrimary(true);
+    final BeanPromoter beanPromoter =
+        new BeanPromoter() {
+          @Override
+          public void promote(String beanName, Object bean, Class beanClass, boolean isPrimary) {
+            appContext.registerBean(
+                beanName,
+                beanClass,
+                () -> bean,
+                b -> {
+                  if (isPrimary) {
+                    b.setPrimary(true);
+                  }
+                });
           }
-        });
-      }
-    };
+        };
 
     pluginContext.setParent(appContext);
     pluginContext.setClassLoader(pluginClassLoader);
 
     // Process configuration classes
-    final ConfigurationClassPostProcessor configPostProcessor = new ConfigurationClassPostProcessor();
+    final ConfigurationClassPostProcessor configPostProcessor =
+        new ConfigurationClassPostProcessor();
     configPostProcessor.setBeanClassLoader(pluginClassLoader);
     configPostProcessor.setEnvironment(appContext.getEnvironment());
     final DefaultResourceLoader resourceLoader = new DefaultResourceLoader();
@@ -72,7 +79,9 @@ public class SpringLoader implements ApplicationContextAware {
     configPostProcessor.setResourceLoader(resourceLoader);
     pluginContext.addBeanFactoryPostProcessor(configPostProcessor);
 
-    pluginContext.getBeanFactory().addBeanPostProcessor(new SpringLoaderBeanPostProcessor(pluginContext, beanPromoter));
+    pluginContext
+        .getBeanFactory()
+        .addBeanPostProcessor(new SpringLoaderBeanPostProcessor(pluginContext, beanPromoter));
 
     // Scan our configuration classes
     pluginContext.scan(packagesToScan.toArray(new String[packagesToScan.size()]));

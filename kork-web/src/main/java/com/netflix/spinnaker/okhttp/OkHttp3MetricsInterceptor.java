@@ -24,8 +24,9 @@ import okhttp3.Response;
 
 public class OkHttp3MetricsInterceptor extends MetricsInterceptor implements okhttp3.Interceptor {
 
-  public OkHttp3MetricsInterceptor(Provider<Registry> registry,
-                                   OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties) {
+  public OkHttp3MetricsInterceptor(
+      Provider<Registry> registry,
+      OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties) {
     super(registry, okHttpMetricsInterceptorProperties);
   }
 

@@ -23,8 +23,8 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
 /** Provides default discovery status (UP) if no discovery status publisher can be found. */
-public class NoDiscoveryStatusPublisher implements DiscoveryStatusPublisher,
-  ApplicationListener<ContextRefreshedEvent> {
+public class NoDiscoveryStatusPublisher
+    implements DiscoveryStatusPublisher, ApplicationListener<ContextRefreshedEvent> {
 
   private static final Logger log = LoggerFactory.getLogger(NoDiscoveryStatusPublisher.class);
 
@@ -45,9 +45,10 @@ public class NoDiscoveryStatusPublisher implements DiscoveryStatusPublisher,
   }
 
   private void setInstanceStatus(InstanceStatus instanceStatus) {
-    InstanceStatus previousStatus = instanceStatus == InstanceStatus.UP ? InstanceStatus.UNKNOWN : InstanceStatus.UP;
+    InstanceStatus previousStatus =
+        instanceStatus == InstanceStatus.UP ? InstanceStatus.UNKNOWN : InstanceStatus.UP;
     eventPublisher.publishEvent(
-      new RemoteStatusChangedEvent(new DiscoveryStatusChangeEvent(previousStatus, instanceStatus))
-    );
+        new RemoteStatusChangedEvent(
+            new DiscoveryStatusChangeEvent(previousStatus, instanceStatus)));
   }
 }

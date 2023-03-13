@@ -21,11 +21,11 @@ import java.lang.reflect.Proxy;
 
 public class ExtensionPointMetadataProvider {
 
-  public static Class<? extends SpinnakerExtensionPoint> getExtensionClass(SpinnakerExtensionPoint extensionPoint) {
+  public static Class<? extends SpinnakerExtensionPoint> getExtensionClass(
+      SpinnakerExtensionPoint extensionPoint) {
     if (Proxy.isProxyClass(extensionPoint.getClass())) {
-      ExtensionInvocationHandler extensionInvocationHandler = (ExtensionInvocationHandler) Proxy.getInvocationHandler(
-        extensionPoint
-      );
+      ExtensionInvocationHandler extensionInvocationHandler =
+          (ExtensionInvocationHandler) Proxy.getInvocationHandler(extensionPoint);
       return extensionInvocationHandler.getTargetClass();
     }
     return extensionPoint.getClass();
@@ -33,9 +33,8 @@ public class ExtensionPointMetadataProvider {
 
   public static String getPluginId(SpinnakerExtensionPoint extensionPoint) {
     if (Proxy.isProxyClass(extensionPoint.getClass())) {
-      ExtensionInvocationHandler extensionInvocationHandler = (ExtensionInvocationHandler) Proxy.getInvocationHandler(
-        extensionPoint
-      );
+      ExtensionInvocationHandler extensionInvocationHandler =
+          (ExtensionInvocationHandler) Proxy.getInvocationHandler(extensionPoint);
       return extensionInvocationHandler.getPluginId();
     }
     return "default";

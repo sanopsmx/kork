@@ -23,8 +23,7 @@ import com.netflix.spinnaker.credentials.Credentials;
  * deserialized from configuration or an external system. These are optional but useful to use
  * built-in {@link CredentialsParser}.
  *
- * <p>
- * equals is checked to detect change in definitions
+ * <p>equals is checked to detect change in definitions
  */
 public interface CredentialsDefinition {
   String getName();

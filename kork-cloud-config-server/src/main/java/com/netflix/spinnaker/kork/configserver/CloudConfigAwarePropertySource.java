@@ -48,7 +48,8 @@ public class CloudConfigAwarePropertySource extends EnumerablePropertySource<Pro
       try {
         resourceService = context.getBean(CloudConfigResourceService.class);
       } catch (BeansException e) {
-        throw new ConfigFileLoadingException("Config Server repository not configured for resource \"" + path + "\"");
+        throw new ConfigFileLoadingException(
+            "Config Server repository not configured for resource \"" + path + "\"");
       }
     }
   }

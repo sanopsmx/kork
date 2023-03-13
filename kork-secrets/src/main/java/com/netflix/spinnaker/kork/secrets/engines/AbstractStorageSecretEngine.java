@@ -73,13 +73,16 @@ public abstract class AbstractStorageSecretEngine implements SecretEngine {
   public void validate(EncryptedSecret encryptedSecret) throws InvalidSecretFormatException {
     Set<String> paramNames = encryptedSecret.getParams().keySet();
     if (!paramNames.contains(STORAGE_BUCKET)) {
-      throw new InvalidSecretFormatException("Storage bucket parameter is missing (" + STORAGE_BUCKET + "=...)");
+      throw new InvalidSecretFormatException(
+          "Storage bucket parameter is missing (" + STORAGE_BUCKET + "=...)");
     }
     if (!paramNames.contains(STORAGE_REGION)) {
-      throw new InvalidSecretFormatException("Storage region parameter is missing (" + STORAGE_REGION + "=...)");
+      throw new InvalidSecretFormatException(
+          "Storage region parameter is missing (" + STORAGE_REGION + "=...)");
     }
     if (!paramNames.contains(STORAGE_FILE_URI)) {
-      throw new InvalidSecretFormatException("Storage file parameter is missing (" + STORAGE_FILE_URI + "=...)");
+      throw new InvalidSecretFormatException(
+          "Storage file parameter is missing (" + STORAGE_FILE_URI + "=...)");
     }
   }
 
@@ -87,12 +90,13 @@ public abstract class AbstractStorageSecretEngine implements SecretEngine {
     throw new UnsupportedOperationException("This operation is not supported");
   }
 
-  protected abstract InputStream downloadRemoteFile(EncryptedSecret encryptedSecret) throws IOException;
+  protected abstract InputStream downloadRemoteFile(EncryptedSecret encryptedSecret)
+      throws IOException;
 
   protected byte[] readAll(InputStream inputStream) throws IOException {
     try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
       byte[] buf = new byte[4096];
-      for (;;) {
+      for (; ; ) {
         int read = inputStream.read(buf, 0, buf.length);
         if (read <= 0) {
           break;
@@ -108,10 +112,11 @@ public abstract class AbstractStorageSecretEngine implements SecretEngine {
     cache.put(fileURI, parsed);
   }
 
-  protected byte[] getParsedValue(String fileURI, String yamlPath) throws SecretDecryptionException {
+  protected byte[] getParsedValue(String fileURI, String yamlPath)
+      throws SecretDecryptionException {
     Map<String, Object> parsed = cache.get(fileURI);
 
-    for (Iterator<String> it = Splitter.on(".").split(yamlPath).iterator(); it.hasNext();) {
+    for (Iterator<String> it = Splitter.on(".").split(yamlPath).iterator(); it.hasNext(); ) {
       String pathElt = it.next();
       Object o = parsed.get(pathElt);
       if (o instanceof Map) {

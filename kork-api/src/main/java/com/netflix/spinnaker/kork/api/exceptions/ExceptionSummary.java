@@ -36,16 +36,16 @@ public class ExceptionSummary {
   private String message;
 
   /**
-   * The bottom-most exception message in a cause change. This message should have the exact cause of
-   * what went wrong.
+   * The bottom-most exception message in a cause change. This message should have the exact cause
+   * of what went wrong.
    */
   private String cause;
 
   /**
    * The message and cause properties should be enough, but if that's not the case, or additional
    * context is required, the details list is automatically populated using the additional metadata
-   * provided by {@code SpinnakerException} derivative classes. This list is ordered in reverse, where
-   * the first element is the deepest exception in a cause chain.
+   * provided by {@code SpinnakerException} derivative classes. This list is ordered in reverse,
+   * where the first element is the deepest exception in a cause chain.
    */
   private List<TraceDetail> details;
 

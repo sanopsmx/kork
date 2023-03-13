@@ -37,19 +37,15 @@ public @interface PluginConfiguration {
   /**
    * The property value of the configuration.
    *
-   * <p>
-   * If the configuration is for an extension point and the config is `stage-extension`, the
+   * <p>If the configuration is for an extension point and the config is `stage-extension`, the
    * corresponding config coordinates would be:
    *
-   * <p>
-   * `spinnaker.extensibility.plugins.pluginId.extensions.stage-extension.config`
+   * <p>`spinnaker.extensibility.plugins.pluginId.extensions.stage-extension.config`
    *
-   * <p>
-   * If the configuration is for an plugin the config is `http-client`, the corresponding config
+   * <p>If the configuration is for an plugin the config is `http-client`, the corresponding config
    * coordinates would be:
    *
-   * <p>
-   * `spinnaker.extensibility.plugins.pluginId.http-client.config`
+   * <p>`spinnaker.extensibility.plugins.pluginId.http-client.config`
    *
    * @return
    */

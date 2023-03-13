@@ -26,7 +26,6 @@ public class SensitiveProperties {
   /** Configure the pattern to use for matching likely sensitive property names. */
   // note: `(?i)` makes the rest of the pattern case-insensitive
   // https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/regex/Pattern.html#CASE_INSENSITIVE
-  private Pattern sensitivePropertyNamePattern = Pattern.compile(
-    "(?i)pass(word|phrase)|(api|access)?token|.*(private|secret|access)key.*"
-  );
+  private Pattern sensitivePropertyNamePattern =
+      Pattern.compile("(?i)pass(word|phrase)|(api|access)?token|.*(private|secret|access)key.*");
 }

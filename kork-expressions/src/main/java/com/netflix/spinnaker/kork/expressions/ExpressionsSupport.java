@@ -61,39 +61,41 @@ public class ExpressionsSupport {
   private final List<ExpressionFunctionProvider> expressionFunctionProviders;
   private final ExpressionProperties expressionProperties;
 
-  public ExpressionsSupport(Class<?> extraAllowedReturnType, ExpressionProperties expressionProperties) {
+  public ExpressionsSupport(
+      Class<?> extraAllowedReturnType, ExpressionProperties expressionProperties) {
     this(new Class[] {extraAllowedReturnType}, null, null, expressionProperties);
   }
 
-  public ExpressionsSupport(Class<?>[] extraAllowedReturnTypes,
-                            List<ExpressionFunctionProvider> extraExpressionFunctionProviders,
-                            PluginManager pluginManager,
-                            ExpressionProperties expressionProperties) {
+  public ExpressionsSupport(
+      Class<?>[] extraAllowedReturnTypes,
+      List<ExpressionFunctionProvider> extraExpressionFunctionProviders,
+      PluginManager pluginManager,
+      ExpressionProperties expressionProperties) {
     this.expressionProperties = expressionProperties;
 
-    allowedReturnTypes = new HashSet<>(
-      Arrays.asList(
-        Collection.class,
-        Map.class,
-        SortedMap.class,
-        List.class,
-        Set.class,
-        SortedSet.class,
-        ArrayList.class,
-        LinkedList.class,
-        HashSet.class,
-        LinkedHashSet.class,
-        HashMap.class,
-        LinkedHashMap.class,
-        TreeMap.class,
-        TreeSet.class
-      )
-    );
+    allowedReturnTypes =
+        new HashSet<>(
+            Arrays.asList(
+                Collection.class,
+                Map.class,
+                SortedMap.class,
+                List.class,
+                Set.class,
+                SortedSet.class,
+                ArrayList.class,
+                LinkedList.class,
+                HashSet.class,
+                LinkedHashSet.class,
+                HashMap.class,
+                LinkedHashMap.class,
+                TreeMap.class,
+                TreeSet.class));
     Collections.addAll(allowedReturnTypes, extraAllowedReturnTypes);
 
-    expressionFunctionProviders = new ArrayList<>(
-      Arrays.asList(new JsonExpressionFunctionProvider(), new StringExpressionFunctionProvider())
-    );
+    expressionFunctionProviders =
+        new ArrayList<>(
+            Arrays.asList(
+                new JsonExpressionFunctionProvider(), new StringExpressionFunctionProvider()));
 
     if (extraExpressionFunctionProviders != null) {
       expressionFunctionProviders.addAll(extraExpressionFunctionProviders);
@@ -102,7 +104,8 @@ public class ExpressionsSupport {
     // TODO(rz): Once plugins are no longer an incubating feature, extraExpressionFunctionProviders
     // var could be removed
     if (pluginManager != null) {
-      expressionFunctionProviders.addAll(pluginManager.getExtensions(ExpressionFunctionProvider.class));
+      expressionFunctionProviders.addAll(
+          pluginManager.getExtensions(ExpressionFunctionProvider.class));
     }
 
     if (expressionProperties.getDoNotEvalSpel().isEnabled()) {
@@ -115,19 +118,25 @@ public class ExpressionsSupport {
     return expressionFunctionProviders;
   }
 
-  private static void registerFunction(StandardEvaluationContext context,
-                                       String registrationName,
-                                       Class<?> cls,
-                                       String methodName,
-                                       Class<?>... types) {
+  private static void registerFunction(
+      StandardEvaluationContext context,
+      String registrationName,
+      Class<?> cls,
+      String methodName,
+      Class<?>... types) {
     try {
       context.registerFunction(registrationName, cls.getDeclaredMethod(methodName, types));
     } catch (NoSuchMethodException e) {
       LOGGER.error("Failed to register helper function", e);
       throw new RuntimeException(
-        "Failed to register helper function '" + registrationName + "' from '" + cls.getName() + "#" + methodName + "'",
-        e
-      );
+          "Failed to register helper function '"
+              + registrationName
+              + "' from '"
+              + cls.getName()
+              + "#"
+              + methodName
+              + "'",
+          e);
     }
   }
 
@@ -138,46 +147,52 @@ public class ExpressionsSupport {
    * @param allowUnknownKeys flag to control what helper functions are available
    * @return an evaluation context hooked with helper functions and correct ACL via allow list
    */
-  public StandardEvaluationContext buildEvaluationContext(Object rootObject, boolean allowUnknownKeys) {
-    StandardEvaluationContext evaluationContext = createEvaluationContext(rootObject, allowUnknownKeys);
+  public StandardEvaluationContext buildEvaluationContext(
+      Object rootObject, boolean allowUnknownKeys) {
+    StandardEvaluationContext evaluationContext =
+        createEvaluationContext(rootObject, allowUnknownKeys);
 
     registerExpressionProviderFunctions(evaluationContext);
 
     return evaluationContext;
   }
 
-  private StandardEvaluationContext createEvaluationContext(Object rootObject, boolean allowUnknownKeys) {
+  private StandardEvaluationContext createEvaluationContext(
+      Object rootObject, boolean allowUnknownKeys) {
     ReturnTypeRestrictor returnTypeRestrictor = new ReturnTypeRestrictor(allowedReturnTypes);
 
     StandardEvaluationContext evaluationContext = new StandardEvaluationContext(rootObject);
     evaluationContext.setTypeLocator(new AllowListTypeLocator());
-    evaluationContext.setMethodResolvers(Collections.singletonList(new FilteredMethodResolver(returnTypeRestrictor)));
+    evaluationContext.setMethodResolvers(
+        Collections.singletonList(new FilteredMethodResolver(returnTypeRestrictor)));
     evaluationContext.setPropertyAccessors(
-      Arrays.asList(new MapPropertyAccessor(allowUnknownKeys), new FilteredPropertyAccessor(returnTypeRestrictor))
-    );
+        Arrays.asList(
+            new MapPropertyAccessor(allowUnknownKeys),
+            new FilteredPropertyAccessor(returnTypeRestrictor)));
 
     return evaluationContext;
   }
 
   private void registerExpressionProviderFunctions(StandardEvaluationContext evaluationContext) {
     for (ExpressionFunctionProvider p : expressionFunctionProviders) {
-      for (ExpressionFunctionProvider.FunctionDefinition function : p.getFunctions().getFunctionsDefinitions()) {
+      for (ExpressionFunctionProvider.FunctionDefinition function :
+          p.getFunctions().getFunctionsDefinitions()) {
         String namespacedFunctionName = function.getName();
         if (p.getNamespace() != null) {
           namespacedFunctionName = format("%s_%s", p.getNamespace(), namespacedFunctionName);
         }
 
-        Class[] functionTypes = function.getParameters().stream().map(
-          ExpressionFunctionProvider.FunctionParameter::getType
-        ).toArray(Class[]::new);
+        Class[] functionTypes =
+            function.getParameters().stream()
+                .map(ExpressionFunctionProvider.FunctionParameter::getType)
+                .toArray(Class[]::new);
 
         registerFunction(
-          evaluationContext,
-          namespacedFunctionName,
-          p.getExtensionClass(),
-          function.getName(),
-          functionTypes
-        );
+            evaluationContext,
+            namespacedFunctionName,
+            p.getExtensionClass(),
+            function.getName(),
+            functionTypes);
       }
     }
   }
@@ -200,12 +215,11 @@ public class ExpressionsSupport {
     @Override
     public Functions getFunctions() {
       return new Functions(
-        new FunctionDefinition(
-          "doNotEval", "Restrict expressions evaluation for an object", new FunctionParameter(
-            Object.class, "value", "An object to restrict expressions evaluation"
-          )
-        )
-      );
+          new FunctionDefinition(
+              "doNotEval",
+              "Restrict expressions evaluation for an object",
+              new FunctionParameter(
+                  Object.class, "value", "An object to restrict expressions evaluation")));
     }
   }
 
@@ -240,12 +254,11 @@ public class ExpressionsSupport {
     @Override
     public Functions getFunctions() {
       return new Functions(
-        new FunctionDefinition(
-          "toJson", "Converts an object to JSON string", new FunctionParameter(
-            Object.class, "value", "An Object to marshall to a JSON String"
-          )
-        )
-      );
+          new FunctionDefinition(
+              "toJson",
+              "Converts an object to JSON string",
+              new FunctionParameter(
+                  Object.class, "value", "An Object to marshall to a JSON String")));
     }
   }
 
@@ -319,32 +332,35 @@ public class ExpressionsSupport {
     @Override
     public Functions getFunctions() {
       return new Functions(
-        new FunctionDefinition(
-          "toInt", "Converts a string to integer", new FunctionParameter(
-            String.class, "value", "A String value to convert to an int"
-          )
-        ), new FunctionDefinition(
-          "toFloat", "Converts a string to float", new FunctionParameter(
-            String.class, "value", "A String value to convert to a float"
-          )
-        ), new FunctionDefinition(
-          "toBoolean", "Converts a string value to boolean", new FunctionParameter(
-            String.class, "value", "A String value to convert to a boolean"
-          )
-        ), new FunctionDefinition(
-          "toBase64", "Encodes a string to base64 string", new FunctionParameter(
-            String.class, "value", "A String value to base64 encode"
-          )
-        ), new FunctionDefinition(
-          "fromBase64", "Decodes a base64 string", new FunctionParameter(
-            String.class, "value", "A base64-encoded String value to decode"
-          )
-        ), new FunctionDefinition(
-          "alphanumerical", "Removes all non-alphanumeric characters from a string", new FunctionParameter(
-            String.class, "value", "A String value to strip of all non-alphanumeric characters"
-          )
-        )
-      );
+          new FunctionDefinition(
+              "toInt",
+              "Converts a string to integer",
+              new FunctionParameter(String.class, "value", "A String value to convert to an int")),
+          new FunctionDefinition(
+              "toFloat",
+              "Converts a string to float",
+              new FunctionParameter(String.class, "value", "A String value to convert to a float")),
+          new FunctionDefinition(
+              "toBoolean",
+              "Converts a string value to boolean",
+              new FunctionParameter(
+                  String.class, "value", "A String value to convert to a boolean")),
+          new FunctionDefinition(
+              "toBase64",
+              "Encodes a string to base64 string",
+              new FunctionParameter(String.class, "value", "A String value to base64 encode")),
+          new FunctionDefinition(
+              "fromBase64",
+              "Decodes a base64 string",
+              new FunctionParameter(
+                  String.class, "value", "A base64-encoded String value to decode")),
+          new FunctionDefinition(
+              "alphanumerical",
+              "Removes all non-alphanumeric characters from a string",
+              new FunctionParameter(
+                  String.class,
+                  "value",
+                  "A String value to strip of all non-alphanumeric characters")));
     }
   }
 }

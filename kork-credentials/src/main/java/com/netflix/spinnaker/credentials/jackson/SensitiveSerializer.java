@@ -38,7 +38,8 @@ import org.springframework.boot.jackson.JsonComponent;
  */
 @Log4j2
 @JsonComponent
-public class SensitiveSerializer extends StdScalarSerializer<String> implements ContextualSerializer {
+public class SensitiveSerializer extends StdScalarSerializer<String>
+    implements ContextualSerializer {
 
   private final StringSerializer defaultStringSerializer = new StringSerializer();
   private final SensitiveProperties properties;
@@ -50,7 +51,7 @@ public class SensitiveSerializer extends StdScalarSerializer<String> implements 
 
   @Override
   public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property)
-    throws JsonMappingException {
+      throws JsonMappingException {
     if (property == null) {
       return defaultStringSerializer;
     }
@@ -64,10 +65,9 @@ public class SensitiveSerializer extends StdScalarSerializer<String> implements 
       Matcher matcher = properties.getSensitivePropertyNamePattern().matcher(name);
       if (matcher.matches()) {
         log.warn(
-          "Encountered likely sensitive property name '{}.{}'. Ignoring this property for serialization.",
-          declaringClass.getName(),
-          name
-        );
+            "Encountered likely sensitive property name '{}.{}'. Ignoring this property for serialization.",
+            declaringClass.getName(),
+            name);
         return this;
       }
     }
@@ -75,8 +75,11 @@ public class SensitiveSerializer extends StdScalarSerializer<String> implements 
   }
 
   @Override
-  public void serialize(String value, JsonGenerator gen, SerializerProvider provider) throws IOException {
-    if (value.startsWith("secret://") || value.startsWith("encrypted:") || value.startsWith("encryptedFile:")) {
+  public void serialize(String value, JsonGenerator gen, SerializerProvider provider)
+      throws IOException {
+    if (value.startsWith("secret://")
+        || value.startsWith("encrypted:")
+        || value.startsWith("encryptedFile:")) {
       gen.writeString(value);
     } else {
       gen.writeNull();

@@ -27,12 +27,9 @@ import org.springframework.stereotype.Component;
 @Component
 public class SecretEngineRegistry {
 
-  @Getter
-  private Map<String, SecretEngine> registeredEngines = new HashMap<>();
+  @Getter private Map<String, SecretEngine> registeredEngines = new HashMap<>();
 
-  @Getter
-  @Autowired
-  private List<SecretEngine> secretEngineList;
+  @Getter @Autowired private List<SecretEngine> secretEngineList;
 
   @PostConstruct
   public void init() {

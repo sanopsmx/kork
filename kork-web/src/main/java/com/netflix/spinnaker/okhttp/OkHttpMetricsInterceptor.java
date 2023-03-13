@@ -23,9 +23,11 @@ import com.squareup.okhttp.Response;
 import java.io.IOException;
 import javax.inject.Provider;
 
-public class OkHttpMetricsInterceptor extends MetricsInterceptor implements com.squareup.okhttp.Interceptor {
-  public OkHttpMetricsInterceptor(Provider<Registry> registry,
-                                  OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties) {
+public class OkHttpMetricsInterceptor extends MetricsInterceptor
+    implements com.squareup.okhttp.Interceptor {
+  public OkHttpMetricsInterceptor(
+      Provider<Registry> registry,
+      OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties) {
     super(registry, okHttpMetricsInterceptorProperties);
   }
 

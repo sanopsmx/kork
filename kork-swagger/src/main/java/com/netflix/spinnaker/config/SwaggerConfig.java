@@ -16,6 +16,8 @@
 
 package com.netflix.spinnaker.config;
 
+import static com.google.common.base.Predicates.or;
+
 import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableList;
 import java.util.List;
@@ -34,8 +36,6 @@ import springfox.documentation.spring.web.paths.DefaultPathProvider;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-import static com.google.common.base.Predicates.or;
-
 @EnableSwagger2
 @Configuration
 @ConditionalOnProperty("swagger.enabled")
@@ -48,18 +48,26 @@ public class SwaggerConfig {
   private String basePath = "";
   private String documentationPath = "/";
 
-  private static final ImmutableList<String> IGNORED_CLASS_NAMES = ImmutableList.of("groovy.lang.MetaClass");
+  private static final ImmutableList<String> IGNORED_CLASS_NAMES =
+      ImmutableList.of("groovy.lang.MetaClass");
 
   @Bean
   public Docket gateApi() {
-    return new Docket(DocumentationType.SWAGGER_2).select().paths(PathSelectors.regex("/api.*")).apis(RequestHandlerSelectors.any()).paths(paths()).build()
-      .apiInfo(apiInfo()).ignoredParameterTypes(ignoredClasses());
+    return new Docket(DocumentationType.SWAGGER_2)
+        .select()
+        .paths(PathSelectors.regex("/api.*"))
+        .apis(RequestHandlerSelectors.any())
+        .paths(paths())
+        .build()
+        .apiInfo(apiInfo())
+        .ignoredParameterTypes(ignoredClasses());
   }
 
   private static Class[] ignoredClasses() {
-    return IGNORED_CLASS_NAMES.stream().map(SwaggerConfig::getClassIfPresent).filter(Objects::nonNull).toArray(
-      Class[]::new
-    );
+    return IGNORED_CLASS_NAMES.stream()
+        .map(SwaggerConfig::getClassIfPresent)
+        .filter(Objects::nonNull)
+        .toArray(Class[]::new);
   }
 
   @Nullable
@@ -72,8 +80,10 @@ public class SwaggerConfig {
   }
 
   private Predicate<String> paths() {
-    return or(patterns.stream().map(PathSelectors::regex).
-      collect(Collectors.toList()).stream().map(s->(Predicate<String>)s).collect(Collectors.toList()));
+    return or(
+        patterns.stream().map(PathSelectors::regex).collect(Collectors.toList()).stream()
+            .map(s -> (Predicate<String>) s)
+            .collect(Collectors.toList()));
   }
 
   private ApiInfo apiInfo() {

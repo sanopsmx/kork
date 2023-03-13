@@ -65,8 +65,12 @@ public class MonitoredResourceBuilderTest {
 
   @Test
   public void testMatchAttribute() {
-    String text = "{\n" + " \"version\" : \"2016-08-01\",\n" + " \"instanceId\" : \"the-instance\",\n"
-      + " \"region\" : \"us-east-1\"\n" + "}";
+    String text =
+        "{\n"
+            + " \"version\" : \"2016-08-01\",\n"
+            + " \"instanceId\" : \"the-instance\",\n"
+            + " \"region\" : \"us-east-1\"\n"
+            + "}";
 
     Assert.assertEquals("the-instance", builder.matchAttribute(text, "instanceId"));
     Assert.assertEquals("us-east-1", builder.matchAttribute(text, "region"));
@@ -82,10 +86,23 @@ public class MonitoredResourceBuilderTest {
 
     builder.setStackdriverProject(project);
 
-    String awsIdentityDoc = "{\n" + "\"privateIp\" : \"123.45.67.89\",\n" + "\"devpayProductCodes\" : null,\n"
-      + "\"availabilityZone\" : \"us-east-1d\",\n" + "\"accountId\" : \"" + accountId + "\",\n"
-      + "\"version\" : \"2010-08-31\",\n" + "\"instanceId\" : \"" + instanceId + "\",\n"
-      + "\"billingProducts\" : null,\n" + "\"region\" : \"" + region + "\"\n" + "}";
+    String awsIdentityDoc =
+        "{\n"
+            + "\"privateIp\" : \"123.45.67.89\",\n"
+            + "\"devpayProductCodes\" : null,\n"
+            + "\"availabilityZone\" : \"us-east-1d\",\n"
+            + "\"accountId\" : \""
+            + accountId
+            + "\",\n"
+            + "\"version\" : \"2010-08-31\",\n"
+            + "\"instanceId\" : \""
+            + instanceId
+            + "\",\n"
+            + "\"billingProducts\" : null,\n"
+            + "\"region\" : \""
+            + region
+            + "\"\n"
+            + "}";
 
     doThrow(new IOException()).when(builder).getGoogleMetadataValue(any(String.class));
 

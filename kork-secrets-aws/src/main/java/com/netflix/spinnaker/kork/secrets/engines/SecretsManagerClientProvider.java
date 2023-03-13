@@ -21,9 +21,10 @@ import java.util.Map;
 
 public interface SecretsManagerClientProvider {
   /**
-   * Gets a configured AWS Secrets Manager client for the provided secret parameters. These parameters
-   * correspond to those given in the {@link com.netflix.spinnaker.kork.secrets.EncryptedSecret} or
-   * {@link com.netflix.spinnaker.kork.secrets.user.UserSecretReference} URI.
+   * Gets a configured AWS Secrets Manager client for the provided secret parameters. These
+   * parameters correspond to those given in the {@link
+   * com.netflix.spinnaker.kork.secrets.EncryptedSecret} or {@link
+   * com.netflix.spinnaker.kork.secrets.user.UserSecretReference} URI.
    */
   AWSSecretsManager getClientForSecretParameters(Map<String, String> parameters);
 }

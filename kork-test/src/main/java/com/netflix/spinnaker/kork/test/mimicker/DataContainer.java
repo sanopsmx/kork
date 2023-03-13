@@ -96,7 +96,9 @@ public class DataContainer {
 
   @NotNull
   public <T> T getOfType(@NotNull String key, Class<T> type) {
-    JsonParser parser = new TreeTraversingParser(objectMapper.valueToTree(data).at(normalizeKey(key)), objectMapper);
+    JsonParser parser =
+        new TreeTraversingParser(
+            objectMapper.valueToTree(data).at(normalizeKey(key)), objectMapper);
     try {
       return objectMapper.readValue(parser, type);
     } catch (IOException e) {

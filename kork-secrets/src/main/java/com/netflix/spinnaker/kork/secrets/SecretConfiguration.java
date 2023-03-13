@@ -40,8 +40,8 @@ import org.springframework.core.io.ResourceLoader;
 public class SecretConfiguration {
 
   @Bean
-  static SecretBeanPostProcessor secretBeanPostProcessor(ConfigurableApplicationContext applicationContext,
-                                                         SecretManager secretManager) {
+  static SecretBeanPostProcessor secretBeanPostProcessor(
+      ConfigurableApplicationContext applicationContext, SecretManager secretManager) {
     return new SecretBeanPostProcessor(applicationContext, secretManager);
   }
 
@@ -51,11 +51,14 @@ public class SecretConfiguration {
   }
 
   @Bean
-  public UserSecretSerde userSecretSerde(final List<UserSecretTypeProvider> userSecretTypeProviders) {
+  public UserSecretSerde userSecretSerde(
+      final List<UserSecretTypeProvider> userSecretTypeProviders) {
     List<ObjectMapper> mappers = List.of(new ObjectMapper(), new YAMLMapper(), new CBORMapper());
-    Set<Class<? extends UserSecretData>> classes = userSecretTypeProviders.stream().flatMap(
-      UserSecretTypeProvider::getUserSecretTypes
-    ).filter(type -> type != null && type.isAnnotationPresent(UserSecretType.class)).collect(Collectors.toSet());
+    Set<Class<? extends UserSecretData>> classes =
+        userSecretTypeProviders.stream()
+            .flatMap(UserSecretTypeProvider::getUserSecretTypes)
+            .filter(type -> type != null && type.isAnnotationPresent(UserSecretType.class))
+            .collect(Collectors.toSet());
     return new DefaultUserSecretSerde(mappers, classes);
   }
 

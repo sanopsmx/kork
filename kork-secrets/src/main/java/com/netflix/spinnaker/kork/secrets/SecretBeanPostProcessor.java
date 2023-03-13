@@ -31,10 +31,12 @@ public class SecretBeanPostProcessor implements BeanPostProcessor, Ordered {
   private ConfigurableApplicationContext applicationContext;
   private SecretManager secretManager;
 
-  SecretBeanPostProcessor(ConfigurableApplicationContext applicationContext, SecretManager secretManager) {
+  SecretBeanPostProcessor(
+      ConfigurableApplicationContext applicationContext, SecretManager secretManager) {
     this.applicationContext = applicationContext;
     this.secretManager = secretManager;
-    MutablePropertySources propertySources = applicationContext.getEnvironment().getPropertySources();
+    MutablePropertySources propertySources =
+        applicationContext.getEnvironment().getPropertySources();
     List<EnumerablePropertySource> enumerableSources = new ArrayList<>();
 
     for (PropertySource ps : propertySources) {
@@ -49,7 +51,8 @@ public class SecretBeanPostProcessor implements BeanPostProcessor, Ordered {
   }
 
   @Override
-  public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+  public Object postProcessBeforeInitialization(Object bean, String beanName)
+      throws BeansException {
     return bean;
   }
 

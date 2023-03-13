@@ -38,11 +38,12 @@ public interface RefreshableLockManager extends LockManager {
     private final Clock clock;
     private final boolean reuseLockVersion;
 
-    public HeartbeatLockRequest(Lock lock,
-                                AtomicInteger retriesOnFailure,
-                                Clock clock,
-                                Duration heartbeatDuration,
-                                boolean reuseLockVersion) {
+    public HeartbeatLockRequest(
+        Lock lock,
+        AtomicInteger retriesOnFailure,
+        Clock clock,
+        Duration heartbeatDuration,
+        boolean reuseLockVersion) {
       this.lock = new AtomicReference<>(lock);
       this.retriesOnFailure = retriesOnFailure;
       this.clock = clock;
@@ -82,17 +83,29 @@ public interface RefreshableLockManager extends LockManager {
 
     @Override
     public String toString() {
-      return "HeartbeatLockRequest{" + "requestId='" + requestId + '\'' + ", lock=" + lock + ", retriesOnFailure="
-        + retriesOnFailure + ", heartbeatDuration=" + heartbeatDuration + ", startedAt=" + startedAt + ", clock="
-        + clock + ", reuseLockVersion=" + reuseLockVersion + '}';
+      return "HeartbeatLockRequest{"
+          + "requestId='"
+          + requestId
+          + '\''
+          + ", lock="
+          + lock
+          + ", retriesOnFailure="
+          + retriesOnFailure
+          + ", heartbeatDuration="
+          + heartbeatDuration
+          + ", startedAt="
+          + startedAt
+          + ", clock="
+          + clock
+          + ", reuseLockVersion="
+          + reuseLockVersion
+          + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-      if (this == o)
-        return true;
-      if (o == null || getClass() != o.getClass())
-        return false;
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
       HeartbeatLockRequest that = (HeartbeatLockRequest) o;
       return Objects.equals(requestId, that.requestId);
     }
@@ -126,10 +139,8 @@ public interface RefreshableLockManager extends LockManager {
 
     @Override
     public boolean equals(Object o) {
-      if (this == o)
-        return true;
-      if (o == null || getClass() != o.getClass())
-        return false;
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
       HeartbeatResponse that = (HeartbeatResponse) o;
       return Objects.equals(lock, that.lock) && lockHeartbeatStatus == that.lockHeartbeatStatus;
     }
@@ -155,6 +166,9 @@ public interface RefreshableLockManager extends LockManager {
   }
 
   enum LockHeartbeatStatus {
-    SUCCESS, EXPIRED, ERROR, MAX_HEARTBEAT_REACHED
+    SUCCESS,
+    EXPIRED,
+    ERROR,
+    MAX_HEARTBEAT_REACHED
   }
 }

@@ -21,7 +21,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
 
-public class ValidationException extends InvalidRequestException implements HasAdditionalAttributes {
+public class ValidationException extends InvalidRequestException
+    implements HasAdditionalAttributes {
   private final Collection errors;
 
   public ValidationException(Collection errors) {
@@ -43,17 +44,20 @@ public class ValidationException extends InvalidRequestException implements HasA
     this.errors = errors;
   }
 
-  public ValidationException(String message,
-                             Throwable cause,
-                             boolean enableSuppression,
-                             boolean writableStackTrace,
-                             Collection errors) {
+  public ValidationException(
+      String message,
+      Throwable cause,
+      boolean enableSuppression,
+      boolean writableStackTrace,
+      Collection errors) {
     super(message, cause, enableSuppression, writableStackTrace);
     this.errors = errors;
   }
 
   @Override
   public Map<String, Object> getAdditionalAttributes() {
-    return errors != null && !errors.isEmpty() ? Collections.singletonMap("errors", errors) : Collections.emptyMap();
+    return errors != null && !errors.isEmpty()
+        ? Collections.singletonMap("errors", errors)
+        : Collections.emptyMap();
   }
 }

@@ -18,33 +18,33 @@ import org.springframework.core.env.PropertySource;
 
 public class SecretBeanPostProcessorTest {
 
-  @Mock
-  private ConfigurableApplicationContext applicationContext;
+  @Mock private ConfigurableApplicationContext applicationContext;
 
-  @Mock
-  private ConfigurableEnvironment environment;
+  @Mock private ConfigurableEnvironment environment;
 
   private SecretBeanPostProcessor secretBeanPostProcessor;
   private MutablePropertySources mutablePropertySources = new MutablePropertySources();
 
-  private PropertySource propertySource = new PropertySource("testPropertySource") {
-    @Override
-    public Object getProperty(String name) {
-      return null;
-    }
-  };
+  private PropertySource propertySource =
+      new PropertySource("testPropertySource") {
+        @Override
+        public Object getProperty(String name) {
+          return null;
+        }
+      };
 
-  private EnumerablePropertySource enumerablePropertySource = new EnumerablePropertySource("testEnumerableSource") {
-    @Override
-    public String[] getPropertyNames() {
-      return new String[0];
-    }
+  private EnumerablePropertySource enumerablePropertySource =
+      new EnumerablePropertySource("testEnumerableSource") {
+        @Override
+        public String[] getPropertyNames() {
+          return new String[0];
+        }
 
-    @Override
-    public Object getProperty(String name) {
-      return null;
-    }
-  };
+        @Override
+        public Object getProperty(String name) {
+          return null;
+        }
+      };
 
   @BeforeAll
   public void setup() {
@@ -64,12 +64,16 @@ public class SecretBeanPostProcessorTest {
 
   @Test
   public void replaceEnumerableSourceWithSecretAwareSourceInSecretManagerBean() {
-    assertTrue(mutablePropertySources.get("testEnumerableSource") instanceof EnumerablePropertySource);
-    assertFalse(mutablePropertySources.get("testPropertySource") instanceof EnumerablePropertySource);
+    assertTrue(
+        mutablePropertySources.get("testEnumerableSource") instanceof EnumerablePropertySource);
+    assertFalse(
+        mutablePropertySources.get("testPropertySource") instanceof EnumerablePropertySource);
 
     secretBeanPostProcessor = new SecretBeanPostProcessor(applicationContext, null);
 
-    assertTrue(mutablePropertySources.get("testEnumerableSource") instanceof SecretAwarePropertySource);
-    assertFalse(mutablePropertySources.get("testPropertySource") instanceof SecretAwarePropertySource);
+    assertTrue(
+        mutablePropertySources.get("testEnumerableSource") instanceof SecretAwarePropertySource);
+    assertFalse(
+        mutablePropertySources.get("testPropertySource") instanceof SecretAwarePropertySource);
   }
 }

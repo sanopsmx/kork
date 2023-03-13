@@ -36,7 +36,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class InsecureOkHttpClientBuilderProvider implements OkHttpClientBuilderProvider {
 
-  private static final Logger log = LoggerFactory.getLogger(InsecureOkHttpClientBuilderProvider.class);
+  private static final Logger log =
+      LoggerFactory.getLogger(InsecureOkHttpClientBuilderProvider.class);
 
   private final OkHttpClient okHttpClient;
 
@@ -47,8 +48,9 @@ public class InsecureOkHttpClientBuilderProvider implements OkHttpClientBuilderP
 
   @Override
   public Boolean supports(ServiceEndpoint service) {
-    return ((service.getBaseUrl().startsWith("http://") || service.getBaseUrl().startsWith("https://")) && !service
-      .isSecure());
+    return ((service.getBaseUrl().startsWith("http://")
+            || service.getBaseUrl().startsWith("https://"))
+        && !service.isSecure());
   }
 
   @Override
@@ -57,22 +59,28 @@ public class InsecureOkHttpClientBuilderProvider implements OkHttpClientBuilderP
     return setSSLSocketFactory(builder, service);
   }
 
-  private OkHttpClient.Builder setSSLSocketFactory(OkHttpClient.Builder builder, ServiceEndpoint service) {
+  private OkHttpClient.Builder setSSLSocketFactory(
+      OkHttpClient.Builder builder, ServiceEndpoint service) {
 
     try {
       // Create a trust manager that does not validate certificate chains
-      final TrustManager[] trustManagers = new TrustManager[] {new X509TrustManager() {
-        @Override
-        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
+      final TrustManager[] trustManagers =
+          new TrustManager[] {
+            new X509TrustManager() {
+              @Override
+              public void checkClientTrusted(
+                  java.security.cert.X509Certificate[] chain, String authType) {}
 
-        @Override
-        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {}
+              @Override
+              public void checkServerTrusted(
+                  java.security.cert.X509Certificate[] chain, String authType) {}
 
-        @Override
-        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-          return new java.security.cert.X509Certificate[] {};
-        }
-      }};
+              @Override
+              public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                return new java.security.cert.X509Certificate[] {};
+              }
+            }
+          };
 
       final SSLContext sslContext = SSLContext.getInstance("SSL");
       sslContext.init(null, trustManagers, null);
@@ -81,7 +89,8 @@ public class InsecureOkHttpClientBuilderProvider implements OkHttpClientBuilderP
 
     } catch (Exception e) {
       log.error("Unable to set ssl socket factory for {}", service.getBaseUrl(), e);
-      throw new SystemException(format("Unable to set ssl socket factory for (%s)", service.getBaseUrl()), e);
+      throw new SystemException(
+          format("Unable to set ssl socket factory for (%s)", service.getBaseUrl()), e);
     }
 
     return builder;

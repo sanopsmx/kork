@@ -29,7 +29,8 @@ public class MapBackedCredentialsRepositoryTest {
     final String TYPE = "myType";
     final String CRED_NAME = "cred";
     CredentialsLifecycleHandler<Credentials> handler = mock(CredentialsLifecycleHandler.class);
-    MapBackedCredentialsRepository<Credentials> repository = new MapBackedCredentialsRepository<>(TYPE, handler);
+    MapBackedCredentialsRepository<Credentials> repository =
+        new MapBackedCredentialsRepository<>(TYPE, handler);
 
     Credentials c1 = mock(Credentials.class);
     when(c1.getName()).thenReturn(CRED_NAME);
@@ -50,7 +51,8 @@ public class MapBackedCredentialsRepositoryTest {
     final String TYPE1 = "type1";
     final String TYPE2 = "type2";
     final String CRED_NAME = "cred";
-    MapBackedCredentialsRepository<Credentials> repository = new MapBackedCredentialsRepository<>(TYPE1, null);
+    MapBackedCredentialsRepository<Credentials> repository =
+        new MapBackedCredentialsRepository<>(TYPE1, null);
 
     Credentials c1 = mock(Credentials.class);
     when(c1.getName()).thenReturn(CRED_NAME);

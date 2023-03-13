@@ -28,15 +28,18 @@ import org.springframework.boot.actuate.health.Status;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 
-public class BootHealthCheckHandler implements HealthCheckHandler, ApplicationListener<ContextRefreshedEvent> {
+public class BootHealthCheckHandler
+    implements HealthCheckHandler, ApplicationListener<ContextRefreshedEvent> {
 
   private final HealthIndicator healthIndicator;
   private final ApplicationInfoManager applicationInfoManager;
 
-  public BootHealthCheckHandler(ApplicationInfoManager applicationInfoManager,
-                                StatusAggregator aggregator,
-                                Map<String, HealthIndicator> healthIndicators) {
-    this.applicationInfoManager = Objects.requireNonNull(applicationInfoManager, "applicationInfoManager");
+  public BootHealthCheckHandler(
+      ApplicationInfoManager applicationInfoManager,
+      StatusAggregator aggregator,
+      Map<String, HealthIndicator> healthIndicators) {
+    this.applicationInfoManager =
+        Objects.requireNonNull(applicationInfoManager, "applicationInfoManager");
     this.healthIndicator = new RandomHealthIndicator();
   }
 

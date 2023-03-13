@@ -23,12 +23,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 /**
- * Resolves the version by finding the Spring bean annotated with
- * {@link org.springframework.boot.autoconfigure.SpringBootApplication} and then determining the
+ * Resolves the version by finding the Spring bean annotated with {@link
+ * org.springframework.boot.autoconfigure.SpringBootApplication} and then determining the
  * Implementation-Version attribute from the package.
  *
- * <p>
- * See {@link java.lang.Package#getImplementationVersion()}
+ * <p>See {@link java.lang.Package#getImplementationVersion()}
  */
 public class SpringPackageVersionResolver implements VersionResolver {
 
@@ -41,9 +40,11 @@ public class SpringPackageVersionResolver implements VersionResolver {
   @Nullable
   @Override
   public String resolve(@Nonnull String serviceName) {
-    Map<String, Object> annotatedBeans = applicationContext.getBeansWithAnnotation(SpringBootApplication.class);
-    return annotatedBeans.isEmpty() ? null
-      : annotatedBeans.values().toArray()[0].getClass().getPackage().getImplementationVersion();
+    Map<String, Object> annotatedBeans =
+        applicationContext.getBeansWithAnnotation(SpringBootApplication.class);
+    return annotatedBeans.isEmpty()
+        ? null
+        : annotatedBeans.values().toArray()[0].getClass().getPackage().getImplementationVersion();
   }
 
   @Override

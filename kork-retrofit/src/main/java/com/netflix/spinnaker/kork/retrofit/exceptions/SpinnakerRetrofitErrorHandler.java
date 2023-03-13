@@ -40,8 +40,8 @@ public final class SpinnakerRetrofitErrorHandler implements ErrorHandler {
   }
 
   /**
-   * Returns a more specific {@link Throwable} depending on properties of the caught
-   * {@link RetrofitError}.
+   * Returns a more specific {@link Throwable} depending on properties of the caught {@link
+   * RetrofitError}.
    *
    * @param e The {@link RetrofitError} thrown by an invocation of the {@link retrofit.RestAdapter}
    * @return A more informative {@link Throwable}
@@ -51,8 +51,8 @@ public final class SpinnakerRetrofitErrorHandler implements ErrorHandler {
     switch (e.getKind()) {
       case HTTP:
         SpinnakerHttpException retval = new SpinnakerHttpException(e);
-        if ((e.getResponse().getStatus() == HttpStatus.NOT_FOUND.value()) || (e.getResponse()
-          .getStatus() == HttpStatus.BAD_REQUEST.value())) {
+        if ((e.getResponse().getStatus() == HttpStatus.NOT_FOUND.value())
+            || (e.getResponse().getStatus() == HttpStatus.BAD_REQUEST.value())) {
           retval.setRetryable(false);
         }
         return retval;

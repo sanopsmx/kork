@@ -21,14 +21,17 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 
-public class DefaultThreadUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler,
-  ApplicationListener<ApplicationEnvironmentPreparedEvent> {
-  private static final Logger logger = LoggerFactory.getLogger(DefaultThreadUncaughtExceptionHandler.class);
+public class DefaultThreadUncaughtExceptionHandler
+    implements Thread.UncaughtExceptionHandler,
+        ApplicationListener<ApplicationEnvironmentPreparedEvent> {
+  private static final Logger logger =
+      LoggerFactory.getLogger(DefaultThreadUncaughtExceptionHandler.class);
   private Thread.UncaughtExceptionHandler priorHandler;
 
   @Override
   public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
-    boolean isEnabled = event.getEnvironment().getProperty("globalExceptionHandlingEnabled", boolean.class, true);
+    boolean isEnabled =
+        event.getEnvironment().getProperty("globalExceptionHandlingEnabled", boolean.class, true);
 
     if (isEnabled) {
       priorHandler = Thread.getDefaultUncaughtExceptionHandler();

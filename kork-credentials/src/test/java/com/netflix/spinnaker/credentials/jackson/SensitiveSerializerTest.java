@@ -38,31 +38,35 @@ class SensitiveSerializerTest {
 
   @Test
   void masksExplicitSensitiveFields() throws JsonProcessingException {
-    SensitiveAccount account = SensitiveAccount.builder().name("alfred").username("fred").password("hunter2").build();
-    assertThat(mapper.writeValueAsString(account)).contains(account.getName(), account.getUsername()).doesNotContain(
-      account.getPassword()
-    );
+    SensitiveAccount account =
+        SensitiveAccount.builder().name("alfred").username("fred").password("hunter2").build();
+    assertThat(mapper.writeValueAsString(account))
+        .contains(account.getName(), account.getUsername())
+        .doesNotContain(account.getPassword());
   }
 
   @Test
   void masksImplicitSensitiveFieldsInCredentialsDefinition() throws JsonProcessingException {
-    SensitiveAccount account = SensitiveAccount.builder().name("betty").username("bet").token(
-      UUID.randomUUID().toString()
-    ).build();
-    assertThat(mapper.writeValueAsString(account)).contains(account.getName(), account.getUsername()).doesNotContain(
-      account.getToken()
-    );
+    SensitiveAccount account =
+        SensitiveAccount.builder()
+            .name("betty")
+            .username("bet")
+            .token(UUID.randomUUID().toString())
+            .build();
+    assertThat(mapper.writeValueAsString(account))
+        .contains(account.getName(), account.getUsername())
+        .doesNotContain(account.getToken());
   }
 
   @Test
   void doesNotMaskSecretReferences() throws JsonProcessingException {
-    SensitiveAccount account = SensitiveAccount.builder().name("charlie").username("chancery").password(
-      "secret://chest?k=gold"
-    ).build();
-    assertThat(mapper.writeValueAsString(account)).contains(
-      account.getName(),
-      account.getUsername(),
-      account.getPassword()
-    );
+    SensitiveAccount account =
+        SensitiveAccount.builder()
+            .name("charlie")
+            .username("chancery")
+            .password("secret://chest?k=gold")
+            .build();
+    assertThat(mapper.writeValueAsString(account))
+        .contains(account.getName(), account.getUsername(), account.getPassword());
   }
 }

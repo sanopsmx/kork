@@ -38,9 +38,10 @@ class RetrofitServiceFactory implements ServiceClientFactory {
   private final OkHttpClientProvider clientProvider;
   private final RequestInterceptor spinnakerRequestInterceptor;
 
-  RetrofitServiceFactory(RestAdapter.LogLevel retrofitLogLevel,
-                         OkHttpClientProvider clientProvider,
-                         RequestInterceptor spinnakerRequestInterceptor) {
+  RetrofitServiceFactory(
+      RestAdapter.LogLevel retrofitLogLevel,
+      OkHttpClientProvider clientProvider,
+      RequestInterceptor spinnakerRequestInterceptor) {
     this.retrofitLogLevel = retrofitLogLevel;
     this.clientProvider = clientProvider;
     this.spinnakerRequestInterceptor = spinnakerRequestInterceptor;
@@ -49,10 +50,14 @@ class RetrofitServiceFactory implements ServiceClientFactory {
   @Override
   public <T> T create(Class<T> type, ServiceEndpoint serviceEndpoint, ObjectMapper objectMapper) {
     Endpoint endpoint = newFixedEndpoint(serviceEndpoint.getBaseUrl());
-    return new RestAdapter.Builder().setRequestInterceptor(spinnakerRequestInterceptor).setConverter(
-      new JacksonConverter(objectMapper)
-    ).setEndpoint(endpoint).setClient(new Ok3Client(clientProvider.getClient(serviceEndpoint))).setLogLevel(
-      retrofitLogLevel
-    ).setLog(new Slf4jRetrofitLogger(type)).build().create(type);
+    return new RestAdapter.Builder()
+        .setRequestInterceptor(spinnakerRequestInterceptor)
+        .setConverter(new JacksonConverter(objectMapper))
+        .setEndpoint(endpoint)
+        .setClient(new Ok3Client(clientProvider.getClient(serviceEndpoint)))
+        .setLogLevel(retrofitLogLevel)
+        .setLog(new Slf4jRetrofitLogger(type))
+        .build()
+        .create(type);
   }
 }

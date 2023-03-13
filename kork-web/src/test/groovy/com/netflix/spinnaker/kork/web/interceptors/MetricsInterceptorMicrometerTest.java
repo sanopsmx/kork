@@ -40,9 +40,9 @@ public class MetricsInterceptorMicrometerTest {
 
   SimpleMeterRegistry simpleMeterRegistry = new SimpleMeterRegistry();
   Registry registry = new MicrometerRegistry(simpleMeterRegistry);
-  MetricsInterceptor interceptor = new MetricsInterceptor(
-    registry, "controller.invocations", pathVariables, queryParams, controllersToExclude
-  );
+  MetricsInterceptor interceptor =
+      new MetricsInterceptor(
+          registry, "controller.invocations", pathVariables, queryParams, controllersToExclude);
   /*
    * @Test public void allPublishedMetricsHaveTheSameSetOfTagsAndCanBeRegisteredInMicrometer() throws
    * Exception { MockHttpServletRequest request1 = new MockHttpServletRequest();
@@ -81,9 +81,13 @@ public class MetricsInterceptorMicrometerTest {
    */
 
   private Stream<List<Tag>> getAllTagsAndRemovePercentileTag(Search actual) {
-    return actual.counters().stream().map(c -> c.getId().getTags()).map(
-      tags -> tags.stream().filter(tag -> !tag.getKey().equalsIgnoreCase("percentile")).collect(Collectors.toList())
-    );
+    return actual.counters().stream()
+        .map(c -> c.getId().getTags())
+        .map(
+            tags ->
+                tags.stream()
+                    .filter(tag -> !tag.getKey().equalsIgnoreCase("percentile"))
+                    .collect(Collectors.toList()));
   }
 
   /*

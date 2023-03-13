@@ -54,7 +54,8 @@ class RemoteCredentialsSupport {
     objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
   }
 
-  static RemoteCredentials getRemoteCredentials(String command, String user, String host, int port) {
+  static RemoteCredentials getRemoteCredentials(
+      String command, String user, String host, int port) {
 
     RemoteCredentials remoteCredentials = new RemoteCredentials();
 

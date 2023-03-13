@@ -62,7 +62,10 @@ public class GoogleSecretsManagerSecretEngine implements SecretEngine {
     String secretKey = encryptedSecret.getParams().get(SECRET_KEY);
     String secretVersion = encryptedSecret.getParams().get(VERSION_ID);
     if (encryptedSecret.isEncryptedFile()) {
-      return getSecretPayload(projectNumber, secretId, secretVersion).getData().toStringUtf8().getBytes();
+      return getSecretPayload(projectNumber, secretId, secretVersion)
+          .getData()
+          .toStringUtf8()
+          .getBytes();
     } else if (secretKey != null) {
       return getSecretPayloadString(projectNumber, secretId, secretVersion, secretKey);
     } else {
@@ -74,17 +77,20 @@ public class GoogleSecretsManagerSecretEngine implements SecretEngine {
   public void validate(EncryptedSecret encryptedSecret) {
     Set<String> paramNamesSet = encryptedSecret.getParams().keySet();
     if (!paramNamesSet.contains(PROJECT_NUMBER)) {
-      throw new InvalidSecretFormatException("Project number parameter is missing (" + PROJECT_NUMBER + "=...)");
+      throw new InvalidSecretFormatException(
+          "Project number parameter is missing (" + PROJECT_NUMBER + "=...)");
     }
     if (!paramNamesSet.contains(SECRET_ID)) {
-      throw new InvalidSecretFormatException("Secret id parameter is missing (" + SECRET_ID + "=...)");
+      throw new InvalidSecretFormatException(
+          "Secret id parameter is missing (" + SECRET_ID + "=...)");
     }
     if (encryptedSecret.isEncryptedFile() && paramNamesSet.contains(SECRET_KEY)) {
       throw new InvalidSecretFormatException("Encrypted file should not specify key");
     }
   }
 
-  protected SecretPayload getSecretPayload(String projectNumber, String secretId, String secretVersion) {
+  protected SecretPayload getSecretPayload(
+      String projectNumber, String secretId, String secretVersion) {
     try {
       if (client == null) {
         client = SecretManagerServiceClient.create();
@@ -92,17 +98,16 @@ public class GoogleSecretsManagerSecretEngine implements SecretEngine {
       if (secretVersion == null) {
         secretVersion = LATEST;
       }
-      SecretVersionName secretVersionName = SecretVersionName.of(projectNumber, secretId, secretVersion);
+      SecretVersionName secretVersionName =
+          SecretVersionName.of(projectNumber, secretId, secretVersion);
       AccessSecretVersionResponse response = client.accessSecretVersion(secretVersionName);
       return response.getPayload();
     } catch (IOException | ApiException e) {
       throw new SecretException(
-        String.format(
-          "Failed to parse secret when using Google Secrets Manager to fetch: [projectNumber: %s, secretId: %s]",
-          projectNumber,
-          secretId
-        ), e
-      );
+          String.format(
+              "Failed to parse secret when using Google Secrets Manager to fetch: [projectNumber: %s, secretId: %s]",
+              projectNumber, secretId),
+          e);
     }
   }
 
@@ -111,36 +116,37 @@ public class GoogleSecretsManagerSecretEngine implements SecretEngine {
     cache.clear();
   }
 
-  private byte[] getSecretPayloadString(String projectNumber, String secretId, String secretVersion, String secretKey) {
+  private byte[] getSecretPayloadString(
+      String projectNumber, String secretId, String secretVersion, String secretKey) {
     if (!cache.containsKey(secretId)) {
-      String secretString = getSecretPayload(projectNumber, secretId, secretVersion).getData().toStringUtf8();
+      String secretString =
+          getSecretPayload(projectNumber, secretId, secretVersion).getData().toStringUtf8();
       try {
         Map<String, String> map = objectMapper.readValue(secretString, Map.class);
         cache.put(secretId, map);
       } catch (JsonProcessingException | IllegalArgumentException e) {
         throw new SecretException(
-          String.format(
-            "Failed to parse secret when using Google Secrets Manager to fetch: [projectNumber: %s, secretId: %s, secretKey: %s]",
-            projectNumber,
-            secretId,
-            secretKey
-          ), e
-        );
+            String.format(
+                "Failed to parse secret when using Google Secrets Manager to fetch: [projectNumber: %s, secretId: %s, secretKey: %s]",
+                projectNumber, secretId, secretKey),
+            e);
       }
     }
-    return Optional.ofNullable(cache.get(secretId).get(secretKey)).orElseThrow(
-      () -> new SecretException(
-        String.format(
-          "Specified key not found in Google Secrets Manager: [projectNumber: %s, secretId: %s, secretKey: %s]",
-          projectNumber,
-          secretId,
-          secretKey
-        )
-      )
-    ).getBytes();
+    return Optional.ofNullable(cache.get(secretId).get(secretKey))
+        .orElseThrow(
+            () ->
+                new SecretException(
+                    String.format(
+                        "Specified key not found in Google Secrets Manager: [projectNumber: %s, secretId: %s, secretKey: %s]",
+                        projectNumber, secretId, secretKey)))
+        .getBytes();
   }
 
-  private byte[] getSecretPayloadString(String projectNumber, String secretId, String secretVersion) {
-    return getSecretPayload(projectNumber, secretId, secretVersion).getData().toStringUtf8().getBytes();
+  private byte[] getSecretPayloadString(
+      String projectNumber, String secretId, String secretVersion) {
+    return getSecretPayload(projectNumber, secretId, secretVersion)
+        .getData()
+        .toStringUtf8()
+        .getBytes();
   }
 }

@@ -28,13 +28,15 @@ public class AllowedAccountsAuthorities {
   public static final String PREFIX = "ALLOWED_ACCOUNT_";
 
   public static Collection<GrantedAuthority> getAllowedAccountAuthorities(UserDetails userDetails) {
-    if (userDetails == null || userDetails.getAuthorities() == null || userDetails.getAuthorities().isEmpty()) {
+    if (userDetails == null
+        || userDetails.getAuthorities() == null
+        || userDetails.getAuthorities().isEmpty()) {
       return Collections.emptySet();
     }
 
-    return userDetails.getAuthorities().stream().filter(a -> a.getAuthority().startsWith(PREFIX)).collect(
-      Collectors.toSet()
-    );
+    return userDetails.getAuthorities().stream()
+        .filter(a -> a.getAuthority().startsWith(PREFIX))
+        .collect(Collectors.toSet());
   }
 
   @SuppressWarnings("deprecation")
@@ -42,8 +44,10 @@ public class AllowedAccountsAuthorities {
     if (userDetails instanceof User) {
       return ((User) userDetails).getAllowedAccounts();
     }
-    return getAllowedAccountAuthorities(userDetails).stream().map(a -> a.getAuthority().substring(PREFIX.length()))
-      .sorted().collect(Collectors.toList());
+    return getAllowedAccountAuthorities(userDetails).stream()
+        .map(a -> a.getAuthority().substring(PREFIX.length()))
+        .sorted()
+        .collect(Collectors.toList());
   }
 
   public static Collection<GrantedAuthority> buildAllowedAccounts(Collection<String> accounts) {
@@ -51,8 +55,12 @@ public class AllowedAccountsAuthorities {
       return Collections.emptySet();
     }
 
-    return accounts.stream().filter(Objects::nonNull).filter(s -> !s.isEmpty()).map(String::toLowerCase).map(
-      s -> PREFIX + s
-    ).map(SimpleGrantedAuthority::new).collect(Collectors.toSet());
+    return accounts.stream()
+        .filter(Objects::nonNull)
+        .filter(s -> !s.isEmpty())
+        .map(String::toLowerCase)
+        .map(s -> PREFIX + s)
+        .map(SimpleGrantedAuthority::new)
+        .collect(Collectors.toSet());
   }
 }

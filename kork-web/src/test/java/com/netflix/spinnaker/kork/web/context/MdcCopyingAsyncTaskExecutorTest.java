@@ -54,28 +54,32 @@ import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBo
 // Give the underlying thread pool one thread to make it easier to verify that
 // information from the MDC in one invocation doesn't leak into a subsequent
 // one.
-@SpringBootTest(classes = MdcCopyingAsyncTaskExecutorTest.TestConfigurationAndAsyncEndpoint.class, properties = {
-  "spring.task.execution.pool.coreSize=1", "spring.task.execution.pool.maxSize=1"})
+@SpringBootTest(
+    classes = MdcCopyingAsyncTaskExecutorTest.TestConfigurationAndAsyncEndpoint.class,
+    properties = {"spring.task.execution.pool.coreSize=1", "spring.task.execution.pool.maxSize=1"})
 @WebAppConfiguration
 public class MdcCopyingAsyncTaskExecutorTest {
 
   private MockMvc mvc;
 
-  @Autowired
-  private WebApplicationContext webApplicationContext;
+  @Autowired private WebApplicationContext webApplicationContext;
 
   /** This takes X-SPINNAKER-* headers from requests and puts them in the MDC. */
-  AuthenticatedRequestFilter authenticatedRequestFilter = new AuthenticatedRequestFilter(
-    true /* extractSpinnakerHeaders */, false /* extractSpinnakerUserOriginHeader */, false /*
-                                                                                             * forceNewSpinnakerRequestId
-                                                                                             */, true /*
-                                                                                                       * clearAuthenticatedRequestPostFilter
-                                                                                                       */
-  );
+  AuthenticatedRequestFilter authenticatedRequestFilter =
+      new AuthenticatedRequestFilter(
+          true /* extractSpinnakerHeaders */,
+          false /* extractSpinnakerUserOriginHeader */,
+          false /*
+                 * forceNewSpinnakerRequestId
+                 */,
+          true /*
+                * clearAuthenticatedRequestPostFilter
+                */);
 
   @BeforeEach
   public void setup() {
-    this.mvc = webAppContextSetup(webApplicationContext).addFilters(authenticatedRequestFilter).build();
+    this.mvc =
+        webAppContextSetup(webApplicationContext).addFilters(authenticatedRequestFilter).build();
   }
 
   @Test
@@ -87,21 +91,26 @@ public class MdcCopyingAsyncTaskExecutorTest {
     // MDC.
     String userValue = "some user";
 
-    MvcResult result = mvc.perform(get("/dummy/streamingResponseBody").header(USER.getHeader(), userValue)).andReturn();
+    MvcResult result =
+        mvc.perform(get("/dummy/streamingResponseBody").header(USER.getHeader(), userValue))
+            .andReturn();
 
-    mvc.perform(asyncDispatch(result)).andDo(print()).andExpect(status().isOk()).andExpect(
-      content().string(is("test response"))
-    );
+    mvc.perform(asyncDispatch(result))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(is("test response")));
 
-    List<String> userMessages = memoryAppender.search(USER.getHeader() + "=" + userValue, Level.INFO);
+    List<String> userMessages =
+        memoryAppender.search(USER.getHeader() + "=" + userValue, Level.INFO);
     assertThat(userMessages).hasSize(1);
 
     // Try again with no headers, so we expect an empty MDC.
     MvcResult resultTwo = mvc.perform(get("/dummy/streamingResponseBody")).andReturn();
 
-    mvc.perform(asyncDispatch(resultTwo)).andDo(print()).andExpect(status().isOk()).andExpect(
-      content().string(is("test response"))
-    );
+    mvc.perform(asyncDispatch(resultTwo))
+        .andDo(print())
+        .andExpect(status().isOk())
+        .andExpect(content().string(is("test response")));
 
     List<String> emptyMdcMessages = memoryAppender.search("contextMap: null", Level.INFO);
     assertThat(emptyMdcMessages).hasSize(1);
@@ -133,7 +142,10 @@ public class MdcCopyingAsyncTaskExecutorTest {
           // Note: It's important for the log message to be inside the lambda to
           // verify that the MDC is set up properly for the AsyncTaskExecutor.
           Map<String, String> contextMap = MDC.getCopyOfContextMap();
-          log.info("streamingResponseBody: thread id: {}, contextMap: {}", Thread.currentThread().getId(), contextMap);
+          log.info(
+              "streamingResponseBody: thread id: {}, contextMap: {}",
+              Thread.currentThread().getId(),
+              contextMap);
           outputStream.write("test response".getBytes(StandardCharsets.UTF_8));
         };
       }

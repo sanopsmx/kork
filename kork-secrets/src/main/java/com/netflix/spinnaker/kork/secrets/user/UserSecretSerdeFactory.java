@@ -27,7 +27,11 @@ public class UserSecretSerdeFactory {
   private final Iterable<UserSecretSerde> serdes;
 
   public UserSecretSerde serdeFor(UserSecretMetadata metadata) {
-    return StreamSupport.stream(serdes.spliterator(), false).filter(serde -> serde.supports(metadata)).findFirst()
-      .orElseThrow(() -> new InvalidSecretFormatException("Unsupported user secret metadata: " + metadata));
+    return StreamSupport.stream(serdes.spliterator(), false)
+        .filter(serde -> serde.supports(metadata))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new InvalidSecretFormatException("Unsupported user secret metadata: " + metadata));
   }
 }

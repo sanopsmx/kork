@@ -25,10 +25,10 @@ import org.springframework.cloud.config.server.EnableConfigServer;
 @SpringBootApplication
 @EnableConfigServer
 public class ConfigServerTestApplication {
-  public static final Map<String, Object> DEFAULT_PROPS_CLOUD = new DefaultPropertiesBuilder().property(
-    "server.port",
-    "0"
-  ).build(); // For tomcat to pick randomly available port
+  public static final Map<String, Object> DEFAULT_PROPS_CLOUD =
+      new DefaultPropertiesBuilder()
+          .property("server.port", "0")
+          .build(); // For tomcat to pick randomly available port
 
   public static void execute(String dummyUserHome) {
     System.setProperty("user.home", dummyUserHome);

@@ -26,7 +26,8 @@ import com.netflix.spinnaker.kork.pubsub.aws.config.AmazonPubsubProperties;
 public interface AmazonPubsubMessageHandlerFactory {
   /**
    * @param subscription the configuration for a given SNS/SQS subscription
-   * @return the AmazonPubsubMessageHandler instance that will handle messages coming from that queue
+   * @return the AmazonPubsubMessageHandler instance that will handle messages coming from that
+   *     queue
    */
   AmazonPubsubMessageHandler create(AmazonPubsubProperties.AmazonPubsubSubscription subscription);
 }

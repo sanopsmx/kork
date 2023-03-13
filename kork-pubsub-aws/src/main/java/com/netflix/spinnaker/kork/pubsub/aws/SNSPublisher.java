@@ -46,11 +46,12 @@ public class SNSPublisher implements PubsubPublisher {
   private final RetrySupport retrySupport;
   private Counter successCounter;
 
-  public SNSPublisher(AmazonPubsubProperties.AmazonPubsubSubscription subscription,
-                      AmazonSNS amazonSNS,
-                      Supplier<Boolean> isEnabled,
-                      Registry registry,
-                      RetrySupport retrySupport) {
+  public SNSPublisher(
+      AmazonPubsubProperties.AmazonPubsubSubscription subscription,
+      AmazonSNS amazonSNS,
+      Supplier<Boolean> isEnabled,
+      Registry registry,
+      RetrySupport retrySupport) {
     this.subscription = subscription;
     this.amazonSNS = amazonSNS;
     this.isEnabled = isEnabled;
@@ -94,14 +95,15 @@ public class SNSPublisher implements PubsubPublisher {
 
     try {
       PublishRequest publishRequest = new PublishRequest(topicARN.getArn(), message);
-      PublishResult publishResponse = retrySupport.retry(
-        () -> amazonSNS.publish(publishRequest),
-        5,
-        Duration.ofMillis(200),
-        false
-      );
+      PublishResult publishResponse =
+          retrySupport.retry(
+              () -> amazonSNS.publish(publishRequest), 5, Duration.ofMillis(200), false);
 
-      log.debug("Published message {} with id {} to topic {}", message, publishResponse.getMessageId(), topicARN);
+      log.debug(
+          "Published message {} with id {} to topic {}",
+          message,
+          publishResponse.getMessageId(),
+          topicARN);
       getSuccessCounter().increment();
       return Optional.of(publishResponse);
     } catch (Exception e) {
@@ -117,11 +119,10 @@ public class SNSPublisher implements PubsubPublisher {
 
   private Counter getErrorCounter(Exception e) {
     return registry.counter(
-      "pubsub.amazon.publishFailed",
-      "topic",
-      getTopicName(),
-      "exceptionClass",
-      e.getClass().getSimpleName()
-    );
+        "pubsub.amazon.publishFailed",
+        "topic",
+        getTopicName(),
+        "exceptionClass",
+        e.getClass().getSimpleName());
   }
 }

@@ -29,9 +29,8 @@ public class JedisClientDelegateFactory implements RedisClientDelegateFactory<Je
   private ObjectMapper objectMapper;
   private GenericObjectPoolConfig objectPoolConfig;
 
-  public JedisClientDelegateFactory(Registry registry,
-                                    ObjectMapper objectMapper,
-                                    GenericObjectPoolConfig objectPoolConfig) {
+  public JedisClientDelegateFactory(
+      Registry registry, ObjectMapper objectMapper, GenericObjectPoolConfig objectPoolConfig) {
     this.registry = registry;
     this.objectMapper = objectMapper;
     this.objectPoolConfig = objectPoolConfig;
@@ -44,7 +43,9 @@ public class JedisClientDelegateFactory implements RedisClientDelegateFactory<Je
 
   @Override
   public JedisClientDelegate build(String name, Map<String, Object> properties) {
-    JedisDriverProperties props = objectMapper.convertValue(properties, JedisDriverProperties.class);
-    return new JedisClientDelegate(name, new JedisPoolFactory(registry).build(name, props, objectPoolConfig));
+    JedisDriverProperties props =
+        objectMapper.convertValue(properties, JedisDriverProperties.class);
+    return new JedisClientDelegate(
+        name, new JedisPoolFactory(registry).build(name, props, objectPoolConfig));
   }
 }

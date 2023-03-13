@@ -37,7 +37,8 @@ public class ConfigFileService {
   }
 
   public String getLocalPath(String path) {
-    if (CloudConfigResourceService.isCloudConfigResource(path) && cloudConfigResourceService != null) {
+    if (CloudConfigResourceService.isCloudConfigResource(path)
+        && cloudConfigResourceService != null) {
       path = cloudConfigResourceService.getLocalPath(path);
     }
     verifyLocalPath(path);
@@ -90,7 +91,8 @@ public class ConfigFileService {
       InputStream inputStream = getClass().getResourceAsStream(filePath);
       return IOUtils.toString(inputStream, StandardCharsets.UTF_8);
     } catch (IOException e) {
-      throw new ConfigFileLoadingException("Exception reading classpath resource \"" + path + "\"", e);
+      throw new ConfigFileLoadingException(
+          "Exception reading classpath resource \"" + path + "\"", e);
     }
   }
 }

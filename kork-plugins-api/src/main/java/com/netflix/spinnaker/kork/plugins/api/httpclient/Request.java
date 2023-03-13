@@ -23,36 +23,29 @@ import javax.annotation.Nonnull;
 /**
  * Represents an HTTP request for {@link HttpClient}.
  *
- * <p>
- * TODO(rz): Retry config
+ * <p>TODO(rz): Retry config
  */
 @Beta
 public class Request {
 
   /** The name of the request, used for tracing purposes. */
-  @Nonnull
-  private String name;
+  @Nonnull private String name;
 
   /** The absolute request URL path. */
-  @Nonnull
-  private String path;
+  @Nonnull private String path;
 
   /** The Content-Type of the request. If undefined, "application/json" will be assumed. */
-  @Nonnull
-  private String contentType = "application/json";
+  @Nonnull private String contentType = "application/json";
 
   /**
    * Any custom headers that should be included in the request.
    *
-   * <p>
-   * Spinnaker may populate additional headers.
+   * <p>Spinnaker may populate additional headers.
    */
-  @Nonnull
-  private Map<String, String> headers = new HashMap<>();
+  @Nonnull private Map<String, String> headers = new HashMap<>();
 
   /** Any query parameters to attach to the request URL. */
-  @Nonnull
-  private Map<String, String> queryParams = new HashMap<>();
+  @Nonnull private Map<String, String> queryParams = new HashMap<>();
 
   /** The request body, if any. */
   private Object body;

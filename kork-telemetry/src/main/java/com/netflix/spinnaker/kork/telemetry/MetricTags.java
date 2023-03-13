@@ -21,7 +21,8 @@ public class MetricTags {
   public static final String RESULT_KEY = "result";
 
   public enum ResultValue {
-    SUCCESS("success"), FAILURE("failure");
+    SUCCESS("success"),
+    FAILURE("failure");
 
     private final String value;
 

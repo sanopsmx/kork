@@ -52,8 +52,8 @@ public class ByOriginServiceSelector implements ServiceSelector {
 
   @Override
   public boolean supports(SelectableService.Criteria criteria) {
-    return origin != null && origin.equalsIgnoreCase(criteria.getOrigin()) && executionTypes.contains(
-      criteria.getExecutionType()
-    );
+    return origin != null
+        && origin.equalsIgnoreCase(criteria.getOrigin())
+        && executionTypes.contains(criteria.getExecutionType());
   }
 }

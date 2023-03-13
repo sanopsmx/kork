@@ -57,8 +57,7 @@ public class JedisHealthIndicatorFactory {
         } catch (Exception ex) {
           health = Health.down(ex);
         } finally {
-          if (jedis != null)
-            jedis.close();
+          if (jedis != null) jedis.close();
         }
         health.withDetail("maxIdle", internal.getMaxIdle());
         health.withDetail("minIdle", internal.getMinIdle());

@@ -30,8 +30,7 @@ import java.util.regex.Pattern;
 /**
  * Builds a MonitoredResource instance to attach to TimeSeries data.
  *
- * <p>
- * This will build different resource types depending on where the runtime is deployed.
+ * <p>This will build different resource types depending on where the runtime is deployed.
  */
 class MonitoredResourceBuilder {
   private String stackdriverProjectId = "";
@@ -44,9 +43,8 @@ class MonitoredResourceBuilder {
   /**
    * The GCP project that the data should be stored under.
    *
-   * <p>
-   * This is not always used. It depends on the what the managed resource will be. Setting it makes it
-   * available later if it is needed.
+   * <p>This is not always used. It depends on the what the managed resource will be. Setting it
+   * makes it available later if it is needed.
    */
   MonitoredResourceBuilder setStackdriverProject(String name) {
     stackdriverProjectId = name;
@@ -71,7 +69,8 @@ class MonitoredResourceBuilder {
     if (responseCode < 200 || responseCode > 299) {
       throw new IOException("Unexpected responseCode " + responseCode);
     }
-    BufferedReader input = new BufferedReader(new InputStreamReader(con.getInputStream(), "US-ASCII"));
+    BufferedReader input =
+        new BufferedReader(new InputStreamReader(con.getInputStream(), "US-ASCII"));
     StringBuffer value = new StringBuffer();
     for (String line = input.readLine(); line != null; line = input.readLine()) {
       value.append(line);
@@ -83,8 +82,7 @@ class MonitoredResourceBuilder {
   /**
    * Helper function to read a value from the GCP Metadata Service.
    *
-   * <p>
-   * This will throw an IOException if not on GCP.
+   * <p>This will throw an IOException if not on GCP.
    */
   String getGoogleMetadataValue(String key) throws IOException {
     URL url = new URL(String.format("http://169.254.169.254/computeMetadata/v1/%s", key));
@@ -99,8 +97,7 @@ class MonitoredResourceBuilder {
   /**
    * Collect the GCP labels to use for a gce_instance resource.
    *
-   * <p>
-   * This will return false if not on a GCE instance.
+   * <p>This will return false if not on a GCE instance.
    */
   boolean maybeCollectGceInstanceLabels(Map<String, String> labels) {
     try {
@@ -120,8 +117,7 @@ class MonitoredResourceBuilder {
   /**
    * Collect the GKE labels to use for a gke_container resource.
    *
-   * <p>
-   * This will return false if not on a GKE instance.
+   * <p>This will return false if not on a GKE instance.
    */
   boolean maybeCollectGkeInstanceLabels(Map<String, String> labels) {
     // Not sure how to get the info I need
@@ -138,8 +134,7 @@ class MonitoredResourceBuilder {
   /**
    * Return the attribute value associated with the key.
    *
-   * <p>
-   * Uses regexp matching, returning "" if the key isnt found.
+   * <p>Uses regexp matching, returning "" if the key isnt found.
    */
   String matchAttribute(String text, String key) {
     String regex = String.format("\"%s\" : \"(.+?)\"", key);
@@ -151,8 +146,7 @@ class MonitoredResourceBuilder {
   /**
    * Return the AWS identify document from the AWS Metadata Service.
    *
-   * <p>
-   * Throws an IOException if not running on an AWS instance.
+   * <p>Throws an IOException if not running on an AWS instance.
    */
   String getAwsIdentityDocument() throws IOException {
     URL url = new URL("http://169.254.169.254/latest/dynamic/instance-identity/document");
@@ -165,8 +159,7 @@ class MonitoredResourceBuilder {
   /**
    * Collect the EC2 labels to use for a aws_ec2_instance resource.
    *
-   * <p>
-   * Returns false if not an AWS ec2 instance.
+   * <p>Returns false if not an AWS ec2 instance.
    */
   boolean maybeCollectEc2InstanceLabels(Map<String, String> labels) {
     String doc;
@@ -195,12 +188,10 @@ class MonitoredResourceBuilder {
   /**
    * Create a MonitoredResource that describes this deployment.
    *
-   * <p>
-   * This will throw an IOException if the resource could not be created. In practice this exception
-   * is not currently thrown.
+   * <p>This will throw an IOException if the resource could not be created. In practice this
+   * exception is not currently thrown.
    *
-   * <p>
-   * However the expectation is that custom types will be added in the future and there may be
+   * <p>However the expectation is that custom types will be added in the future and there may be
    * transient IO errors interacting with Stackdriver to create the type.
    */
   public MonitoredResource build() throws IOException {

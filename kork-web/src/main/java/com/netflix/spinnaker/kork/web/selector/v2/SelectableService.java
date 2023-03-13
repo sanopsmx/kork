@@ -60,8 +60,7 @@ import java.util.function.Function;
  *
  * Usage:
  *
- * <pre>
- * {@code
+ * <pre>{@code
  * val config = mapOf("timeoutMs", 3000)
  * val selectableBakery: SelectableService<BakeryService> = SelectableService(
  *   baseUrls: properties.baseUrls,
@@ -83,8 +82,7 @@ import java.util.function.Function;
  *
  * assert bakery.baseUrl == "http://alt-bakery.other.com"
  * assert bakery.config == mapOf("timeoutMs" to 3000, "altBakeryApiEnabled" to true)
- * }
- * </pre>
+ * }</pre>
  *
  * @param <T> the type of service to be selected
  */
@@ -93,10 +91,11 @@ public class SelectableService<T> {
   private final T defaultService;
   private final Map<String, Object> defaultConfig;
 
-  public SelectableService(List<BaseUrl> baseUrls,
-                           T defaultService,
-                           Map<String, Object> defaultConfig,
-                           Function<String, T> getServiceByUrlFx) {
+  public SelectableService(
+      List<BaseUrl> baseUrls,
+      T defaultService,
+      Map<String, Object> defaultConfig,
+      Function<String, T> getServiceByUrlFx) {
     this.defaultService = defaultService;
     this.defaultConfig = defaultConfig;
     this.services = buildServices(baseUrls, getServiceByUrlFx);
@@ -116,7 +115,8 @@ public class SelectableService<T> {
 
     for (Map.Entry<BaseUrl, T> urlToService : services.entrySet()) {
       if (inputParameters.containsAll(urlToService.getKey().parameters)) {
-        return new SelectedService<>(urlToService.getValue(), urlToService.getKey().getConfig(), inputParameters);
+        return new SelectedService<>(
+            urlToService.getValue(), urlToService.getKey().getConfig(), inputParameters);
       }
     }
 
@@ -127,20 +127,24 @@ public class SelectableService<T> {
    * Returns a dictionary of {@link BaseUrl} objects to T services, additionally overlaying the
    * default config to each service definition (if provided)
    *
-   * <p>
-   * Note that each nested service definition will inherit (and can override) the default
+   * <p>Note that each nested service definition will inherit (and can override) the default
    * configuration.
    *
    * @param baseUrls a list of service or shard definitions
    * @param getServiceByUrlFx a function to get a service by url
    * @return a {@link BaseUrl} to T services
    */
-  private Map<BaseUrl, T> buildServices(List<BaseUrl> baseUrls, Function<String, T> getServiceByUrlFx) {
-    return baseUrls.stream().sorted(BaseUrl::compareTo).peek(
-      baseUrl -> defaultConfig.forEach((k, v) -> baseUrl.config.putIfAbsent(k, v))
-    ).collect(
-      toMap(baseUrl -> baseUrl, baseUrl -> getServiceByUrlFx.apply(baseUrl.baseUrl), (a, b) -> b, LinkedHashMap::new)
-    );
+  private Map<BaseUrl, T> buildServices(
+      List<BaseUrl> baseUrls, Function<String, T> getServiceByUrlFx) {
+    return baseUrls.stream()
+        .sorted(BaseUrl::compareTo)
+        .peek(baseUrl -> defaultConfig.forEach((k, v) -> baseUrl.config.putIfAbsent(k, v)))
+        .collect(
+            toMap(
+                baseUrl -> baseUrl,
+                baseUrl -> getServiceByUrlFx.apply(baseUrl.baseUrl),
+                (a, b) -> b,
+                LinkedHashMap::new));
   }
 
   public SelectedService<T> getDefaultService() {
@@ -165,7 +169,8 @@ public class SelectableService<T> {
     /** Parameters used in this selection */
     private final List<Parameter> selectingParameters;
 
-    public SelectedService(T service, Map<String, Object> config, List<Parameter> selectingParameters) {
+    public SelectedService(
+        T service, Map<String, Object> config, List<Parameter> selectingParameters) {
       this.service = service;
       this.config = config;
       this.selectingParameters = selectingParameters;
@@ -247,10 +252,10 @@ public class SelectableService<T> {
       }
 
       BaseUrl baseUrl1 = (BaseUrl) o;
-      return priority == baseUrl1.priority && Objects.equals(baseUrl, baseUrl1.baseUrl) && Objects.equals(
-        config,
-        baseUrl1.config
-      ) && Objects.equals(parameters, baseUrl1.parameters);
+      return priority == baseUrl1.priority
+          && Objects.equals(baseUrl, baseUrl1.baseUrl)
+          && Objects.equals(config, baseUrl1.config)
+          && Objects.equals(parameters, baseUrl1.parameters);
     }
 
     @Override

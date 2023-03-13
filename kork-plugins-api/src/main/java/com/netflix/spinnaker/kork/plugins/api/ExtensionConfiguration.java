@@ -48,8 +48,7 @@ public @interface ExtensionConfiguration {
    * The property value of the extension configuration. For example, if set to `netflix.orca-stage`
    * the corresponding config coordinates would be:
    *
-   * <p>
-   * `spinnaker.extensibility.plugins.pluginId.extensions.netflix.orca-stage.config`
+   * <p>`spinnaker.extensibility.plugins.pluginId.extensions.netflix.orca-stage.config`
    *
    * @return
    */

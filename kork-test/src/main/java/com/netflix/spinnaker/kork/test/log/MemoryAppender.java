@@ -85,9 +85,11 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
    */
   public List<String> layoutSearch(String string, Level level) {
 
-    return this.list.stream().filter(event -> event.getLevel().equals(level)).map(layout::doLayout).filter(
-      message -> message.contains(string)
-    ).collect(Collectors.toList());
+    return this.list.stream()
+        .filter(event -> event.getLevel().equals(level))
+        .map(layout::doLayout)
+        .filter(message -> message.contains(string))
+        .collect(Collectors.toList());
   }
 
   /**
@@ -98,9 +100,11 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
    * @return all log messages that satisfy the criteria
    */
   public List<String> search(String string, Level level) {
-    return this.list.stream().filter(event -> event.getLevel().equals(level)).map(Object::toString).filter(
-      message -> message.contains(string)
-    ).collect(Collectors.toList());
+    return this.list.stream()
+        .filter(event -> event.getLevel().equals(level))
+        .map(Object::toString)
+        .filter(message -> message.contains(string))
+        .collect(Collectors.toList());
   }
 
   /** Accessor for the root layout for the root logger. */
@@ -135,8 +139,8 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
       throw new IllegalStateException("no LayoutWrappingEncoder -- can't determine layout");
     }
 
-    final LayoutWrappingEncoder<ILoggingEvent> rootEncoder = (LayoutWrappingEncoder<ILoggingEvent>) rootAppender
-      .getEncoder();
+    final LayoutWrappingEncoder<ILoggingEvent> rootEncoder =
+        (LayoutWrappingEncoder<ILoggingEvent>) rootAppender.getEncoder();
 
     return rootEncoder.getLayout();
   }

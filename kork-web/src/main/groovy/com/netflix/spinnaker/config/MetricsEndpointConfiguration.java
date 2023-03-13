@@ -37,9 +37,12 @@ public class MetricsEndpointConfiguration {
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-      (requests) -> requests.requestMatchers(new AntPathRequestMatcher("/spectator/metrics")).permitAll().anyRequest()
-        .authenticated()
-    );
+        (requests) ->
+            requests
+                .requestMatchers(new AntPathRequestMatcher("/spectator/metrics"))
+                .permitAll()
+                .anyRequest()
+                .authenticated());
     return http.build();
   }
 }

@@ -29,7 +29,8 @@ public class ByAuthenticatedUserServiceSelector implements ServiceSelector {
   private final List<Pattern> userPatterns;
 
   @SuppressWarnings("unchecked")
-  public ByAuthenticatedUserServiceSelector(Object service, Integer priority, Map<String, Object> config) {
+  public ByAuthenticatedUserServiceSelector(
+      Object service, Integer priority, Map<String, Object> config) {
     this.service = service;
     this.priority = priority;
 
@@ -53,8 +54,7 @@ public class ByAuthenticatedUserServiceSelector implements ServiceSelector {
       return false;
     }
 
-    return userPatterns.stream().anyMatch(
-      userPattern -> userPattern.matcher(criteria.getAuthenticatedUser()).matches()
-    );
+    return userPatterns.stream()
+        .anyMatch(userPattern -> userPattern.matcher(criteria.getAuthenticatedUser()).matches());
   }
 }

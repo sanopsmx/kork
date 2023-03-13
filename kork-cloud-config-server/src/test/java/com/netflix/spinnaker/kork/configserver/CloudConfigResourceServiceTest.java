@@ -37,17 +37,16 @@ import org.springframework.core.io.ByteArrayResource;
 
 class CloudConfigResourceServiceTest {
   private static final String TEST_FILE_NAME = "testfile";
-  private static final String TEST_FILE_PATH = Paths.get(System.getProperty("java.io.tmpdir"), TEST_FILE_NAME)
-    .toString();
+  private static final String TEST_FILE_PATH =
+      Paths.get(System.getProperty("java.io.tmpdir"), TEST_FILE_NAME).toString();
   private static final String CLOUD_TEST_FILE_NAME = "configserver:" + TEST_FILE_NAME;
   private static final String TEST_FILE_CONTENTS = "test file contents";
 
   private ResourceRepository resourceRepository = mock(ResourceRepository.class);
   private EnvironmentRepository environmentRepository = mock(EnvironmentRepository.class);
 
-  private CloudConfigResourceService resourceService = new CloudConfigResourceService(
-    resourceRepository, environmentRepository
-  );
+  private CloudConfigResourceService resourceService =
+      new CloudConfigResourceService(resourceRepository, environmentRepository);
 
   @AfterEach
   void tearDown() throws IOException {
@@ -66,10 +65,9 @@ class CloudConfigResourceServiceTest {
   void getLocalPathWhenFileNotInConfigServer() {
     expectFileNotInConfigServer();
 
-    RuntimeException exception = assertThrows(
-      RuntimeException.class,
-      () -> resourceService.getLocalPath(CLOUD_TEST_FILE_NAME)
-    );
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class, () -> resourceService.getLocalPath(CLOUD_TEST_FILE_NAME));
     assertThat(exception.getMessage()).contains(CLOUD_TEST_FILE_NAME);
   }
 
@@ -77,23 +75,21 @@ class CloudConfigResourceServiceTest {
   void getLocalPathWhenConfigServerNotConfigured() {
     resourceService = new CloudConfigResourceService();
 
-    RuntimeException exception = assertThrows(
-      RuntimeException.class,
-      () -> resourceService.getLocalPath(CLOUD_TEST_FILE_NAME)
-    );
+    RuntimeException exception =
+        assertThrows(
+            RuntimeException.class, () -> resourceService.getLocalPath(CLOUD_TEST_FILE_NAME));
     assertThat(exception.getMessage()).contains(CLOUD_TEST_FILE_NAME);
   }
 
   private void expectFileInConfigServer() {
-    when(resourceRepository.findOne(anyString(), isNull(), isNull(), eq(TEST_FILE_NAME))).thenReturn(
-      new ByteArrayResource(TEST_FILE_CONTENTS.getBytes())
-    );
-    when(environmentRepository.findOne(anyString(), isNull(), isNull())).thenReturn(new Environment("application"));
+    when(resourceRepository.findOne(anyString(), isNull(), isNull(), eq(TEST_FILE_NAME)))
+        .thenReturn(new ByteArrayResource(TEST_FILE_CONTENTS.getBytes()));
+    when(environmentRepository.findOne(anyString(), isNull(), isNull()))
+        .thenReturn(new Environment("application"));
   }
 
   private void expectFileNotInConfigServer() {
-    when(resourceRepository.findOne(anyString(), isNull(), isNull(), eq(TEST_FILE_NAME))).thenThrow(
-      new NoSuchResourceException(TEST_FILE_NAME)
-    );
+    when(resourceRepository.findOne(anyString(), isNull(), isNull(), eq(TEST_FILE_NAME)))
+        .thenThrow(new NoSuchResourceException(TEST_FILE_NAME));
   }
 }

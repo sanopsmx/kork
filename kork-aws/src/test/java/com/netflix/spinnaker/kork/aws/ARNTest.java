@@ -40,6 +40,7 @@ public class ARNTest {
 
   @Test
   void invalidPartitionARN() {
-    assertThrows(IllegalArgumentException.class, () -> new ARN("arnXXX:aws:iam::123456789012:user"));
+    assertThrows(
+        IllegalArgumentException.class, () -> new ARN("arnXXX:aws:iam::123456789012:user"));
   }
 }

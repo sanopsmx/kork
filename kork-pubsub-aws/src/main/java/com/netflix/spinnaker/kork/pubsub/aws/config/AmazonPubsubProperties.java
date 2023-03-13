@@ -26,19 +26,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 @ConfigurationProperties(prefix = "pubsub.amazon")
 public class AmazonPubsubProperties {
-  @Valid
-  private List<AmazonPubsubSubscription> subscriptions;
+  @Valid private List<AmazonPubsubSubscription> subscriptions;
 
   @Data
   public static class AmazonPubsubSubscription {
-    @NotEmpty
-    private String name;
+    @NotEmpty private String name;
 
-    @NotEmpty
-    private String topicARN;
+    @NotEmpty private String topicARN;
 
-    @NotEmpty
-    private String queueARN;
+    @NotEmpty private String queueARN;
 
     private List<String> accountIds = Collections.emptyList();
 

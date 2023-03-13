@@ -34,16 +34,14 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.HandlerMapping;
 
 /**
- * An interceptor that logs Controller metrics to an underlying
- * {@link com.netflix.spectator.api.Registry}.
+ * An interceptor that logs Controller metrics to an underlying {@link
+ * com.netflix.spectator.api.Registry}.
  *
- * <p>
- * A `timer` will be created for each request with the following tags:
+ * <p>A `timer` will be created for each request with the following tags:
  *
- * <p>
- * - controller name - controller method - status (2xx, 4xx, 5xx, etc.) - statusCode (200, 404, 500,
- * etc.) - success (true/false depending on whether the request resulted in an exception) - cause
- * (if success == false, the name of the raised exception)
+ * <p>- controller name - controller method - status (2xx, 4xx, 5xx, etc.) - statusCode (200, 404,
+ * 500, etc.) - success (true/false depending on whether the request resulted in an exception) -
+ * cause (if success == false, the name of the raised exception)
  */
 public class MetricsInterceptor implements HandlerInterceptor {
   static final String TIMER_ATTRIBUTE = "Metrics_startTime";
@@ -59,10 +57,11 @@ public class MetricsInterceptor implements HandlerInterceptor {
    * @deprecated Instead use the other constructor.
    */
   @Deprecated
-  public MetricsInterceptor(Registry registry,
-                            String metricName,
-                            Collection<String> pathVariablesToTag,
-                            Collection<String> controllersToExclude) {
+  public MetricsInterceptor(
+      Registry registry,
+      String metricName,
+      Collection<String> pathVariablesToTag,
+      Collection<String> controllersToExclude) {
     this(registry, metricName, pathVariablesToTag, null, controllersToExclude);
   }
 
@@ -73,11 +72,12 @@ public class MetricsInterceptor implements HandlerInterceptor {
    * @param queryParamsToTag Request parameters that should be added as metric tags
    * @param controllersToExclude Controller names that should be excluded from metrics
    */
-  public MetricsInterceptor(Registry registry,
-                            String metricName,
-                            Collection<String> pathVariablesToTag,
-                            Collection<String> queryParamsToTag,
-                            Collection<String> controllersToExclude) {
+  public MetricsInterceptor(
+      Registry registry,
+      String metricName,
+      Collection<String> pathVariablesToTag,
+      Collection<String> queryParamsToTag,
+      Collection<String> controllersToExclude) {
     this.registry = registry;
     this.metricName = metricName;
     this.contentLengthMetricName = format("%s.contentLength", metricName);
@@ -93,14 +93,16 @@ public class MetricsInterceptor implements HandlerInterceptor {
   }
 
   @Override
-  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+  public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+      throws Exception {
     request.setAttribute(TIMER_ATTRIBUTE, getNanoTime());
     return true;
   }
 
   @Override
-  public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
-    throws Exception {
+  public void afterCompletion(
+      HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex)
+      throws Exception {
     if (handler instanceof HandlerMethod) {
       HandlerMethod handlerMethod = (HandlerMethod) handler;
 
@@ -115,13 +117,14 @@ public class MetricsInterceptor implements HandlerInterceptor {
         status = 500;
       }
 
-      Id id = registry.createId(metricName).withTag("controller", controller).withTag(
-        "method",
-        handlerMethod.getMethod().getName()
-      ).withTag("status", status.toString().charAt(0) + "xx").withTag("statusCode", status.toString()).withTag(
-        "criticality",
-        metricCriticality(handlerMethod)
-      );
+      Id id =
+          registry
+              .createId(metricName)
+              .withTag("controller", controller)
+              .withTag("method", handlerMethod.getMethod().getName())
+              .withTag("status", status.toString().charAt(0) + "xx")
+              .withTag("statusCode", status.toString())
+              .withTag("criticality", metricCriticality(handlerMethod));
 
       Map variables = (Map) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
       for (String pathVariable : pathVariablesToTag) {
@@ -147,13 +150,13 @@ public class MetricsInterceptor implements HandlerInterceptor {
         id = id.withTag("success", "true").withTag("cause", "None");
       }
 
-      PercentileTimer.get(registry, id).record(
-        getNanoTime() - ((Long) request.getAttribute(TIMER_ATTRIBUTE)),
-        TimeUnit.NANOSECONDS
-      );
+      PercentileTimer.get(registry, id)
+          .record(
+              getNanoTime() - ((Long) request.getAttribute(TIMER_ATTRIBUTE)), TimeUnit.NANOSECONDS);
 
-      PercentileDistributionSummary.get(registry, registry.createId(contentLengthMetricName).withTags(id.tags()))
-        .record(request.getContentLengthLong());
+      PercentileDistributionSummary.get(
+              registry, registry.createId(contentLengthMetricName).withTags(id.tags()))
+          .record(request.getContentLengthLong());
     }
   }
 
@@ -161,8 +164,12 @@ public class MetricsInterceptor implements HandlerInterceptor {
     if (handlerMethod.hasMethodAnnotation(Criticality.class)) {
       Criticality criticality = handlerMethod.getMethodAnnotation(Criticality.class);
       return criticality.value();
-    } else if (handlerMethod.getMethod().getDeclaringClass().isAnnotationPresent(Criticality.class)) {
-      Criticality criticality = handlerMethod.getMethod().getDeclaringClass().getAnnotation(Criticality.class);
+    } else if (handlerMethod
+        .getMethod()
+        .getDeclaringClass()
+        .isAnnotationPresent(Criticality.class)) {
+      Criticality criticality =
+          handlerMethod.getMethod().getDeclaringClass().getAnnotation(Criticality.class);
       return criticality.value();
     }
     return Criticality.Value.UNKNOWN;

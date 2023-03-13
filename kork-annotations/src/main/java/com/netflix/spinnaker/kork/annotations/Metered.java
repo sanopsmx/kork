@@ -28,8 +28,7 @@ public @interface Metered {
    * If set, this value will be used as an override to the metric name that would normally be
    * generated automatically. This is useful when there are metric name collisions.
    *
-   * <p>
-   * In the context of plugins, the plugin ID will always be prefixed to the metric name.
+   * <p>In the context of plugins, the plugin ID will always be prefixed to the metric name.
    *
    * @return Optional metric name override
    */

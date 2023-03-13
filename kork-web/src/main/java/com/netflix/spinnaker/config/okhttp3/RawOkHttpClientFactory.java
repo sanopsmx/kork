@@ -33,30 +33,36 @@ import okhttp3.OkHttpClient;
 public class RawOkHttpClientFactory {
 
   /**
-   * Returns a basic client which can be further customized for other needs in the
-   * {@link OkHttpClientProvider} implementations. (eg: SSL setup, name verifier etc)
+   * Returns a basic client which can be further customized for other needs in the {@link
+   * OkHttpClientProvider} implementations. (eg: SSL setup, name verifier etc)
    */
-  public OkHttpClient create(OkHttpClientConfigurationProperties okHttpClientConfigurationProperties,
-                             List<Interceptor> interceptors,
-                             HttpTracing httpTracing) {
+  public OkHttpClient create(
+      OkHttpClientConfigurationProperties okHttpClientConfigurationProperties,
+      List<Interceptor> interceptors,
+      HttpTracing httpTracing) {
 
     Dispatcher dispatcher = zipkinHttpTracingDispatcher(httpTracing);
 
     dispatcher.setMaxRequests(okHttpClientConfigurationProperties.getMaxRequests());
     dispatcher.setMaxRequestsPerHost(okHttpClientConfigurationProperties.getMaxRequestsPerHost());
 
-    OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder().connectTimeout(
-      okHttpClientConfigurationProperties.getConnectTimeoutMs(),
-      TimeUnit.MILLISECONDS
-    ).readTimeout(okHttpClientConfigurationProperties.getReadTimeoutMs(), TimeUnit.MILLISECONDS)
-      .retryOnConnectionFailure(okHttpClientConfigurationProperties.getRetryOnConnectionFailure()).dispatcher(
-        dispatcher
-      ).addNetworkInterceptor(zipkinTracingInterceptor(httpTracing)).connectionPool(
-        new ConnectionPool(
-          okHttpClientConfigurationProperties.getConnectionPool().getMaxIdleConnections(),
-          okHttpClientConfigurationProperties.getConnectionPool().getKeepAliveDurationMs(), TimeUnit.MILLISECONDS
-        )
-      );
+    OkHttpClient.Builder okHttpClientBuilder =
+        new OkHttpClient.Builder()
+            .connectTimeout(
+                okHttpClientConfigurationProperties.getConnectTimeoutMs(), TimeUnit.MILLISECONDS)
+            .readTimeout(
+                okHttpClientConfigurationProperties.getReadTimeoutMs(), TimeUnit.MILLISECONDS)
+            .retryOnConnectionFailure(
+                okHttpClientConfigurationProperties.getRetryOnConnectionFailure())
+            .dispatcher(dispatcher)
+            .addNetworkInterceptor(zipkinTracingInterceptor(httpTracing))
+            .connectionPool(
+                new ConnectionPool(
+                    okHttpClientConfigurationProperties.getConnectionPool().getMaxIdleConnections(),
+                    okHttpClientConfigurationProperties
+                        .getConnectionPool()
+                        .getKeepAliveDurationMs(),
+                    TimeUnit.MILLISECONDS));
 
     if (interceptors != null) {
       interceptors.forEach(okHttpClientBuilder::addInterceptor);
@@ -67,8 +73,10 @@ public class RawOkHttpClientFactory {
 
   private static Dispatcher zipkinHttpTracingDispatcher(HttpTracing httpTracing) {
     return new Dispatcher(
-      httpTracing.tracing().currentTraceContext().executorService(new Dispatcher().executorService())
-    );
+        httpTracing
+            .tracing()
+            .currentTraceContext()
+            .executorService(new Dispatcher().executorService()));
   }
 
   private static Interceptor zipkinTracingInterceptor(HttpTracing httpTracing) {

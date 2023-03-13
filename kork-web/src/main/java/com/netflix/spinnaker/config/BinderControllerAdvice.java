@@ -20,9 +20,10 @@ public class BinderControllerAdvice {
 
   @InitBinder
   public void setAllowedFields(WebDataBinder dataBinder) {
-    Set<String> disallowedFields = Optional.ofNullable(dataBinder.getDisallowedFields()).map(
-      existingFields -> new HashSet<>(Arrays.asList(existingFields))
-    ).orElse(new HashSet<>());
+    Set<String> disallowedFields =
+        Optional.ofNullable(dataBinder.getDisallowedFields())
+            .map(existingFields -> new HashSet<>(Arrays.asList(existingFields)))
+            .orElse(new HashSet<>());
     disallowedFields.addAll(Arrays.asList("class.*", "Class.*", "*.class.*", "*.Class.*"));
     dataBinder.setDisallowedFields(disallowedFields.toArray(new String[0]));
   }

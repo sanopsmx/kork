@@ -24,10 +24,8 @@ import lombok.SneakyThrows;
 /**
  * Root-level configuration properties for plugins.
  *
- * <p>
- * These properties are mapped using a
- * {@link org.springframework.boot.context.properties.bind.Binder} because they are needed before
- * the
+ * <p>These properties are mapped using a {@link
+ * org.springframework.boot.context.properties.bind.Binder} because they are needed before the
  * {@link org.springframework.boot.context.properties.ConfigurationPropertiesBindingPostProcessor}
  * has run.
  *
@@ -43,8 +41,7 @@ public class PluginsConfigurationProperties {
   /**
    * The root filepath to the directory containing all plugins.
    *
-   * <p>
-   * If an absolute path is not provided, the path will be calculated relative to the executable.
+   * <p>If an absolute path is not provided, the path will be calculated relative to the executable.
    */
   private String pluginsRootPath = DEFAULT_ROOT_PATH;
 
@@ -59,8 +56,7 @@ public class PluginsConfigurationProperties {
   /**
    * A definition of repositories for use in plugin downloads.
    *
-   * <p>
-   * The key of this map is the name of the repository.
+   * <p>The key of this map is the name of the repository.
    */
   public Map<String, PluginRepositoryProperties> repositories = new HashMap<>();
 
@@ -87,8 +83,7 @@ public class PluginsConfigurationProperties {
     private String url;
 
     /** Configuration for an optional override of {@link org.pf4j.update.FileDownloader}. */
-    @Nullable
-    public FileDownloaderProperties fileDownloader;
+    @Nullable public FileDownloaderProperties fileDownloader;
 
     /** Custom {@link org.pf4j.update.FileDownloader} configuration. */
     public static class FileDownloaderProperties {
@@ -98,9 +93,8 @@ public class PluginsConfigurationProperties {
       /**
        * The configuration for the FileDownloader.
        *
-       * <p>
-       * If defined, the FileDownloader must use the
-       * {@link com.netflix.spinnaker.kork.plugins.config.Configurable} annotation to inform the plugin
+       * <p>If defined, the FileDownloader must use the {@link
+       * com.netflix.spinnaker.kork.plugins.config.Configurable} annotation to inform the plugin
        * framework how to cast the configuration for injection.
        */
       public Object config;

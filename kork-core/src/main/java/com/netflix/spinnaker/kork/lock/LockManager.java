@@ -29,19 +29,21 @@ import java.util.concurrent.Callable;
 import javax.annotation.Nonnull;
 
 public interface LockManager {
-  <R> AcquireLockResponse<R> acquireLock(@Nonnull final LockOptions lockOptions,
-                                         @Nonnull final Callable<R> onLockAcquiredCallback);
+  <R> AcquireLockResponse<R> acquireLock(
+      @Nonnull final LockOptions lockOptions, @Nonnull final Callable<R> onLockAcquiredCallback);
 
-  AcquireLockResponse<Void> acquireLock(@Nonnull final LockOptions lockOptions,
-                                        @Nonnull final Runnable onLockAcquiredCallback);
+  AcquireLockResponse<Void> acquireLock(
+      @Nonnull final LockOptions lockOptions, @Nonnull final Runnable onLockAcquiredCallback);
 
-  <R> AcquireLockResponse<R> acquireLock(@Nonnull final String lockName,
-                                         final long maximumLockDurationMillis,
-                                         @Nonnull final Callable<R> onLockAcquiredCallback);
+  <R> AcquireLockResponse<R> acquireLock(
+      @Nonnull final String lockName,
+      final long maximumLockDurationMillis,
+      @Nonnull final Callable<R> onLockAcquiredCallback);
 
-  AcquireLockResponse<Void> acquireLock(@Nonnull final String lockName,
-                                        final long maximumLockDurationMillis,
-                                        @Nonnull final Runnable onLockAcquiredCallback);
+  AcquireLockResponse<Void> acquireLock(
+      @Nonnull final String lockName,
+      final long maximumLockDurationMillis,
+      @Nonnull final Runnable onLockAcquiredCallback);
 
   boolean releaseLock(@Nonnull final Lock lock, boolean wasWorkSuccessful);
 
@@ -70,11 +72,12 @@ public interface LockManager {
     private final Exception exception;
     private boolean released;
 
-    public AcquireLockResponse(final Lock lock,
-                               final R onLockAcquiredCallbackResult,
-                               final LockStatus lockStatus,
-                               final Exception exception,
-                               final boolean released) {
+    public AcquireLockResponse(
+        final Lock lock,
+        final R onLockAcquiredCallbackResult,
+        final LockStatus lockStatus,
+        final Exception exception,
+        final boolean released) {
       this.lock = lock;
       this.onLockAcquiredCallbackResult = onLockAcquiredCallbackResult;
       this.lockStatus = lockStatus;
@@ -104,7 +107,10 @@ public interface LockManager {
   }
 
   enum LockStatus {
-    ACQUIRED, TAKEN, ERROR, EXPIRED
+    ACQUIRED,
+    TAKEN,
+    ERROR,
+    EXPIRED
   }
 
   interface LockReleaseStatus {
@@ -125,14 +131,15 @@ public interface LockManager {
     private final String attributes; // arbitrary string to store data along side the lock
 
     @JsonCreator
-    public Lock(@JsonProperty("name") String name,
-                @JsonProperty("ownerName") String ownerName,
-                @JsonProperty("version") long version,
-                @JsonProperty("leaseDurationMillis") long leaseDurationMillis,
-                @JsonProperty("successIntervalMillis") Long successIntervalMillis,
-                @JsonProperty("failureIntervalMillis") Long failureIntervalMillis,
-                @JsonProperty("ownerSystemTimestamp") long ownerSystemTimestamp,
-                @JsonProperty("attributes") String attributes) {
+    public Lock(
+        @JsonProperty("name") String name,
+        @JsonProperty("ownerName") String ownerName,
+        @JsonProperty("version") long version,
+        @JsonProperty("leaseDurationMillis") long leaseDurationMillis,
+        @JsonProperty("successIntervalMillis") Long successIntervalMillis,
+        @JsonProperty("failureIntervalMillis") Long failureIntervalMillis,
+        @JsonProperty("ownerSystemTimestamp") long ownerSystemTimestamp,
+        @JsonProperty("attributes") String attributes) {
       this.name = name;
       this.ownerName = ownerName;
       this.leaseDurationMillis = leaseDurationMillis;
@@ -182,24 +189,38 @@ public interface LockManager {
 
     @Override
     public String toString() {
-      return "Lock{" + "name='" + name + '\'' + ", ownerName='" + ownerName + '\'' + ", leaseDurationMillis="
-        + leaseDurationMillis + ", successIntervalMillis=" + successIntervalMillis + ", failureIntervalMillis="
-        + failureIntervalMillis + ", version=" + version + ", ownerSystemTimestamp=" + ownerSystemTimestamp
-        + ", attributes='" + attributes + '\'' + '}';
+      return "Lock{"
+          + "name='"
+          + name
+          + '\''
+          + ", ownerName='"
+          + ownerName
+          + '\''
+          + ", leaseDurationMillis="
+          + leaseDurationMillis
+          + ", successIntervalMillis="
+          + successIntervalMillis
+          + ", failureIntervalMillis="
+          + failureIntervalMillis
+          + ", version="
+          + version
+          + ", ownerSystemTimestamp="
+          + ownerSystemTimestamp
+          + ", attributes='"
+          + attributes
+          + '\''
+          + '}';
     }
 
     @Override
     public boolean equals(Object o) {
       // Two locks are identical if the lock name, owner and version match.
-      if (this == o)
-        return true;
-      if (o == null || getClass() != o.getClass())
-        return false;
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
       Lock lock = (Lock) o;
-      return Objects.equals(name, lock.name) && Objects.equals(ownerName, lock.ownerName) && Objects.equals(
-        version,
-        lock.version
-      );
+      return Objects.equals(name, lock.name)
+          && Objects.equals(ownerName, lock.ownerName)
+          && Objects.equals(version, lock.version);
     }
 
     @Override
@@ -226,7 +247,8 @@ public interface LockManager {
     private Duration successInterval = Duration.ZERO;
     private Duration failureInterval = Duration.ZERO;
     private long version;
-    private List<String> attributes = new ArrayList<>(); // the list will be joined with a ';' delimiter for brevity
+    private List<String> attributes =
+        new ArrayList<>(); // the list will be joined with a ';' delimiter for brevity
     private boolean reuseVersion;
 
     public LockOptions withLockName(String name) {
@@ -303,8 +325,17 @@ public interface LockManager {
 
     @Override
     public String toString() {
-      return "LockOptions{" + "lockName='" + lockName + '\'' + ", maximumLockDuration=" + maximumLockDuration
-        + ", version=" + version + ", attributes=" + attributes + '}';
+      return "LockOptions{"
+          + "lockName='"
+          + lockName
+          + '\''
+          + ", maximumLockDuration="
+          + maximumLockDuration
+          + ", version="
+          + version
+          + ", attributes="
+          + attributes
+          + '}';
     }
   }
 

@@ -13,6 +13,7 @@ class SpringCloudAwsConfiguration {
 
   @Bean
   public static AmazonS3Client amazonS3(AwsS3EnvironmentProperties s3EnvironmentProperties) {
-    return (AmazonS3Client) AmazonS3ClientBuilder.standard().withRegion(s3EnvironmentProperties.getRegion()).build();
+    return (AmazonS3Client)
+        AmazonS3ClientBuilder.standard().withRegion(s3EnvironmentProperties.getRegion()).build();
   }
 }

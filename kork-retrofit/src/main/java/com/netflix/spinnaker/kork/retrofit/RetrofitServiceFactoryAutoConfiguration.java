@@ -33,9 +33,11 @@ public class RetrofitServiceFactoryAutoConfiguration {
 
   @Bean
   @Order(Ordered.LOWEST_PRECEDENCE)
-  ServiceClientFactory serviceClientFactory(RestAdapter.LogLevel retrofitLogLevel,
-                                            OkHttpClientProvider clientProvider,
-                                            RequestInterceptor spinnakerRequestInterceptor) {
-    return new RetrofitServiceFactory(retrofitLogLevel, clientProvider, spinnakerRequestInterceptor);
+  ServiceClientFactory serviceClientFactory(
+      RestAdapter.LogLevel retrofitLogLevel,
+      OkHttpClientProvider clientProvider,
+      RequestInterceptor spinnakerRequestInterceptor) {
+    return new RetrofitServiceFactory(
+        retrofitLogLevel, clientProvider, spinnakerRequestInterceptor);
   }
 }

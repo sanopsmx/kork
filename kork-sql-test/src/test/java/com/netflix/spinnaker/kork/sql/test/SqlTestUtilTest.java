@@ -39,13 +39,11 @@ public class SqlTestUtilTest {
   void testInitTcMysqlDatabase() {
     // This would typically be in a @BeforeAll-annotated method, but here
     // bringing up the container is the test.
-    try (SqlTestUtil.TestDatabase ignored = SqlTestUtil.initTcMysqlDatabase()) {
-    }
+    try (SqlTestUtil.TestDatabase ignored = SqlTestUtil.initTcMysqlDatabase()) {}
   }
 
   @Test
   void testInitTcPostgresDatabase() {
-    try (SqlTestUtil.TestDatabase ignored = SqlTestUtil.initTcPostgresDatabase()) {
-    }
+    try (SqlTestUtil.TestDatabase ignored = SqlTestUtil.initTcPostgresDatabase()) {}
   }
 }

@@ -47,33 +47,40 @@ public class GenericExceptionHandlers extends BaseExceptionHandlers {
   }
 
   @ExceptionHandler(AccessDeniedException.class)
-  public void handleAccessDeniedException(Exception e, HttpServletResponse response, HttpServletRequest request)
-    throws IOException {
+  public void handleAccessDeniedException(
+      Exception e, HttpServletResponse response, HttpServletRequest request) throws IOException {
     storeException(request, response, e);
 
     // avoid leaking any information that may be in `e.getMessage()` by returning a static error
     // message
-    response.sendError(HttpStatus.FORBIDDEN.value(), exceptionMessageDecorator.decorate(e, "Access is denied"));
+    response.sendError(
+        HttpStatus.FORBIDDEN.value(), exceptionMessageDecorator.decorate(e, "Access is denied"));
   }
 
   @ExceptionHandler(NotFoundException.class)
-  public void handleNotFoundException(Exception e, HttpServletResponse response, HttpServletRequest request)
-    throws IOException {
+  public void handleNotFoundException(
+      Exception e, HttpServletResponse response, HttpServletRequest request) throws IOException {
     storeException(request, response, e);
 
-    response.sendError(HttpStatus.NOT_FOUND.value(), exceptionMessageDecorator.decorate(e, e.getMessage()));
+    response.sendError(
+        HttpStatus.NOT_FOUND.value(), exceptionMessageDecorator.decorate(e, e.getMessage()));
   }
 
-  @ExceptionHandler({InvalidRequestException.class, UserException.class, IllegalArgumentException.class})
-  public void handleInvalidRequestException(Exception e, HttpServletResponse response, HttpServletRequest request)
-    throws IOException {
+  @ExceptionHandler({
+    InvalidRequestException.class,
+    UserException.class,
+    IllegalArgumentException.class
+  })
+  public void handleInvalidRequestException(
+      Exception e, HttpServletResponse response, HttpServletRequest request) throws IOException {
     storeException(request, response, e);
-    response.sendError(HttpStatus.BAD_REQUEST.value(), exceptionMessageDecorator.decorate(e, e.getMessage()));
+    response.sendError(
+        HttpStatus.BAD_REQUEST.value(), exceptionMessageDecorator.decorate(e, e.getMessage()));
   }
 
   @ExceptionHandler({IllegalStateException.class})
-  public void handleIllegalStateException(Exception e, HttpServletResponse response, HttpServletRequest request)
-    throws IOException {
+  public void handleIllegalStateException(
+      Exception e, HttpServletResponse response, HttpServletRequest request) throws IOException {
     storeException(request, response, e);
     // A subclass of IllegalStateException may have a ResponseStatus annotation
     // (and as of 30-oct-21, AdminController.DiscoveryUnchangeableException in
@@ -83,30 +90,35 @@ public class GenericExceptionHandlers extends BaseExceptionHandlers {
   }
 
   @ExceptionHandler(RetrofitError.class)
-  public void handleRetrofitError(RetrofitError e, HttpServletResponse response, HttpServletRequest request)
-    throws IOException {
+  public void handleRetrofitError(
+      RetrofitError e, HttpServletResponse response, HttpServletRequest request)
+      throws IOException {
     if (e.getResponse() != null) {
       Map<String, Object> additionalContext = new HashMap<>();
       additionalContext.put("url", e.getResponse().getUrl());
 
-      Header contentTypeHeader = e.getResponse().getHeaders().stream().filter(
-        h -> h.getName().equalsIgnoreCase("content-type")
-      ).findFirst().orElse(null);
+      Header contentTypeHeader =
+          e.getResponse().getHeaders().stream()
+              .filter(h -> h.getName().equalsIgnoreCase("content-type"))
+              .findFirst()
+              .orElse(null);
 
-      if (contentTypeHeader != null && contentTypeHeader.getValue().toLowerCase().contains("application/json")) {
+      if (contentTypeHeader != null
+          && contentTypeHeader.getValue().toLowerCase().contains("application/json")) {
         // include any json responses
         additionalContext.put(
-          "body",
-          CharStreams.toString(new InputStreamReader(e.getResponse().getBody().in(), Charsets.UTF_8))
-        );
+            "body",
+            CharStreams.toString(
+                new InputStreamReader(e.getResponse().getBody().in(), Charsets.UTF_8)));
       }
 
-      RetrofitErrorWrapper retrofitErrorWrapper = new RetrofitErrorWrapper(e.getMessage(), additionalContext);
+      RetrofitErrorWrapper retrofitErrorWrapper =
+          new RetrofitErrorWrapper(e.getMessage(), additionalContext);
       storeException(request, response, retrofitErrorWrapper);
       response.sendError(
-        e.getResponse().getStatus(),
-        exceptionMessageDecorator.decorate(retrofitErrorWrapper, retrofitErrorWrapper.getMessage())
-      );
+          e.getResponse().getStatus(),
+          exceptionMessageDecorator.decorate(
+              retrofitErrorWrapper, retrofitErrorWrapper.getMessage()));
     } else {
       // no retrofit response (likely) indicates a NETWORK error
       handleException(e, response, request);
@@ -115,21 +127,23 @@ public class GenericExceptionHandlers extends BaseExceptionHandlers {
 
   @ExceptionHandler(Exception.class)
   public void handleException(Exception e, HttpServletResponse response, HttpServletRequest request)
-    throws IOException {
+      throws IOException {
     logger.warn("Handled error in generic exception handler", e);
     storeException(request, response, e);
     handleResponseStatusAnnotatedException(e, response);
   }
 
   /**
-   * If a ResponseStatus annotation is present on the exception, send the appropriate error message to
-   * the response. Otherwise send an internal server error.
+   * If a ResponseStatus annotation is present on the exception, send the appropriate error message
+   * to the response. Otherwise send an internal server error.
    *
    * @param e the exception to process
    * @param response a response
    */
-  private void handleResponseStatusAnnotatedException(Exception e, HttpServletResponse response) throws IOException {
-    ResponseStatus responseStatus = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
+  private void handleResponseStatusAnnotatedException(Exception e, HttpServletResponse response)
+      throws IOException {
+    ResponseStatus responseStatus =
+        AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
 
     if (responseStatus != null) {
       HttpStatus httpStatus = responseStatus.value();
@@ -147,13 +161,13 @@ public class GenericExceptionHandlers extends BaseExceptionHandlers {
     } else {
       logger.error("Internal Server Error", e);
       response.sendError(
-        HttpStatus.INTERNAL_SERVER_ERROR.value(),
-        exceptionMessageDecorator.decorate(e, e.getMessage())
-      );
+          HttpStatus.INTERNAL_SERVER_ERROR.value(),
+          exceptionMessageDecorator.decorate(e, e.getMessage()));
     }
   }
 
-  private static class RetrofitErrorWrapper extends RuntimeException implements HasAdditionalAttributes {
+  private static class RetrofitErrorWrapper extends RuntimeException
+      implements HasAdditionalAttributes {
     private final Map<String, Object> additionalAttributes;
 
     public RetrofitErrorWrapper(String message, Map<String, Object> additionalAttributes) {

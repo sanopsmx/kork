@@ -26,8 +26,12 @@ import org.springframework.boot.web.context.WebServerInitializedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.test.context.TestPropertySource;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
-  MetricsEndpointConfigurationTest.TestConfiguration.class, MetricsEndpointConfiguration.class})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {
+      MetricsEndpointConfigurationTest.TestConfiguration.class,
+      MetricsEndpointConfiguration.class
+    })
 @TestPropertySource(properties = {"spectator.web-endpoint.enabled = true"})
 public class MetricsEndpointConfigurationTest {
 
@@ -36,8 +40,7 @@ public class MetricsEndpointConfigurationTest {
   // @LocalServerPort
   int port;
 
-  @Autowired
-  TestRestTemplate restTemplate;
+  @Autowired TestRestTemplate restTemplate;
 
   // https://www.appsloveworld.com/springboot/100/119/org-springframework-boot-web-server-localserverport-is-deprecated
   @EventListener
@@ -55,6 +58,5 @@ public class MetricsEndpointConfigurationTest {
    */
 
   @SpringBootApplication
-  public static class TestConfiguration {
-  }
+  public static class TestConfiguration {}
 }

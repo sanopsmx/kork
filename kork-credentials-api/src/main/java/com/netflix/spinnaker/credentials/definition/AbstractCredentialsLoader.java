@@ -22,8 +22,7 @@ import javax.annotation.PostConstruct;
 import lombok.Getter;
 
 public abstract class AbstractCredentialsLoader<T extends Credentials> {
-  @Getter
-  protected final CredentialsRepository<T> credentialsRepository;
+  @Getter protected final CredentialsRepository<T> credentialsRepository;
 
   public AbstractCredentialsLoader(CredentialsRepository<T> credentialsRepository) {
     this.credentialsRepository = credentialsRepository;

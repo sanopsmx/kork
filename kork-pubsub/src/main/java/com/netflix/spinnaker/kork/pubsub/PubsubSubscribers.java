@@ -34,8 +34,8 @@ public class PubsubSubscribers {
   }
 
   public List<PubsubSubscriber> withType(String pubsubSystem) {
-    return subscribers.stream().filter(subscriber -> subscriber.getPubsubSystem().equals(pubsubSystem)).collect(
-      Collectors.toList()
-    );
+    return subscribers.stream()
+        .filter(subscriber -> subscriber.getPubsubSystem().equals(pubsubSystem))
+        .collect(Collectors.toList());
   }
 }

@@ -24,17 +24,14 @@ import org.apache.tomcat.util.net.jsse.JSSEImplementation;
 /**
  * An SSLImplementation that enforces a blocklist of client certificates.
  *
- * <p>
- * To enable the blocklist behavior, use the {{AbstractEndpoint}} {{crlFile}} property following the
- * naming convention {{blocklist:/path/to/blocklist/file}}
+ * <p>To enable the blocklist behavior, use the {{AbstractEndpoint}} {{crlFile}} property following
+ * the naming convention {{blocklist:/path/to/blocklist/file}}
  *
- * <p>
- * The format of the blocklist file is one entry per line conforming to {{issuer X500
+ * <p>The format of the blocklist file is one entry per line conforming to {{issuer X500
  * name:::blocklisted certificate serial number}} Blank lines and lines that begin with {{#}} are
  * ignored.
  *
- * <p>
- * The Blocklist file is refreshed periodically, so it can be updated in place to pick up newly
+ * <p>The Blocklist file is refreshed periodically, so it can be updated in place to pick up newly
  * revoked certificates.
  */
 public class BlocklistingSSLImplementation extends JSSEImplementation {

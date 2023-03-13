@@ -30,12 +30,9 @@ import lombok.extern.jackson.Jacksonized;
 @ToString
 public class UserSecretMetadata {
   /** Returns the type of the user secret. */
-  @Nonnull
-  private final String type;
+  @Nonnull private final String type;
   /** Returns the encoding of the user secret. */
-  @Nullable
-  private final String encoding;
+  @Nullable private final String encoding;
   /** Returns the authorized roles that can use the user secret. */
-  @Nonnull
-  private final List<String> roles;
+  @Nonnull private final List<String> roles;
 }

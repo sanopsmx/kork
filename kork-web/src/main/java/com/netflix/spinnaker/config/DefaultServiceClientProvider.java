@@ -35,7 +35,8 @@ public class DefaultServiceClientProvider implements ServiceClientProvider {
   private final List<ServiceClientFactory> serviceClientFactories;
   private final ObjectMapper objectMapper;
 
-  public DefaultServiceClientProvider(List<ServiceClientFactory> serviceClientFactories, ObjectMapper objectMapper) {
+  public DefaultServiceClientProvider(
+      List<ServiceClientFactory> serviceClientFactories, ObjectMapper objectMapper) {
     this.serviceClientFactories = serviceClientFactories;
     this.objectMapper = objectMapper;
   }
@@ -47,14 +48,19 @@ public class DefaultServiceClientProvider implements ServiceClientProvider {
   }
 
   @Override
-  public <T> T getService(Class<T> type, ServiceEndpoint serviceEndpoint, ObjectMapper objectMapper) {
+  public <T> T getService(
+      Class<T> type, ServiceEndpoint serviceEndpoint, ObjectMapper objectMapper) {
     ServiceClientFactory serviceClientFactory = findProvider(type, serviceEndpoint);
     return serviceClientFactory.create(type, serviceEndpoint, objectMapper);
   }
 
   private ServiceClientFactory findProvider(Class<?> type, ServiceEndpoint service) {
-    return serviceClientFactories.stream().filter(provider -> provider.supports(type, service)).findFirst().orElseThrow(
-      () -> new SystemException(format("No service client provider found for url (%s)", service.getBaseUrl()))
-    );
+    return serviceClientFactories.stream()
+        .filter(provider -> provider.supports(type, service))
+        .findFirst()
+        .orElseThrow(
+            () ->
+                new SystemException(
+                    format("No service client provider found for url (%s)", service.getBaseUrl())));
   }
 }

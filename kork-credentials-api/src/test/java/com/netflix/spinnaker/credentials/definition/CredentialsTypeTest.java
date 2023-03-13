@@ -33,17 +33,14 @@ class CredentialsTypeTest {
   void typeDiscriminatorUsage() throws JsonProcessingException {
     var mapper = new ObjectMapper();
     mapper.addMixIn(CredentialsDefinition.class, CredentialsDefinitionMixin.class);
-    new ObjectMapperSubtypeConfigurer(new CredentialsTypeParser()).registerSubtype(
-      mapper,
-      new ObjectMapperSubtypeConfigurer.ClassSubtypeLocator(
-        CredentialsDefinition.class, List.of(getClass().getPackageName())
-      )
-    );
+    new ObjectMapperSubtypeConfigurer(new CredentialsTypeParser())
+        .registerSubtype(
+            mapper,
+            new ObjectMapperSubtypeConfigurer.ClassSubtypeLocator(
+                CredentialsDefinition.class, List.of(getClass().getPackageName())));
 
-    CredentialsDefinition definition = mapper.readValue(
-      "{\"type\":\"test\",\"name\":\"success\"}",
-      CredentialsDefinition.class
-    );
+    CredentialsDefinition definition =
+        mapper.readValue("{\"type\":\"test\",\"name\":\"success\"}", CredentialsDefinition.class);
     assertThat(definition).isInstanceOf(TestCredentialsDefinition.class);
     assertThat(definition.getName()).isEqualTo("success");
   }

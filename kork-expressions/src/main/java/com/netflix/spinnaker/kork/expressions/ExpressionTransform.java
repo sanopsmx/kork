@@ -41,10 +41,11 @@ public class ExpressionTransform {
   private final Function<String, String> stringExpressionPreprocessor;
   private final Collection<Class<?>> typesToStringify;
 
-  public ExpressionTransform(ParserContext parserContext,
-                             ExpressionParser parser,
-                             Function<String, String> stringExpressionPreprocessor,
-                             Class<?>... typesToStringify) {
+  public ExpressionTransform(
+      ParserContext parserContext,
+      ExpressionParser parser,
+      Function<String, String> stringExpressionPreprocessor,
+      Class<?>... typesToStringify) {
     this.parserContext = parserContext;
     this.parser = parser;
     this.stringExpressionPreprocessor = stringExpressionPreprocessor;
@@ -65,8 +66,7 @@ public class ExpressionTransform {
 
   /** Finds the original exception in the exception hierarchy */
   private static Throwable unwrapOriginalException(Throwable e) {
-    if (e == null || e.getCause() == null)
-      return e;
+    if (e == null || e.getCause() == null) return e;
     return unwrapOriginalException(e.getCause());
   }
 
@@ -96,37 +96,37 @@ public class ExpressionTransform {
    * @param summary Summary of evaluation after all transformations are applied
    * @return the transformed source object
    */
-  public Map<String, Object> transformMap(Map<String, Object> source,
-                                          EvaluationContext evaluationContext,
-                                          ExpressionEvaluationSummary summary) {
+  public Map<String, Object> transformMap(
+      Map<String, Object> source,
+      EvaluationContext evaluationContext,
+      ExpressionEvaluationSummary summary) {
     Map<String, Object> result = new HashMap<>();
     Map<String, Object> copy = Collections.unmodifiableMap(source);
-    source.forEach((key, value) -> {
-      if (value instanceof Map) {
-        result.put(
-          transform(key, evaluationContext, summary, copy).toString(),
-          transformMap((Map) value, evaluationContext, summary)
-        );
-      } else if (value instanceof List) {
-        result.put(
-          transform(key, evaluationContext, summary, copy).toString(),
-          transformList((List) value, evaluationContext, summary, copy)
-        );
-      } else {
-        result.put(
-          transform(key, evaluationContext, summary, copy).toString(),
-          transform(value, evaluationContext, summary, copy)
-        );
-      }
-    });
+    source.forEach(
+        (key, value) -> {
+          if (value instanceof Map) {
+            result.put(
+                transform(key, evaluationContext, summary, copy).toString(),
+                transformMap((Map) value, evaluationContext, summary));
+          } else if (value instanceof List) {
+            result.put(
+                transform(key, evaluationContext, summary, copy).toString(),
+                transformList((List) value, evaluationContext, summary, copy));
+          } else {
+            result.put(
+                transform(key, evaluationContext, summary, copy).toString(),
+                transform(value, evaluationContext, summary, copy));
+          }
+        });
 
     return result;
   }
 
-  public List transformList(List source,
-                            EvaluationContext evaluationContext,
-                            ExpressionEvaluationSummary summary,
-                            Map<String, Object> additionalContext) {
+  public List transformList(
+      List source,
+      EvaluationContext evaluationContext,
+      ExpressionEvaluationSummary summary,
+      Map<String, Object> additionalContext) {
     List<Object> result = new ArrayList<>();
     for (Object obj : source) {
       if (obj instanceof Map) {
@@ -141,16 +141,16 @@ public class ExpressionTransform {
     return result;
   }
 
-  public String transformString(String source,
-                                EvaluationContext evaluationContext,
-                                ExpressionEvaluationSummary summary) {
+  public String transformString(
+      String source, EvaluationContext evaluationContext, ExpressionEvaluationSummary summary) {
     return (String) transform(source, evaluationContext, summary, Collections.emptyMap());
   }
 
-  private Object transform(Object source,
-                           EvaluationContext evaluationContext,
-                           ExpressionEvaluationSummary summary,
-                           Map<String, Object> additionalContext) {
+  private Object transform(
+      Object source,
+      EvaluationContext evaluationContext,
+      ExpressionEvaluationSummary summary,
+      Map<String, Object> additionalContext) {
     boolean hasUnresolvedExpressions = false;
     if (isExpression(source)) {
       String preprocessed = stringExpressionPreprocessor.apply(source.toString());
@@ -183,32 +183,33 @@ public class ExpressionTransform {
         Set keys = getKeys(source, additionalContext);
         Object fields = !keys.isEmpty() ? keys : preprocessed;
         String errorDescription = format("Failed to evaluate %s ", fields);
-        escapedExpressionString = escapedExpressionString != null ? escapedExpressionString
-          : escapeSimpleExpression(source.toString());
+        escapedExpressionString =
+            escapedExpressionString != null
+                ? escapedExpressionString
+                : escapeSimpleExpression(source.toString());
         if (exception != null) {
           Throwable originalException = unwrapOriginalException(exception);
-          if (originalException == null || originalException.getMessage() == null || originalException.getMessage()
-            .contains(exception.getMessage())) {
+          if (originalException == null
+              || originalException.getMessage() == null
+              || originalException.getMessage().contains(exception.getMessage())) {
             errorDescription += exception.getMessage();
           } else {
             errorDescription += originalException.getMessage() + " - " + exception.getMessage();
           }
 
           summary.add(
-            escapedExpressionString,
-            ExpressionEvaluationSummary.Result.Level.ERROR,
-            errorDescription.replaceAll("\\$", ""),
-            Optional.ofNullable(originalException).map(Object::getClass).orElse(null)
-          );
+              escapedExpressionString,
+              ExpressionEvaluationSummary.Result.Level.ERROR,
+              errorDescription.replaceAll("\\$", ""),
+              Optional.ofNullable(originalException).map(Object::getClass).orElse(null));
 
           result = source;
         } else if (result == null || hasUnresolvedExpressions) {
           summary.add(
-            escapedExpressionString,
-            ExpressionEvaluationSummary.Result.Level.INFO,
-            format("%s: %s not found", errorDescription, escapedExpressionString),
-            null
-          );
+              escapedExpressionString,
+              ExpressionEvaluationSummary.Result.Level.INFO,
+              format("%s: %s not found", errorDescription, escapedExpressionString),
+              null);
 
           if (result == null) {
             result = source;
@@ -239,9 +240,15 @@ public class ExpressionTransform {
       return emptySet();
     }
 
-    return map.entrySet().stream().filter(
-      it -> flatten(it.getValue()).collect(toSet()).stream().flatMap(Stream::of).collect(toSet()).contains(value)
-    ).map(Map.Entry::getKey).collect(toSet());
+    return map.entrySet().stream()
+        .filter(
+            it ->
+                flatten(it.getValue()).collect(toSet()).stream()
+                    .flatMap(Stream::of)
+                    .collect(toSet())
+                    .contains(value))
+        .map(Map.Entry::getKey)
+        .collect(toSet());
   }
 
   /** Helper to escape an expression: stripping ${ } */

@@ -33,21 +33,28 @@ public class ResolvedEnvironmentEndpoint {
   private final Environment environment;
 
   @Autowired
-  public ResolvedEnvironmentEndpoint(Environment environment, ResolvedEnvironmentConfigurationProperties properties) {
+  public ResolvedEnvironmentEndpoint(
+      Environment environment, ResolvedEnvironmentConfigurationProperties properties) {
     this.environment = environment;
 
-    Optional.ofNullable(properties.getKeysToSanitize()).map(p -> p.toArray(new String[0])).isPresent();
+    Optional.ofNullable(properties.getKeysToSanitize())
+        .map(p -> p.toArray(new String[0]))
+        .isPresent();
   }
 
   @ReadOperation
   public Map<String, Object> resolvedEnv() {
-    return getPropertyKeys().stream().collect(Collectors.toMap(property -> property, property -> {
-      try {
-        return sanitizer;
-      } catch (Exception e) {
-        return format("Exception occurred: %s", e.getMessage());
-      }
-    }));
+    return getPropertyKeys().stream()
+        .collect(
+            Collectors.toMap(
+                property -> property,
+                property -> {
+                  try {
+                    return sanitizer;
+                  } catch (Exception e) {
+                    return format("Exception occurred: %s", e.getMessage());
+                  }
+                }));
   }
 
   /** This gathers all defined properties in the system (no matter the source) */
@@ -61,11 +68,12 @@ public class ResolvedEnvironmentEndpoint {
       sources = new StandardEnvironment().getPropertySources();
     }
 
-    sources.forEach(source -> {
-      if (source instanceof EnumerablePropertySource) {
-        result.addAll(Arrays.asList(((EnumerablePropertySource<?>) source).getPropertyNames()));
-      }
-    });
+    sources.forEach(
+        source -> {
+          if (source instanceof EnumerablePropertySource) {
+            result.addAll(Arrays.asList(((EnumerablePropertySource<?>) source).getPropertyNames()));
+          }
+        });
 
     return result;
   }

@@ -53,7 +53,8 @@ public class MemoryAppenderTest {
 
     // Test something that depends on the layout. Assume the layout includes
     // the class name that logged it.
-    assertThat(memoryAppender.layoutSearch(MemoryAppenderTest.class.getName(), Level.INFO)).hasSize(1);
+    assertThat(memoryAppender.layoutSearch(MemoryAppenderTest.class.getName(), Level.INFO))
+        .hasSize(1);
 
     // To demonstrate the difference, the search method uses messages before
     // layout, so it doesn't find the class name.

@@ -36,10 +36,13 @@ public class JinjaArtifactExtractor implements ArtifactExtractor {
   private final ObjectMapper objectMapper;
   private final String jinjaTemplate;
 
-  private static final TypeReference<List<Artifact>> artifactListReference = new TypeReference<List<Artifact>>() {};
-  private static final TypeReference<Map<String, ?>> stringMapReference = new TypeReference<Map<String, ?>>() {};
+  private static final TypeReference<List<Artifact>> artifactListReference =
+      new TypeReference<List<Artifact>>() {};
+  private static final TypeReference<Map<String, ?>> stringMapReference =
+      new TypeReference<Map<String, ?>>() {};
 
-  private JinjaArtifactExtractor(String jinjaTemplate, JinjavaFactory jinjavaFactory, ObjectMapper objectMapper) {
+  private JinjaArtifactExtractor(
+      String jinjaTemplate, JinjavaFactory jinjavaFactory, ObjectMapper objectMapper) {
     this.jinjaTemplate = jinjaTemplate;
     this.jinjavaFactory = jinjavaFactory;
     this.objectMapper = objectMapper;
@@ -101,9 +104,10 @@ public class JinjaArtifactExtractor implements ArtifactExtractor {
         return "";
       } else {
 
-        try (InputStreamReader isr = new InputStreamReader(
-          new BufferedInputStream(templateStream), Charset.forName("UTF-8")
-        ); StringWriter sw = new StringWriter()) {
+        try (InputStreamReader isr =
+                new InputStreamReader(
+                    new BufferedInputStream(templateStream), Charset.forName("UTF-8"));
+            StringWriter sw = new StringWriter()) {
           int charsRead;
           final char[] buf = new char[4096];
           while ((charsRead = isr.read(buf)) != -1) {

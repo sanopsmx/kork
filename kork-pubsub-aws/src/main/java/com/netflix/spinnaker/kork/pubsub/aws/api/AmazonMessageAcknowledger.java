@@ -20,5 +20,5 @@ import com.amazonaws.services.sqs.model.Message;
 import com.netflix.spinnaker.kork.pubsub.aws.AmazonSubscriptionInformation;
 import com.netflix.spinnaker.kork.pubsub.model.MessageAcknowledger;
 
-public interface AmazonMessageAcknowledger extends MessageAcknowledger<AmazonSubscriptionInformation, Message> {
-}
+public interface AmazonMessageAcknowledger
+    extends MessageAcknowledger<AmazonSubscriptionInformation, Message> {}

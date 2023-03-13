@@ -29,8 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 // @RunWith(SpringJUnit4ClassRunner.class)
 public class UserSecretManagerTest {
 
-  @Autowired
-  UserSecretManager userSecretManager;
+  @Autowired UserSecretManager userSecretManager;
 
   /*
    * @Test public void getTestSecret() { var ref = UserSecretReference.parse("secret://noop?v=test");

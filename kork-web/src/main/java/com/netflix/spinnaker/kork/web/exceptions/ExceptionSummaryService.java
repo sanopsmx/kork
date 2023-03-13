@@ -30,7 +30,8 @@ public class ExceptionSummaryService {
    * @param throwable {@link Throwable}
    * @return {@link ExceptionSummary}
    */
-  public ExceptionSummary summary(Throwable throwable, @Nullable ExceptionDetails exceptionDetails) {
+  public ExceptionSummary summary(
+      Throwable throwable, @Nullable ExceptionDetails exceptionDetails) {
     List<TraceDetail> details = new ArrayList<>();
 
     Throwable cause = throwable;
@@ -42,31 +43,41 @@ public class ExceptionSummaryService {
     List<TraceDetail> reversedDetails = new ArrayList<>(details);
     Collections.reverse(reversedDetails);
 
-    Boolean retryable = reversedDetails.stream().filter(d -> d.getRetryable() != null).findFirst().map(
-      TraceDetail::getRetryable
-    ).orElse(null);
+    Boolean retryable =
+        reversedDetails.stream()
+            .filter(d -> d.getRetryable() != null)
+            .findFirst()
+            .map(TraceDetail::getRetryable)
+            .orElse(null);
 
-    return ExceptionSummary.builder().cause(details.get(details.size() - 1).getMessage()).message(
-      details.get(0).getMessage()
-    ).details(reversedDetails).retryable(retryable).build();
+    return ExceptionSummary.builder()
+        .cause(details.get(details.size() - 1).getMessage())
+        .message(details.get(0).getMessage())
+        .details(reversedDetails)
+        .retryable(retryable)
+        .build();
   }
 
   public ExceptionSummary summary(Throwable throwable) {
     return summary(throwable, null);
   }
 
-  private TraceDetail createTraceDetail(Throwable throwable, @Nullable ExceptionDetails exceptionDetails) {
+  private TraceDetail createTraceDetail(
+      Throwable throwable, @Nullable ExceptionDetails exceptionDetails) {
     TraceDetailBuilder detailBuilder = TraceDetail.builder().message(throwable.getMessage());
 
     if (throwable instanceof SpinnakerException) {
       SpinnakerException spinnakerException = (SpinnakerException) throwable;
 
-      detailBuilder.userMessage(
-        exceptionMessageDecorator.decorate(throwable, spinnakerException.getUserMessage(), exceptionDetails)
-      ).retryable(spinnakerException.getRetryable());
+      detailBuilder
+          .userMessage(
+              exceptionMessageDecorator.decorate(
+                  throwable, spinnakerException.getUserMessage(), exceptionDetails))
+          .retryable(spinnakerException.getRetryable());
     }
     if (throwable instanceof HasAdditionalAttributes) {
-      detailBuilder.additionalAttributes(((HasAdditionalAttributes) throwable).getAdditionalAttributes());
+      detailBuilder.additionalAttributes(
+          ((HasAdditionalAttributes) throwable).getAdditionalAttributes());
     }
 
     return detailBuilder.build();

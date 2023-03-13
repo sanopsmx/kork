@@ -21,14 +21,18 @@ package com.netflix.spinnaker.kork.common;
  * Known X-SPINNAKER headers, but any X-SPINNAKER-* key in the MDC will be automatically propagated
  * to the HTTP headers.
  *
- * <p>
- * Use makeCustomerHeader() to add customer headers
+ * <p>Use makeCustomerHeader() to add customer headers
  */
 public enum Header {
-  USER("X-SPINNAKER-USER", true), ACCOUNTS("X-SPINNAKER-ACCOUNTS", true), USER_ORIGIN("X-SPINNAKER-USER-ORIGIN",
-    false), REQUEST_ID("X-SPINNAKER-REQUEST-ID", false), EXECUTION_ID("X-SPINNAKER-EXECUTION-ID",
-      false), EXECUTION_TYPE("X-SPINNAKER-EXECUTION-TYPE", false), APPLICATION("X-SPINNAKER-APPLICATION",
-        false), PLUGIN_ID("X-SPINNAKER-PLUGIN-ID", false), PLUGIN_EXTENSION("X-SPINNAKER-PLUGIN-EXTENSION", false);
+  USER("X-SPINNAKER-USER", true),
+  ACCOUNTS("X-SPINNAKER-ACCOUNTS", true),
+  USER_ORIGIN("X-SPINNAKER-USER-ORIGIN", false),
+  REQUEST_ID("X-SPINNAKER-REQUEST-ID", false),
+  EXECUTION_ID("X-SPINNAKER-EXECUTION-ID", false),
+  EXECUTION_TYPE("X-SPINNAKER-EXECUTION-TYPE", false),
+  APPLICATION("X-SPINNAKER-APPLICATION", false),
+  PLUGIN_ID("X-SPINNAKER-PLUGIN-ID", false),
+  PLUGIN_EXTENSION("X-SPINNAKER-PLUGIN-EXTENSION", false);
 
   private String header;
   private boolean isRequired;

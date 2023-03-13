@@ -46,29 +46,29 @@ import org.springframework.core.env.Environment;
 public class HttpClientSdkConfiguration {
 
   @Bean
-  public static SdkFactory httpClientSdkFactory(List<OkHttp3ClientFactory> okHttpClientFactories,
-                                                Environment environment,
-                                                Provider<Registry> registry) {
+  public static SdkFactory httpClientSdkFactory(
+      List<OkHttp3ClientFactory> okHttpClientFactories,
+      Environment environment,
+      Provider<Registry> registry) {
 
-    OkHttpClientConfigurationProperties okHttpClientProperties = Binder.get(environment).bind(
-      "ok-http-client",
-      Bindable.of(OkHttpClientConfigurationProperties.class)
-    ).orElse(new OkHttpClientConfigurationProperties());
+    OkHttpClientConfigurationProperties okHttpClientProperties =
+        Binder.get(environment)
+            .bind("ok-http-client", Bindable.of(OkHttpClientConfigurationProperties.class))
+            .orElse(new OkHttpClientConfigurationProperties());
 
-    OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties = Binder.get(environment).bind(
-      "ok-http-client.interceptor",
-      Bindable.of(OkHttpMetricsInterceptorProperties.class)
-    ).orElse(new OkHttpMetricsInterceptorProperties());
+    OkHttpMetricsInterceptorProperties okHttpMetricsInterceptorProperties =
+        Binder.get(environment)
+            .bind(
+                "ok-http-client.interceptor", Bindable.of(OkHttpMetricsInterceptorProperties.class))
+            .orElse(new OkHttpMetricsInterceptorProperties());
 
     List<OkHttp3ClientFactory> factories = new ArrayList<>(okHttpClientFactories);
-    OkHttp3MetricsInterceptor okHttp3MetricsInterceptor = new OkHttp3MetricsInterceptor(
-      registry, okHttpMetricsInterceptorProperties
-    );
+    OkHttp3MetricsInterceptor okHttp3MetricsInterceptor =
+        new OkHttp3MetricsInterceptor(registry, okHttpMetricsInterceptorProperties);
     factories.add(new DefaultOkHttp3ClientFactory(okHttp3MetricsInterceptor));
 
-    OkHttp3ClientConfiguration config = new OkHttp3ClientConfiguration(
-      okHttpClientProperties, okHttp3MetricsInterceptor
-    );
+    OkHttp3ClientConfiguration config =
+        new OkHttp3ClientConfiguration(okHttpClientProperties, okHttp3MetricsInterceptor);
 
     KotlinModule kotlinModule = new KotlinModule.Builder().build();
 
@@ -84,6 +84,7 @@ public class HttpClientSdkConfiguration {
     objectMapper.disable(FAIL_ON_EMPTY_BEANS);
     objectMapper.setSerializationInclusion(NON_NULL);
 
-    return new HttpClientSdkFactory(new CompositeOkHttpClientFactory(factories), environment, objectMapper, config);
+    return new HttpClientSdkFactory(
+        new CompositeOkHttpClientFactory(factories), environment, objectMapper, config);
   }
 }

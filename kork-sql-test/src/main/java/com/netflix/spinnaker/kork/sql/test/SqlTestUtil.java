@@ -92,33 +92,35 @@ public class SqlTestUtil {
     // So, we need to manually start a container here, since Testcontainers does not honor the db
     // name in the JDBC url
     // when implicitly starting a container from a testcontainers-driver-prefixed JDBC URL
-    PostgreSQLContainer container = new PostgreSQLContainer<>("postgres:10.13").withDatabaseName("test").withUsername(
-      "test"
-    ).withPassword("test");
+    PostgreSQLContainer container =
+        new PostgreSQLContainer<>("postgres:10.13")
+            .withDatabaseName("test")
+            .withUsername("test")
+            .withPassword("test");
 
     container.start();
 
-    String fullJDBCUrl = container.getJdbcUrl() + String.format(
-      "&user=%s&password=%s",
-      container.getUsername(),
-      container.getPassword()
-    );
+    String fullJDBCUrl =
+        container.getJdbcUrl()
+            + String.format(
+                "&user=%s&password=%s", container.getUsername(), container.getPassword());
     return initDatabase(fullJDBCUrl, SQLDialect.POSTGRES, container.getDatabaseName());
   }
 
   @Deprecated
   public static TestDatabase initPreviousTcMysqlDatabase() {
-    MySQLContainer container = new MySQLContainer("mysql:5.7.22").withDatabaseName("previous").withUsername("test")
-      .withPassword("test");
+    MySQLContainer container =
+        new MySQLContainer("mysql:5.7.22")
+            .withDatabaseName("previous")
+            .withUsername("test")
+            .withPassword("test");
 
     container.start();
 
-    String jdbcUrl = String.format(
-      "%s?user=%s&password=%s",
-      container.getJdbcUrl(),
-      container.getUsername(),
-      container.getPassword()
-    );
+    String jdbcUrl =
+        String.format(
+            "%s?user=%s&password=%s",
+            container.getJdbcUrl(), container.getUsername(), container.getPassword());
 
     return initDatabase(jdbcUrl, SQLDialect.MYSQL, "previous");
   }
@@ -159,13 +161,10 @@ public class SqlTestUtil {
     // PostgreSQLContainer has a default query param already added to the JDBC URL
     String queryStart = container.getJdbcUrl().contains("?") ? "&" : "?";
 
-    String rootJdbcUrl = String.format(
-      "%s%suser=%s&password=%s",
-      container.getJdbcUrl(),
-      queryStart,
-      rootUser,
-      container.getPassword()
-    );
+    String rootJdbcUrl =
+        String.format(
+            "%s%suser=%s&password=%s",
+            container.getJdbcUrl(), queryStart, rootUser, container.getPassword());
 
     try {
       Connection rootCon = DriverManager.getConnection(rootJdbcUrl);
@@ -178,13 +177,10 @@ public class SqlTestUtil {
       throw new RuntimeException("Error setting up testcontainer database", e);
     }
 
-    String currentJdbcUrl = String.format(
-      "%s%suser=%s&password=%s",
-      container.getJdbcUrl(),
-      queryStart,
-      container.getUsername(),
-      container.getPassword()
-    );
+    String currentJdbcUrl =
+        String.format(
+            "%s%suser=%s&password=%s",
+            container.getJdbcUrl(), queryStart, container.getUsername(), container.getPassword());
 
     String previousJdbcUrl = currentJdbcUrl.replace("/current", "/previous");
 
@@ -192,9 +188,12 @@ public class SqlTestUtil {
     TestDatabase previousTDB = initDatabase(previousJdbcUrl, dialect, "previous");
 
     return new TestDatabase(
-      currentTDB.dataSource, currentTDB.context, currentTDB.liquibase, previousTDB.dataSource, previousTDB.context,
-      previousTDB.liquibase
-    );
+        currentTDB.dataSource,
+        currentTDB.context,
+        currentTDB.liquibase,
+        previousTDB.dataSource,
+        previousTDB.context,
+        previousTDB.liquibase);
   }
 
   public static TestDatabase initDatabase(String jdbcUrl) {
@@ -226,30 +225,29 @@ public class SqlTestUtil {
       DatabaseChangeLog changeLog = new DatabaseChangeLog();
 
       changeLog.setChangeLogParameters(
-        new ChangeLogParameters(
-          DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-            new JdbcConnection(dataSource.getConnection())
-          )
-        )
-      );
+          new ChangeLogParameters(
+              DatabaseFactory.getInstance()
+                  .findCorrectDatabaseImplementation(
+                      new JdbcConnection(dataSource.getConnection()))));
 
       changeLog.includeAll(
-        "db/changelog/",
-        false,
-        null,
-        false,
-        Comparator.comparing(String::toString),
-        new ClassLoaderResourceAccessor(),
-        new ContextExpression(),
-        new LabelExpression(),
-        false
-      );
+          "db/changelog/",
+          false,
+          null,
+          false,
+          Comparator.comparing(String::toString),
+          new ClassLoaderResourceAccessor(),
+          new ContextExpression(),
+          new LabelExpression(),
+          false);
 
-      migrate = new Liquibase(
-        changeLog, new ClassLoaderResourceAccessor(), DatabaseFactory.getInstance().findCorrectDatabaseImplementation(
-          new JdbcConnection(dataSource.getConnection())
-        )
-      );
+      migrate =
+          new Liquibase(
+              changeLog,
+              new ClassLoaderResourceAccessor(),
+              DatabaseFactory.getInstance()
+                  .findCorrectDatabaseImplementation(
+                      new JdbcConnection(dataSource.getConnection())));
     } catch (DatabaseException | SQLException | SetupException e) {
       throw new DatabaseInitializationFailed(e);
     }
@@ -266,29 +264,31 @@ public class SqlTestUtil {
   public static void cleanupDb(DSLContext context) {
     String schema = context.select(currentSchema()).fetch().getValue(0, 0).toString();
 
-    GlobalConfiguration configuration = LiquibaseConfiguration.getInstance().getConfiguration(
-      GlobalConfiguration.class
-    );
+    GlobalConfiguration configuration =
+        LiquibaseConfiguration.getInstance().getConfiguration(GlobalConfiguration.class);
 
     List<Query> commands = new ArrayList<>();
     if (context.dialect() == SQLDialect.MYSQL) {
       commands.add(query("set foreign_key_checks=0"));
     }
-    context.meta().getTables().stream().filter(
-      table -> table.getType().isInstance(Table.class) && table.getSchema().getName().equals(schema) && !table.getName()
-        .equals(configuration.getDatabaseChangeLogTableName()) && !table.getName().equals(
-          configuration.getDatabaseChangeLogLockTableName()
-        )
-    ).forEach(table -> {
-      switch (context.dialect()) {
-        case POSTGRES:
-          commands.add(truncateTable(table).cascade());
-          break;
-        default:
-          commands.add(truncateTable(table));
-          break;
-      }
-    });
+    context.meta().getTables().stream()
+        .filter(
+            table ->
+                table.getType().isInstance(Table.class)
+                    && table.getSchema().getName().equals(schema)
+                    && !table.getName().equals(configuration.getDatabaseChangeLogTableName())
+                    && !table.getName().equals(configuration.getDatabaseChangeLogLockTableName()))
+        .forEach(
+            table -> {
+              switch (context.dialect()) {
+                case POSTGRES:
+                  commands.add(truncateTable(table).cascade());
+                  break;
+                default:
+                  commands.add(truncateTable(table));
+                  break;
+              }
+            });
     if (context.dialect() == SQLDialect.MYSQL) {
       commands.add(query("set foreign_key_checks=1"));
     }
@@ -312,12 +312,13 @@ public class SqlTestUtil {
       this.previousLiquibase = null;
     }
 
-    TestDatabase(HikariDataSource dataSource,
-                 DSLContext context,
-                 Liquibase liquibase,
-                 HikariDataSource previousDataSource,
-                 DSLContext previousContext,
-                 Liquibase previousLiquibase) {
+    TestDatabase(
+        HikariDataSource dataSource,
+        DSLContext context,
+        Liquibase liquibase,
+        HikariDataSource previousDataSource,
+        DSLContext previousContext,
+        Liquibase previousLiquibase) {
       this.dataSource = dataSource;
       this.context = context;
       this.liquibase = liquibase;

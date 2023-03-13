@@ -52,7 +52,8 @@ public class ExpressionEvaluationSummary {
     return expressionResult;
   }
 
-  public void add(String escapedExpression, Result.Level level, String description, Class<?> exceptionType) {
+  public void add(
+      String escapedExpression, Result.Level level, String description, Class<?> exceptionType) {
     Set<Result> messages = expressionResult.getOrDefault(escapedExpression, new HashSet<>());
     messages.add(new Result(level, System.currentTimeMillis(), description, exceptionType));
     expressionResult.put(escapedExpression, messages);
@@ -71,12 +72,8 @@ public class ExpressionEvaluationSummary {
     String attempted = attempts.stream().collect(Collectors.joining(","));
     String failed = expressionResult.keySet().stream().collect(Collectors.joining(","));
     return String.format(
-      "%d expression(s) - (%s), %d failed - (%s)",
-      getTotalEvaluated(),
-      attempted,
-      getFailureCount(),
-      failed
-    );
+        "%d expression(s) - (%s), %d failed - (%s)",
+        getTotalEvaluated(), attempted, getFailureCount(), failed);
   }
 
   public boolean wasAttempted(String expression) {
@@ -134,22 +131,33 @@ public class ExpressionEvaluationSummary {
 
     @Override
     public String toString() {
-      return "Result {" + "description='" + description + '\'' + ", exceptionType=" + exceptionType + ", timestamp="
-        + timestamp + ", level=" + level + '}';
+      return "Result {"
+          + "description='"
+          + description
+          + '\''
+          + ", exceptionType="
+          + exceptionType
+          + ", timestamp="
+          + timestamp
+          + ", level="
+          + level
+          + '}';
     }
 
     @Override
     public boolean equals(Object o) {
-      if (this == o)
-        return true;
-      if (o == null || getClass() != o.getClass())
-        return false;
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
 
       Result result = (Result) o;
 
-      return (description != null ? description.equals(result.description) : result.description == null)
-        && (exceptionType != null ? exceptionType.equals(result.exceptionType) : result.exceptionType == null)
-        && level == result.level;
+      return (description != null
+              ? description.equals(result.description)
+              : result.description == null)
+          && (exceptionType != null
+              ? exceptionType.equals(result.exceptionType)
+              : result.exceptionType == null)
+          && level == result.level;
     }
 
     @Override
@@ -161,7 +169,8 @@ public class ExpressionEvaluationSummary {
     }
 
     enum Level {
-      ERROR, INFO
+      ERROR,
+      INFO
     }
   }
 }

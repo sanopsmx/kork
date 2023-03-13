@@ -35,7 +35,7 @@ public class DiscoveryStatusListener implements ApplicationListener<RemoteStatus
    * To support unit tests, specifies the initial state of the DiscoveryStatusListener.
    *
    * @param enabledInitialState the initial enabled state of this DiscoveryStatusListener prior to
-   *        receiving any RemoteStatusChangedEvents.
+   *     receiving any RemoteStatusChangedEvents.
    */
   public DiscoveryStatusListener(boolean enabledInitialState) {
     this.enabled = new AtomicBoolean(enabledInitialState);
@@ -43,7 +43,8 @@ public class DiscoveryStatusListener implements ApplicationListener<RemoteStatus
 
   @Override
   public void onApplicationEvent(RemoteStatusChangedEvent event) {
-    log.info("Instance status has changed to {} in service discovery", event.getSource().getStatus());
+    log.info(
+        "Instance status has changed to {} in service discovery", event.getSource().getStatus());
 
     if (event.getSource().getStatus() == InstanceStatus.UP) {
       enabled.set(true);

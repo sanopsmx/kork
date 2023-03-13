@@ -30,10 +30,10 @@ import java.util.TreeMap;
 
 /**
  * Maps structured user secret data types to a corresponding {@link UserSecretData} instance using
- * different encoding formats. Encoding formats are specified by an {@link ObjectMapper}'s
- * {@link JsonFactory#getFormatName()} use case-insensitive string comparison. The type of user
- * secret being encoded is provided by metadata and must correspond to a UserSecretData class
- * annotated with {@link UserSecretType}.
+ * different encoding formats. Encoding formats are specified by an {@link ObjectMapper}'s {@link
+ * JsonFactory#getFormatName()} use case-insensitive string comparison. The type of user secret
+ * being encoded is provided by metadata and must correspond to a UserSecretData class annotated
+ * with {@link UserSecretType}.
  *
  * @see UserSecretData
  * @see UserSecretReference
@@ -41,21 +41,23 @@ import java.util.TreeMap;
  */
 @NonnullByDefault
 public class DefaultUserSecretSerde implements UserSecretSerde {
-  private final Map<String, Class<? extends UserSecretData>> userSecretTypes = new TreeMap<>(
-    String.CASE_INSENSITIVE_ORDER
-  );
-  private final Map<String, ObjectMapper> mappersByEncodingFormat = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+  private final Map<String, Class<? extends UserSecretData>> userSecretTypes =
+      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+  private final Map<String, ObjectMapper> mappersByEncodingFormat =
+      new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
-  public DefaultUserSecretSerde(Collection<ObjectMapper> mappers, Collection<Class<? extends UserSecretData>> types) {
-    mappers.forEach(mapper -> mappersByEncodingFormat.put(mapper.getFactory().getFormatName(), mapper));
-    types.forEach(type -> userSecretTypes.put(type.getAnnotation(UserSecretType.class).value(), type));
+  public DefaultUserSecretSerde(
+      Collection<ObjectMapper> mappers, Collection<Class<? extends UserSecretData>> types) {
+    mappers.forEach(
+        mapper -> mappersByEncodingFormat.put(mapper.getFactory().getFormatName(), mapper));
+    types.forEach(
+        type -> userSecretTypes.put(type.getAnnotation(UserSecretType.class).value(), type));
   }
 
   @Override
   public boolean supports(UserSecretMetadata metadata) {
-    return userSecretTypes.containsKey(metadata.getType()) && mappersByEncodingFormat.containsKey(
-      metadata.getEncoding()
-    );
+    return userSecretTypes.containsKey(metadata.getType())
+        && mappersByEncodingFormat.containsKey(metadata.getEncoding());
   }
 
   @Override

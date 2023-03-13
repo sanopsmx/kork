@@ -24,8 +24,7 @@ import redis.clients.jedis.commands.JedisCommands;
 /**
  * Offers a functional interface over either a vanilla Jedis or Dynomite client.
  *
- * <p>
- * TODO rz - remove withKeyScan once Dyno implements the Jedis interfaces
+ * <p>TODO rz - remove withKeyScan once Dyno implements the Jedis interfaces
  */
 public interface RedisClientDelegate {
 

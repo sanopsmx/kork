@@ -51,18 +51,16 @@ import org.slf4j.LoggerFactory;
 /**
  * Adapter from Spectator Meters to Stackdriver Time Series Metrics.
  *
- * <p>
- * This class is not thread safe, but is assumed to be called from a single thread.
+ * <p>This class is not thread safe, but is assumed to be called from a single thread.
  *
- * <p>
- * Places that are not thread safe include the management of the custom descriptor cache and the use
- * of java.text.DataFormat, which is stated to not be thread-safe.
+ * <p>Places that are not thread safe include the management of the custom descriptor cache and the
+ * use of java.text.DataFormat, which is stated to not be thread-safe.
  */
 public class StackdriverWriter {
   // Capture groups are time series index and actual label name.
-  private static final Pattern INVALID_LABEL_REGEX = Pattern.compile(
-    "timeSeries\\[(\\d+?)\\]\\.metric\\.labels\\[\\d+?\\] had an invalid value of \\W*(\\w+)"
-  );
+  private static final Pattern INVALID_LABEL_REGEX =
+      Pattern.compile(
+          "timeSeries\\[(\\d+?)\\]\\.metric\\.labels\\[\\d+?\\] had an invalid value of \\W*(\\w+)");
 
   /** This is the Spectator Id used for the timer measuring writeRegistry calls. */
   public static final String WRITE_TIMER_NAME = "stackdriver.writeRegistry";
@@ -71,10 +69,10 @@ public class StackdriverWriter {
   private static final int MAX_TS_PER_REQUEST = 200;
 
   /**
-   * Spectator doesnt have a public concrete Id class so we'll use the default registry as a factory.
+   * Spectator doesnt have a public concrete Id class so we'll use the default registry as a
+   * factory.
    *
-   * <p>
-   * We need to generate IDs for synthetic measurements (e.g. Timers).
+   * <p>We need to generate IDs for synthetic measurements (e.g. Timers).
    */
   private static final Registry ID_FACTORY = new DefaultRegistry(Clock.SYSTEM);
 
@@ -84,8 +82,7 @@ public class StackdriverWriter {
   /**
    * TimeSeries data in Stackdriver API takes a date string, not a timestamp.
    *
-   * <p>
-   * We are using a literal 'Z' here rather than the time format Z because Stackdriver doesnt
+   * <p>We are using a literal 'Z' here rather than the time format Z because Stackdriver doesnt
    * recognize the format that Java produces. So instead we'll report in UTC and have it convert our
    * time into GMT for reporting.
    */
@@ -104,8 +101,8 @@ public class StackdriverWriter {
   private final String applicationName;
 
   /**
-   * A unique id that distinguishes our data from other replicas with the same applicationName (in the
-   * same project).
+   * A unique id that distinguishes our data from other replicas with the same applicationName (in
+   * the same project).
    */
   private String instanceId;
 
@@ -143,7 +140,8 @@ public class StackdriverWriter {
     Date startDate = new Date(configParams.getCounterStartTime());
     counterStartTimeRfc3339 = rfc3339.format(startDate);
 
-    log.info("Constructing StackdriverWriter {}={}", MetricDescriptorCache.INSTANCE_LABEL, instanceId);
+    log.info(
+        "Constructing StackdriverWriter {}={}", MetricDescriptorCache.INSTANCE_LABEL, instanceId);
   }
 
   /**
@@ -151,7 +149,8 @@ public class StackdriverWriter {
    *
    * @see #findProblematicTimeSeriesElement
    */
-  private void handleTimeSeriesResponseException(HttpResponseException rex, String msg, List<TimeSeries> nextN) {
+  private void handleTimeSeriesResponseException(
+      HttpResponseException rex, String msg, List<TimeSeries> nextN) {
     Matcher matcher = INVALID_LABEL_REGEX.matcher(rex.getContent());
     TimeSeries ts = null;
     String label = null;
@@ -181,11 +180,10 @@ public class StackdriverWriter {
    * @param measurement The Spectator Measurement to encode.
    * @return The Stackdriver TimeSeries equivalent for the measurement.
    */
-  public TimeSeries measurementToTimeSeries(String descriptorType,
-                                            Registry registry,
-                                            Meter meter,
-                                            Measurement measurement) {
-    Map<String, String> labels = cache.tagsToTimeSeriesLabels(descriptorType, measurement.id().tags());
+  public TimeSeries measurementToTimeSeries(
+      String descriptorType, Registry registry, Meter meter, Measurement measurement) {
+    Map<String, String> labels =
+        cache.tagsToTimeSeriesLabels(descriptorType, measurement.id().tags());
 
     long millis = measurement.timestamp();
     double value = measurement.value();
@@ -225,7 +223,7 @@ public class StackdriverWriter {
    *
    * @param id The original Measurement id
    * @return A copy of the original but without the 'statistic' tag, and the name will be decorated
-   *         with "__count" or "__totalTime" depending on the value of the original statistic tag.
+   *     with "__count" or "__totalTime" depending on the value of the original statistic tag.
    */
   Id deriveBaseTimerId(Id id) {
     String suffix = null;
@@ -255,19 +253,17 @@ public class StackdriverWriter {
   private Map<Id, Id> timerBaseIds = new HashMap<Id, Id>();
 
   /**
-   * Transform timer measurements from a composite with count/totalTime tags to a pair of specialized
-   * measurements without the "statistic" tag.
+   * Transform timer measurements from a composite with count/totalTime tags to a pair of
+   * specialized measurements without the "statistic" tag.
    *
-   * <p>
-   * This is so we can have different units for the measurement MetricDescriptor to note that the
+   * <p>This is so we can have different units for the measurement MetricDescriptor to note that the
    * totalTime is in nanoseconds.
    *
    * @param measurements The list of measurements to transform come from a Timer meter.
    * @return A list of measurements, probably the same as the original size, where each of the
-   *         elements corresponds to an original element but does not have the "statistic" label.
-   *         Where the original was "count", the new id name will have a "__count" suffix and
-   *         "__totalTime" for the "totalTime" statistic. The base name will be the same as the
-   *         original.
+   *     elements corresponds to an original element but does not have the "statistic" label. Where
+   *     the original was "count", the new id name will have a "__count" suffix and "__totalTime"
+   *     for the "totalTime" statistic. The base name will be the same as the original.
    */
   private Iterable<Measurement> transformTimerMeasurements(Iterable<Measurement> measurements) {
     ArrayList<Measurement> result = new ArrayList<Measurement>();
@@ -317,18 +313,20 @@ public class StackdriverWriter {
     // The timer will appear in our response, but be off by one invocation
     // because it isnt updated until we finish.
     Id writeId = registry.createId(WRITE_TIMER_NAME);
-    registry.timer(writeId).record(new Runnable() {
-      public void run() {
-        writeRegistryHelper(registry);
-      }
-    });
+    registry
+        .timer(writeId)
+        .record(
+            new Runnable() {
+              public void run() {
+                writeRegistryHelper(registry);
+              }
+            });
   }
 
   /**
    * Get the monitoredResource for the TimeSeries data.
    *
-   * <p>
-   * This will return null if the resource cannot be determined.
+   * <p>This will return null if the resource cannot be determined.
    */
   MonitoredResource determineMonitoredResource() {
     if (monitoredResource == null) {
@@ -339,10 +337,9 @@ public class StackdriverWriter {
           cache.addExtraTimeSeriesLabel(MetricDescriptorCache.INSTANCE_LABEL, instanceId);
         }
         log.info(
-          "Using monitoredResource={} with extraTimeSeriesLabels={}",
-          monitoredResource,
-          cache.getExtraTimeSeriesLabels()
-        );
+            "Using monitoredResource={} with extraTimeSeriesLabels={}",
+            monitoredResource,
+            cache.getExtraTimeSeriesLabels());
       } catch (IOException ioex) {
         log.error("Unable to determine monitoredResource at this time.", ioex);
       }

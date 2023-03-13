@@ -26,8 +26,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = SecretConfiguration.class)
 @RequiredArgsConstructor
 class SecretsManagerConfigurationTest {
-  @Autowired
-  SecretsManagerSecretEngine engine;
+  @Autowired SecretsManagerSecretEngine engine;
 
   /*
    * @Test void contextLoads() { assertNotNull(engine); }

@@ -36,13 +36,13 @@ public class SpinnakerHttpException extends SpinnakerServerException {
   /**
    * Construct a SpinnakerHttpException with a specified message. This allows code to catch a
    * SpinnakerHttpException and throw a new one with a custom message, while still allowing
-   * SpinnakerRetrofitExceptionHandlers to handle the exception and respond with the appropriate http
-   * status code.
+   * SpinnakerRetrofitExceptionHandlers to handle the exception and respond with the appropriate
+   * http status code.
    *
    * @param message the message
-   * @param cause the cause. Note that this is required (i.e. can't be null) since in the absence of a
-   *        cause or a RetrofitError that provides the cause, SpinnakerHttpException is likely not the
-   *        appropriate exception class to use.
+   * @param cause the cause. Note that this is required (i.e. can't be null) since in the absence of
+   *     a cause or a RetrofitError that provides the cause, SpinnakerHttpException is likely not
+   *     the appropriate exception class to use.
    */
   public SpinnakerHttpException(String message, SpinnakerHttpException cause) {
     super(message, cause);
@@ -63,6 +63,8 @@ public class SpinnakerHttpException extends SpinnakerServerException {
     if (getRawMessage() == null) {
       return super.getMessage();
     }
-    return String.format("Status: %s, URL: %s, Message: %s", response.getStatus(), response.getUrl(), getRawMessage());
+    return String.format(
+        "Status: %s, URL: %s, Message: %s",
+        response.getStatus(), response.getUrl(), getRawMessage());
   }
 }

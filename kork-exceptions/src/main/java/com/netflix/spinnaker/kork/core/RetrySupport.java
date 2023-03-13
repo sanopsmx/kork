@@ -45,7 +45,10 @@ public class RetrySupport {
           throw e;
         }
 
-        long timeout = !exponential ? retryBackoff.toMillis() : (long) Math.pow(2, retries) * retryBackoff.toMillis();
+        long timeout =
+            !exponential
+                ? retryBackoff.toMillis()
+                : (long) Math.pow(2, retries) * retryBackoff.toMillis();
         sleep(timeout);
 
         retries++;

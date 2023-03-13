@@ -51,9 +51,10 @@ public class EurekaAutoConfiguration {
    */
   @Bean
   @Deprecated
-  public DiscoveryClient discoveryClient(ApplicationInfoManager applicationInfoManager,
-                                         EurekaClientConfig eurekaClientConfig,
-                                         DiscoveryClient.DiscoveryClientOptionalArgs optionalArgs) {
+  public DiscoveryClient discoveryClient(
+      ApplicationInfoManager applicationInfoManager,
+      EurekaClientConfig eurekaClientConfig,
+      DiscoveryClient.DiscoveryClientOptionalArgs optionalArgs) {
     return new DiscoveryClient(applicationInfoManager, eurekaClientConfig, optionalArgs);
   }
 
@@ -65,7 +66,8 @@ public class EurekaAutoConfiguration {
 
   @Bean
   public ApplicationInfoManager applicationInfoManager(EurekaInstanceConfig eurekaInstanceConfig) {
-    return new ApplicationInfoManager(eurekaInstanceConfig, (ApplicationInfoManager.OptionalArgs) null);
+    return new ApplicationInfoManager(
+        eurekaInstanceConfig, (ApplicationInfoManager.OptionalArgs) null);
   }
 
   @Bean
@@ -74,34 +76,38 @@ public class EurekaAutoConfiguration {
   }
 
   @Bean
-  EurekaInstanceConfig eurekaInstanceConfig(EurekaConfigurationProperties eurekaConfigurationProperties) {
+  EurekaInstanceConfig eurekaInstanceConfig(
+      EurekaConfigurationProperties eurekaConfigurationProperties) {
     return new CloudInstanceConfig(eurekaConfigurationProperties.getInstance().getNamespace());
   }
 
   @Bean
-  EurekaClientConfig eurekaClientConfig(EurekaConfigurationProperties eurekaConfigurationProperties) {
+  EurekaClientConfig eurekaClientConfig(
+      EurekaConfigurationProperties eurekaConfigurationProperties) {
     return new DefaultEurekaClientConfig(eurekaConfigurationProperties.getClient().getNamespace());
   }
 
   @Bean
-  DiscoveryClient.DiscoveryClientOptionalArgs optionalArgs(EventBus eventBus, HealthCheckHandler healthCheckHandler) {
-    DiscoveryClient.DiscoveryClientOptionalArgs args = new DiscoveryClient.DiscoveryClientOptionalArgs();
+  DiscoveryClient.DiscoveryClientOptionalArgs optionalArgs(
+      EventBus eventBus, HealthCheckHandler healthCheckHandler) {
+    DiscoveryClient.DiscoveryClientOptionalArgs args =
+        new DiscoveryClient.DiscoveryClientOptionalArgs();
     args.setEventBus(eventBus);
     args.setHealthCheckHandlerProvider(new StaticProvider<>(healthCheckHandler));
     return args;
   }
 
   @Bean
-  EurekaStatusSubscriber eurekaStatusSubscriber(EventBus eventBus,
-                                                DiscoveryClient discoveryClient,
-                                                ApplicationEventPublisher publisher) {
+  EurekaStatusSubscriber eurekaStatusSubscriber(
+      EventBus eventBus, DiscoveryClient discoveryClient, ApplicationEventPublisher publisher) {
     return new EurekaStatusSubscriber(publisher, eventBus, discoveryClient);
   }
 
   @Bean
-  HealthCheckHandler healthCheckHandler(ApplicationInfoManager applicationInfoManager,
-                                        StatusAggregator statusAggregator,
-                                        Map<String, HealthIndicator> healthIndicators) {
+  HealthCheckHandler healthCheckHandler(
+      ApplicationInfoManager applicationInfoManager,
+      StatusAggregator statusAggregator,
+      Map<String, HealthIndicator> healthIndicators) {
     return new BootHealthCheckHandler(applicationInfoManager, statusAggregator, healthIndicators);
   }
 

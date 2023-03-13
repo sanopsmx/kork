@@ -33,8 +33,11 @@ public class ActuatorEndpointsConfiguration {
   @Bean
   public void configure(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
-      (requests) -> requests.requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll().anyRequest()
-        .authenticated()
-    );
+        (requests) ->
+            requests
+                .requestMatchers(EndpointRequest.to(HealthEndpoint.class))
+                .permitAll()
+                .anyRequest()
+                .authenticated());
   }
 }

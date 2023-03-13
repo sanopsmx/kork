@@ -29,5 +29,4 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Documented
 @JacksonAnnotation
-public @interface Sensitive {
-}
+public @interface Sensitive {}

@@ -35,8 +35,7 @@ public class JedisClientConfiguration {
   /**
    * Backwards compatibility with pre-kork redis config.
    *
-   * <p>
-   * Services can override this pool config to provide their own default pool config. Individual
+   * <p>Services can override this pool config to provide their own default pool config. Individual
    * clients can also override their own pool config.
    */
   @Bean
@@ -47,18 +46,25 @@ public class JedisClientConfiguration {
   }
 
   @Bean
-  @ConditionalOnProperty(value = "redis.cluster-enabled", havingValue = "false", matchIfMissing = true)
-  public JedisClientDelegateFactory jedisClientDelegateFactory(Registry registry,
-                                                               ObjectMapper objectMapper,
-                                                               GenericObjectPoolConfig redisPoolConfig) {
+  @ConditionalOnProperty(
+      value = "redis.cluster-enabled",
+      havingValue = "false",
+      matchIfMissing = true)
+  public JedisClientDelegateFactory jedisClientDelegateFactory(
+      Registry registry, ObjectMapper objectMapper, GenericObjectPoolConfig redisPoolConfig) {
     return new JedisClientDelegateFactory(registry, objectMapper, redisPoolConfig);
   }
 
   @Bean
-  @ConditionalOnProperty(value = "redis.cluster-enabled", havingValue = "false", matchIfMissing = true)
-  public List<HealthIndicator> jedisClientHealthIndicators(List<RedisClientDelegate> redisClientDelegates) {
-    return redisClientDelegates.stream().filter(it -> it instanceof JedisClientDelegate).map(
-      it -> JedisHealthIndicatorFactory.build((JedisClientDelegate) it)
-    ).collect(Collectors.toList());
+  @ConditionalOnProperty(
+      value = "redis.cluster-enabled",
+      havingValue = "false",
+      matchIfMissing = true)
+  public List<HealthIndicator> jedisClientHealthIndicators(
+      List<RedisClientDelegate> redisClientDelegates) {
+    return redisClientDelegates.stream()
+        .filter(it -> it instanceof JedisClientDelegate)
+        .map(it -> JedisHealthIndicatorFactory.build((JedisClientDelegate) it))
+        .collect(Collectors.toList());
   }
 }

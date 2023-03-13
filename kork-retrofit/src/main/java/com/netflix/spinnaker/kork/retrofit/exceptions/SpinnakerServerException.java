@@ -42,8 +42,10 @@ public class SpinnakerServerException extends SpinnakerException {
    */
   public SpinnakerServerException(RetrofitError e) {
     super(e.getCause());
-    RetrofitErrorResponseBody body = (RetrofitErrorResponseBody) e.getBodyAs(RetrofitErrorResponseBody.class);
-    this.rawMessage = Optional.ofNullable(body).map(RetrofitErrorResponseBody::getMessage).orElse(e.getMessage());
+    RetrofitErrorResponseBody body =
+        (RetrofitErrorResponseBody) e.getBodyAs(RetrofitErrorResponseBody.class);
+    this.rawMessage =
+        Optional.ofNullable(body).map(RetrofitErrorResponseBody::getMessage).orElse(e.getMessage());
   }
 
   /**
@@ -51,9 +53,9 @@ public class SpinnakerServerException extends SpinnakerException {
    * response body.
    *
    * @param message the message
-   * @param cause the cause. Note that this is required (i.e. can't be null) since in the absence of a
-   *        cause or a RetrofitError that provides the cause, SpinnakerServerException is likely not
-   *        the appropriate exception class to use.
+   * @param cause the cause. Note that this is required (i.e. can't be null) since in the absence of
+   *     a cause or a RetrofitError that provides the cause, SpinnakerServerException is likely not
+   *     the appropriate exception class to use.
    */
   public SpinnakerServerException(String message, Throwable cause) {
     super(message, cause);

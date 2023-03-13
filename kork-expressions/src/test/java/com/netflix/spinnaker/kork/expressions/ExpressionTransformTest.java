@@ -25,14 +25,14 @@ class ExpressionTransformTest {
     ExpressionProperties expressionProperties = new ExpressionProperties();
 
     ExpressionEvaluationSummary summary = new ExpressionEvaluationSummary();
-    StandardEvaluationContext evaluationContext = new ExpressionsSupport(Trigger.class, expressionProperties)
-      .buildEvaluationContext(new Pipeline(new Trigger(100)), true);
+    StandardEvaluationContext evaluationContext =
+        new ExpressionsSupport(Trigger.class, expressionProperties)
+            .buildEvaluationContext(new Pipeline(new Trigger(100)), true);
 
-    String evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformString(
-      "group:artifact:${trigger['buildNumber']}",
-      evaluationContext,
-      summary
-    );
+    String evaluated =
+        new ExpressionTransform(parserContext, parser, Function.identity())
+            .transformString(
+                "group:artifact:${trigger['buildNumber']}", evaluationContext, summary);
 
     assertThat(evaluated).isEqualTo("group:artifact:100");
     assertThat(summary.getFailureCount()).isEqualTo(0);
@@ -42,24 +42,23 @@ class ExpressionTransformTest {
   void evaluateMap() {
     Map<String, Object> input = Collections.singletonMap("key", "value");
 
-    Map<String, Object> evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformMap(
-      input,
-      new StandardEvaluationContext(),
-      new ExpressionEvaluationSummary()
-    );
+    Map<String, Object> evaluated =
+        new ExpressionTransform(parserContext, parser, Function.identity())
+            .transformMap(
+                input, new StandardEvaluationContext(), new ExpressionEvaluationSummary());
 
     assertThat(evaluated).isEqualTo(input);
   }
 
   @Test
   void evaluateNestedMap() {
-    Map<String, Object> input = Collections.singletonMap("key", Collections.singletonMap("inner", "value"));
+    Map<String, Object> input =
+        Collections.singletonMap("key", Collections.singletonMap("inner", "value"));
 
-    Map<String, Object> evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformMap(
-      input,
-      new StandardEvaluationContext(),
-      new ExpressionEvaluationSummary()
-    );
+    Map<String, Object> evaluated =
+        new ExpressionTransform(parserContext, parser, Function.identity())
+            .transformMap(
+                input, new StandardEvaluationContext(), new ExpressionEvaluationSummary());
 
     assertThat(evaluated).isEqualTo(input);
   }
@@ -68,11 +67,10 @@ class ExpressionTransformTest {
   void evaluateMapWithNestedList() {
     Map<String, Object> input = Collections.singletonMap("key", Collections.singletonList("value"));
 
-    Map<String, Object> evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformMap(
-      input,
-      new StandardEvaluationContext(),
-      new ExpressionEvaluationSummary()
-    );
+    Map<String, Object> evaluated =
+        new ExpressionTransform(parserContext, parser, Function.identity())
+            .transformMap(
+                input, new StandardEvaluationContext(), new ExpressionEvaluationSummary());
 
     assertThat(evaluated).isEqualTo(input);
   }
@@ -81,12 +79,13 @@ class ExpressionTransformTest {
   void evaluateList() {
     List<Object> input = Collections.singletonList("value");
 
-    List<?> evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformList(
-      input,
-      new StandardEvaluationContext(),
-      new ExpressionEvaluationSummary(),
-      Collections.emptyMap()
-    );
+    List<?> evaluated =
+        new ExpressionTransform(parserContext, parser, Function.identity())
+            .transformList(
+                input,
+                new StandardEvaluationContext(),
+                new ExpressionEvaluationSummary(),
+                Collections.emptyMap());
 
     assertThat(evaluated).isEqualTo(input);
   }
@@ -97,12 +96,9 @@ class ExpressionTransformTest {
 
     List<Object> input = Collections.singletonList(Collections.singletonList("value"));
 
-    List<?> evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformList(
-      input,
-      new StandardEvaluationContext(),
-      summary,
-      Collections.emptyMap()
-    );
+    List<?> evaluated =
+        new ExpressionTransform(parserContext, parser, Function.identity())
+            .transformList(input, new StandardEvaluationContext(), summary, Collections.emptyMap());
 
     assertThat(evaluated).isEqualTo(input);
   }
@@ -111,12 +107,13 @@ class ExpressionTransformTest {
   void evaluateListWithNestedMap() {
     List<Object> input = Collections.singletonList(Collections.singletonMap("key", "value"));
 
-    List<?> evaluated = new ExpressionTransform(parserContext, parser, Function.identity()).transformList(
-      input,
-      new StandardEvaluationContext(),
-      new ExpressionEvaluationSummary(),
-      Collections.emptyMap()
-    );
+    List<?> evaluated =
+        new ExpressionTransform(parserContext, parser, Function.identity())
+            .transformList(
+                input,
+                new StandardEvaluationContext(),
+                new ExpressionEvaluationSummary(),
+                Collections.emptyMap());
 
     assertThat(evaluated).isEqualTo(input);
   }

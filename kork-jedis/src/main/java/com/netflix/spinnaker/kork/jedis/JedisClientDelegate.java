@@ -106,7 +106,8 @@ public class JedisClientDelegate implements RedisClientDelegate {
   @Override
   public void syncPipeline(Pipeline p) {
     if (!(p instanceof Pipeline)) {
-      throw new IllegalArgumentException("Invalid RedisPipeline implementation: " + p.getClass().getName());
+      throw new IllegalArgumentException(
+          "Invalid RedisPipeline implementation: " + p.getClass().getName());
     }
     ((Pipeline) p).sync();
   }

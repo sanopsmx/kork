@@ -32,7 +32,8 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 @Alpha
 public abstract class SpringLoaderPlugin extends PrivilegedSpringPlugin {
 
-  protected AnnotationConfigApplicationContext pluginContext = new AnnotationConfigApplicationContext();
+  protected AnnotationConfigApplicationContext pluginContext =
+      new AnnotationConfigApplicationContext();
 
   /**
    * Constructor to be used by plugin manager for plugin instantiation. Your plugins have to provide
@@ -49,15 +50,20 @@ public abstract class SpringLoaderPlugin extends PrivilegedSpringPlugin {
     final String springLoaderBeanName = wrapper.getPluginId() + "." + SpringLoader.class.getName();
 
     ClassLoader pluginClassLoader = getClass().getClassLoader();
-    BeanDefinition springLoaderBeanDefinition = BeanDefinitionBuilder.genericBeanDefinition(SpringLoader.class)
-      .setScope(BeanDefinition.SCOPE_SINGLETON).setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_NO)
-      .addConstructorArgValue(pluginContext).addConstructorArgValue(pluginClassLoader).addConstructorArgValue(
-        getPackagesToScan()
-      ).addConstructorArgValue(getClassesToRegister()).getBeanDefinition();
+    BeanDefinition springLoaderBeanDefinition =
+        BeanDefinitionBuilder.genericBeanDefinition(SpringLoader.class)
+            .setScope(BeanDefinition.SCOPE_SINGLETON)
+            .setAutowireMode(AutowireCapableBeanFactory.AUTOWIRE_NO)
+            .addConstructorArgValue(pluginContext)
+            .addConstructorArgValue(pluginClassLoader)
+            .addConstructorArgValue(getPackagesToScan())
+            .addConstructorArgValue(getClassesToRegister())
+            .getBeanDefinition();
     registry.registerBeanDefinition(springLoaderBeanName, springLoaderBeanDefinition);
 
     // delay controller mapping until after the plugin has a chance to load its own controllers
-    final BeanDefinition requestMappingHandlerMapping = registry.getBeanDefinition("requestMappingHandlerMapping");
+    final BeanDefinition requestMappingHandlerMapping =
+        registry.getBeanDefinition("requestMappingHandlerMapping");
     final String[] mappingDependsOnArray = requestMappingHandlerMapping.getDependsOn();
     final List<String> mappingDependsOn;
     if (mappingDependsOnArray == null) {
@@ -66,7 +72,8 @@ public abstract class SpringLoaderPlugin extends PrivilegedSpringPlugin {
       mappingDependsOn = new ArrayList<>(Arrays.asList(mappingDependsOnArray));
     }
     mappingDependsOn.add(springLoaderBeanName);
-    requestMappingHandlerMapping.setDependsOn(mappingDependsOn.toArray(new String[mappingDependsOn.size()]));
+    requestMappingHandlerMapping.setDependsOn(
+        mappingDependsOn.toArray(new String[mappingDependsOn.size()]));
   }
 
   /** Specify plugin packages to scan for beans. */

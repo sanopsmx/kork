@@ -29,5 +29,4 @@ import javax.annotation.meta.TypeQualifierDefault;
 @Retention(RetentionPolicy.RUNTIME)
 @Nullable
 @TypeQualifierDefault({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
-public @interface NullableByDefault {
-}
+public @interface NullableByDefault {}

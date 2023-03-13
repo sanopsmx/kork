@@ -24,7 +24,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RetrofitErrorConfiguration {
   @Bean
-  SpinnakerRetrofitExceptionHandlers spinnakerRetrofitExceptionHandlers(ExceptionMessageDecorator exceptionMessageDecorator) {
+  SpinnakerRetrofitExceptionHandlers spinnakerRetrofitExceptionHandlers(
+      ExceptionMessageDecorator exceptionMessageDecorator) {
     return new SpinnakerRetrofitExceptionHandlers(exceptionMessageDecorator);
   }
 }

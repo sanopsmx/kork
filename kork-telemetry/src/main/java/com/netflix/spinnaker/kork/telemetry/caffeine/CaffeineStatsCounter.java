@@ -90,14 +90,13 @@ public class CaffeineStatsCounter implements StatsCounter {
   @Override
   public CacheStats snapshot() {
     return CacheStats.of(
-      hitCount.count(),
-      missCount.count(),
-      loadSuccessCount.count(),
-      loadFailureCount.count(),
-      totalLoadTime.count(),
-      evictionCount.count(),
-      evictionWeight.count()
-    );
+        hitCount.count(),
+        missCount.count(),
+        loadSuccessCount.count(),
+        loadFailureCount.count(),
+        totalLoadTime.count(),
+        evictionCount.count(),
+        evictionWeight.count());
   }
 
   @Override

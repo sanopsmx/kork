@@ -53,13 +53,14 @@ public class SQSSubscriber implements Runnable, PubsubSubscriber {
   private final ARN topicARN;
   private AmazonSubscriptionInformation subscriptionInfo;
 
-  public SQSSubscriber(AmazonPubsubProperties.AmazonPubsubSubscription subscription,
-                       AmazonPubsubMessageHandler messageHandler,
-                       AmazonMessageAcknowledger messageAcknowledger,
-                       AmazonSNS amazonSNS,
-                       AmazonSQS amazonSQS,
-                       Supplier<Boolean> isEnabled,
-                       Registry registry) {
+  public SQSSubscriber(
+      AmazonPubsubProperties.AmazonPubsubSubscription subscription,
+      AmazonPubsubMessageHandler messageHandler,
+      AmazonMessageAcknowledger messageAcknowledger,
+      AmazonSNS amazonSNS,
+      AmazonSQS amazonSQS,
+      Supplier<Boolean> isEnabled,
+      Registry registry) {
     this.subscription = subscription;
     this.messageHandler = messageHandler;
     this.messageAcknowledger = messageAcknowledger;
@@ -119,27 +120,29 @@ public class SQSSubscriber implements Runnable, PubsubSubscriber {
   }
 
   private void initializeQueue() {
-    String queueUrl = PubSubUtils.ensureQueueExists(
-      amazonSQS,
-      queueARN,
-      topicARN,
-      subscription.getSqsMessageRetentionPeriodSeconds()
-    );
+    String queueUrl =
+        PubSubUtils.ensureQueueExists(
+            amazonSQS, queueARN, topicARN, subscription.getSqsMessageRetentionPeriodSeconds());
     PubSubUtils.subscribeToTopic(amazonSNS, topicARN, queueARN);
 
-    this.subscriptionInfo = AmazonSubscriptionInformation.builder().amazonSNS(amazonSNS).amazonSQS(amazonSQS)
-      .properties(subscription).queueUrl(queueUrl).build();
+    this.subscriptionInfo =
+        AmazonSubscriptionInformation.builder()
+            .amazonSNS(amazonSNS)
+            .amazonSQS(amazonSQS)
+            .properties(subscription)
+            .queueUrl(queueUrl)
+            .build();
   }
 
   private void listenForMessages() {
     while (isEnabled.get()) {
-      ReceiveMessageResult receiveMessageResult = amazonSQS.receiveMessage(
-        new ReceiveMessageRequest(this.subscriptionInfo.queueUrl).withMaxNumberOfMessages(
-          subscription.getMaxNumberOfMessages()
-        ).withVisibilityTimeout(subscription.getVisibilityTimeout()).withWaitTimeSeconds(
-          subscription.getWaitTimeSeconds()
-        ).withMessageAttributeNames("All")
-      );
+      ReceiveMessageResult receiveMessageResult =
+          amazonSQS.receiveMessage(
+              new ReceiveMessageRequest(this.subscriptionInfo.queueUrl)
+                  .withMaxNumberOfMessages(subscription.getMaxNumberOfMessages())
+                  .withVisibilityTimeout(subscription.getVisibilityTimeout())
+                  .withWaitTimeSeconds(subscription.getWaitTimeSeconds())
+                  .withMessageAttributeNames("All"));
 
       if (receiveMessageResult.getMessages().isEmpty()) {
         log.debug("Received no messages for queue {}", queueARN);
@@ -174,11 +177,10 @@ public class SQSSubscriber implements Runnable, PubsubSubscriber {
 
   private Counter getErrorCounter(Exception e) {
     return registry.counter(
-      "pubsub.amazon.failed",
-      "subscription",
-      getSubscriptionName(),
-      "exceptionClass",
-      e.getClass().getSimpleName()
-    );
+        "pubsub.amazon.failed",
+        "subscription",
+        getSubscriptionName(),
+        "exceptionClass",
+        e.getClass().getSimpleName());
   }
 }

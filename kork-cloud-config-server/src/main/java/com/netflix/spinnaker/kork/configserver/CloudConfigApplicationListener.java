@@ -24,7 +24,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.PropertySource;
 
-public class CloudConfigApplicationListener implements ApplicationListener<ApplicationPreparedEvent> {
+public class CloudConfigApplicationListener
+    implements ApplicationListener<ApplicationPreparedEvent> {
   private static final String APPLICATION_CONFIG_PROPERTY_SOURCE_PREFIX = "applicationConfig:";
   private static final String CONFIG_SERVER_PROPERTY_SOURCE_NAME = "bootstrapProperties";
 
@@ -35,15 +36,17 @@ public class CloudConfigApplicationListener implements ApplicationListener<Appli
 
     for (PropertySource propertySource : environment.getPropertySources()) {
       if (shouldWrap(propertySource)) {
-        CloudConfigAwarePropertySource wrapper = new CloudConfigAwarePropertySource(propertySource, context);
+        CloudConfigAwarePropertySource wrapper =
+            new CloudConfigAwarePropertySource(propertySource, context);
         environment.getPropertySources().replace(propertySource.getName(), wrapper);
       }
     }
   }
 
   private boolean shouldWrap(PropertySource propertySource) {
-    return (propertySource.getName().startsWith(APPLICATION_CONFIG_PROPERTY_SOURCE_PREFIX) || propertySource.getName()
-      .equals(CONFIG_SERVER_PROPERTY_SOURCE_NAME)) && !((propertySource instanceof CloudConfigAwarePropertySource)
-        || (propertySource instanceof SecretAwarePropertySource));
+    return (propertySource.getName().startsWith(APPLICATION_CONFIG_PROPERTY_SOURCE_PREFIX)
+            || propertySource.getName().equals(CONFIG_SERVER_PROPERTY_SOURCE_NAME))
+        && !((propertySource instanceof CloudConfigAwarePropertySource)
+            || (propertySource instanceof SecretAwarePropertySource));
   }
 }

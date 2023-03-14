@@ -95,7 +95,15 @@ dependencies {
     api("org.pf4j:pf4j:3.9.0")
     api("com.squareup.okhttp3:mockwebserver:${versions.okhttp3}")
     api("com.squareup.retrofit2:retrofit-mock:${versions.retrofit2}")
-
+    api("org.junit.platform:junit-platform-runner:1.9.2")
+    api("org.assertj:assertj-core:3.23.1")
+    api("com.amazonaws:aws-java-sdk-sts:1.12.411")
+    api("com.google.cloud:libraries-bom:25.3.0")
+    api("com.jcraft:jsch.agentproxy.jsch:0.0.9")
+    api("com.jcraft:jsch.agentproxy.connector-factory:0.0.9")
+    api("io.github.resilience4j:resilience4j-all:2.0.0")
+    api("commons-io:commons-io:2.11.0")
+    api("org.mockito:mockito-all:1.10.19")//parent to org.objenesis:objenesis:2.5.1-->3.2 compatabile with java17
 
 
   /*constraints {

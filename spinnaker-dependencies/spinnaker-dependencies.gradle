@@ -74,6 +74,10 @@ dependencies {
   api(platform("com.oracle.oci.sdk:oci-java-sdk-bom:2.23.0"))//1.5.17"))
   api(platform("org.testcontainers:testcontainers-bom:1.16.2"))
   api(platform("io.arrow-kt:arrow-stack:${versions.arrow}"))
+  api("com.netflix.eureka:eureka-client:1.10.18")
+  api("com.netflix.spectator:spectator-ext-jvm:1.5.4")
+  api("com.github.ben-manes.caffeine:caffeine:3.1.5")
+  api("com.netflix.spectator:spectator-ext-gc:1.5.4")
 
   /*constraints {
     api("cglib:cglib-nodep:3.3.0")

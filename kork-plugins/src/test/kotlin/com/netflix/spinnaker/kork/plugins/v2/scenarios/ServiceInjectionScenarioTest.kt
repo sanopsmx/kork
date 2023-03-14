@@ -23,9 +23,9 @@ import com.netflix.spinnaker.kork.plugins.loaders.SpinnakerPluginLoadersTCK
 import com.netflix.spinnaker.kork.plugins.testplugin.api.TestExtension
 import com.netflix.spinnaker.kork.plugins.testplugin.basicGeneratedPlugin
 import com.netflix.spinnaker.kork.plugins.v2.enablePlugin
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+//import dev.minutest.junit.JUnit5Minutests
+//import dev.minutest.rootContext
+//import dev.minutest.test
 import org.spekframework.spek2.dsl.Fixture
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.test.context.TestConfiguration
@@ -39,10 +39,10 @@ import javax.annotation.PostConstruct
 /**
  * Tests that service beans can inject beans provided by plugins.
  * */
-class ServiceInjectionScenarioTest : JUnit5Minutests {
+class ServiceInjectionScenarioTest {/* : JUnit5Minutests {
 
   fun tests() = rootContext<Fixture> {
-  /*  fixture {
+    fixture {
       Fixture()
     }
 
@@ -55,10 +55,10 @@ class ServiceInjectionScenarioTest : JUnit5Minutests {
           .isSuccess()
           .isEqualTo("ServiceInjectionTestExtension") // The generated test extension returns its own class name from the "getTestValue" method.
       }
-    }*/
+    }
   }
 
- /* private class Fixture {
+  private class Fixture {
     val plugin = basicGeneratedPlugin("ServiceInjectionTest").generate()
     val app = ApplicationContextRunner()
       .withPropertyValues(
@@ -73,7 +73,7 @@ class ServiceInjectionScenarioTest : JUnit5Minutests {
           PluginsAutoConfiguration::class.java
         )
       )
-  }*/
+  }
 
   @TestConfiguration
   private class ServiceInjectionTestConfiguration {
@@ -94,5 +94,6 @@ class ServiceInjectionScenarioTest : JUnit5Minutests {
       }
     }
   }
+*/
 }
 

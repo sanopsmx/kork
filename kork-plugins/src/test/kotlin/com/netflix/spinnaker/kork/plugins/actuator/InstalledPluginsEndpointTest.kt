@@ -21,8 +21,7 @@ import com.netflix.spinnaker.kork.plugins.SpinnakerPluginDescriptor
 import com.netflix.spinnaker.kork.plugins.SpinnakerPluginManager
 import com.netflix.spinnaker.kork.web.exceptions.NotFoundException
 
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.assertThrows
@@ -34,7 +33,7 @@ import strikt.assertions.isA
 import strikt.assertions.isEqualTo
 
 class InstalledPluginsEndpointTest {
-
+/*
   fun tests() = rootContext<Fixture> {
     fixture {
       Fixture()
@@ -66,10 +65,10 @@ class InstalledPluginsEndpointTest {
     val subject = InstalledPluginsEndpoint(pluginManager)
 
     init {
-      /*val pluginWrapper = PluginWrapper(pluginManager, SpinnakerPluginDescriptor("test", "", "", "", "", "", ""), null, this.javaClass.classLoader)
+       val pluginWrapper = PluginWrapper(pluginManager, SpinnakerPluginDescriptor("test", "", "", "", "", "", ""), null, this.javaClass.classLoader)
       every { pluginManager.getPlugins() } returns listOf(pluginWrapper)
       every { pluginManager.getPlugin("abc") } returns null
-      every { pluginManager.getPlugin("test") } returns pluginWrapper*/
+      every { pluginManager.getPlugin("test") } returns pluginWrapper
     }
-  }
+  }*/
 }

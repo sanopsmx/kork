@@ -26,8 +26,7 @@ import com.netflix.spinnaker.kork.plugins.testplugin.TestPluginBuilderSupport
 import com.netflix.spinnaker.kork.plugins.update.internal.SpinnakerPluginInfo
 import com.netflix.spinnaker.kork.plugins.update.release.PluginInfoRelease
 import com.netflix.spinnaker.kork.version.ServiceVersion
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
+
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify

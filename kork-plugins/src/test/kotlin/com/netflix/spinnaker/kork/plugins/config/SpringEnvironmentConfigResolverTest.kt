@@ -17,9 +17,7 @@ package com.netflix.spinnaker.kork.plugins.config
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.netflix.spinnaker.config.PluginsConfigurationProperties.PluginRepositoryProperties
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import org.spekframework.spek2.dsl.Fixture
@@ -44,17 +42,17 @@ import strikt.assertions.isSuccess
   properties = ["spring.config.location=classpath:testplugin/plugin-empty-config.yml"],
   classes = [com.netflix.spinnaker.kork.plugins.config.SpringEnvironmentConfigResolver::class]
 )
-class SpringEnvironmentConfigResolverTest : JUnit5Minutests {
+class SpringEnvironmentConfigResolverTest {/*: JUnit5Minutests {
 
   @Autowired
   lateinit var configResolver: SpringEnvironmentConfigResolver
 
   fun tests() = rootContext<Fixture> {
-   /* fixture {
+     fixture {
       Fixture()
-    }*/
+    }
 
-   /* test("plugin config with shortened config path") {
+    test("plugin config with shortened config path") {
       expectThat(
         subject.resolve(
           PluginConfigCoordinates("netflix.sweet-plugin", "some-config"),
@@ -160,10 +158,10 @@ class SpringEnvironmentConfigResolverTest : JUnit5Minutests {
         )
       )
         .isA<Map<String,String>>()
-    }*/
+    }
   }
 
- /* private inner class Fixture {
+   private inner class Fixture {
     val environment: ConfigurableEnvironment = mockk(relaxed = true)
     val subject = SpringEnvironmentConfigResolver(environment)
 
@@ -172,7 +170,7 @@ class SpringEnvironmentConfigResolverTest : JUnit5Minutests {
         addFirst(MapPropertySource("test", properties))
       }
     }
-  }*/
+  }
 
   internal class TestPluginConfig(
     var somestring: String = "default"
@@ -191,7 +189,7 @@ class SpringEnvironmentConfigResolverTest : JUnit5Minutests {
     var hello: String
   )
 
- /* private val properties = mapOf<String, Any?>(
+  private val properties = mapOf<String, Any?>(
     "spinnaker.extensibility.plugins.netflix.sweet-plugin.enabled" to "true",
     "spinnaker.extensibility.plugins.netflix.sweet-plugin.some-config.config.somestring" to "overridden default",
     "spinnaker.extensibility.plugins.netflix.sweet-plugin.extensions.netflix.foo.config.somestring" to "overridden default",

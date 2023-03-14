@@ -28,8 +28,7 @@ import com.netflix.spinnaker.kork.plugins.update.release.plugin2
 import com.netflix.spinnaker.kork.plugins.update.release.pluginWithRemoteExtension*/
 import com.netflix.spinnaker.kork.plugins.update.release.provider.AggregatePluginInfoReleaseProvider
 import com.netflix.spinnaker.kork.plugins.update.release.source.PluginInfoReleaseSource
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
+
 import io.mockk.every
 import io.mockk.mockk
 import org.springframework.context.ApplicationEventPublisher

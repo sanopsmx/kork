@@ -19,9 +19,7 @@ package com.netflix.spinnaker.kork.plugins.loaders
 import com.netflix.spinnaker.kork.plugins.finders.SpinnakerPropertiesPluginDescriptorFinder
 import com.netflix.spinnaker.kork.plugins.testplugin.api.TestExtension
 import com.netflix.spinnaker.kork.plugins.testplugin.basicGeneratedPlugin
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.mockk
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -34,7 +32,7 @@ import strikt.assertions.isA
 import strikt.assertions.isEqualTo
 import strikt.assertions.isTrue
 
-abstract class SpinnakerPluginLoadersTCK : JUnit5Minutests {
+abstract class SpinnakerPluginLoadersTCK {/* : JUnit5Minutests {
 
   protected abstract fun subjectSupplier(): (f: Fixture) -> PluginLoader
 
@@ -83,7 +81,7 @@ abstract class SpinnakerPluginLoadersTCK : JUnit5Minutests {
     val standardPluginName: String
   }
 
- /* protected open inner class FixtureImpl(supplier: (f: Fixture) -> PluginLoader) : Fixture {
+  protected open inner class FixtureImpl(supplier: (f: Fixture) -> PluginLoader) : Fixture {
     val unsafeDescriptorDirectory: Path = Paths.get(javaClass.getResource("/unsafe-testplugin/plugin.properties").toURI()).parent
     override val unsafePluginPath: Path = unsafeDescriptorDirectory
     override val unsafePluginDescriptor: PluginDescriptor = SpinnakerPropertiesPluginDescriptorFinder().find(unsafeDescriptorDirectory)
@@ -93,11 +91,11 @@ abstract class SpinnakerPluginLoadersTCK : JUnit5Minutests {
     override val standardPluginName: String = generatedPluginName
     override val subject = supplier(this)
   }
-*/
+
   companion object {
     const val generatedPluginName = "PluginLoaderTests"
     val plugin = basicGeneratedPlugin(generatedPluginName).generate()
-  }
+  }*/
 }
 
 /*

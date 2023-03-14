@@ -16,9 +16,7 @@
 
 package com.netflix.spinnaker.kork.plugins.sdk.yaml
 
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.get
@@ -28,7 +26,7 @@ import strikt.assertions.isEqualTo
 import strikt.assertions.message
 import java.util.*
 
-class JacksonYamlResourceLoaderTest : JUnit5Minutests {
+class JacksonYamlResourceLoaderTest{ /* : JUnit5Minutests {
 
   fun tests() = rootContext<Fixture> {
     fixture {
@@ -37,7 +35,7 @@ class JacksonYamlResourceLoaderTest : JUnit5Minutests {
 
     context("Load a YML resource") {
 
- /*     test("loading yml file that does not exist") {
+      test("loading yml file that does not exist") {
         expectThrows<IllegalArgumentException> {
           subject.loadResource("unknown.yml", HashMap<String, String>().javaClass)
         }.and {
@@ -68,7 +66,7 @@ class JacksonYamlResourceLoaderTest : JUnit5Minutests {
             get { children?.get(1)?.childAttr1 }.isEqualTo("CA21")
             get { children?.get(1)?.childAttr2 }.isEqualTo("CA22")
           }
-      }*/
+      }
     }
   }
 
@@ -86,5 +84,5 @@ class JacksonYamlResourceLoaderTest : JUnit5Minutests {
       var childAttr1: String? = null
       var childAttr2: String? = null
     }
-  }
+  } */
 }

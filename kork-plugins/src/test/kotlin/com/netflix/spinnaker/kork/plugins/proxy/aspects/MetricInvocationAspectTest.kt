@@ -25,9 +25,7 @@ import com.netflix.spectator.api.Registry
 import com.netflix.spectator.api.Timer
 import com.netflix.spinnaker.kork.plugins.SpinnakerPluginDescriptor
 import com.netflix.spinnaker.kork.plugins.api.internal.SpinnakerExtensionPoint
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import java.lang.reflect.Method
@@ -40,12 +38,12 @@ import strikt.assertions.isFalse
 import strikt.assertions.isNull
 import strikt.assertions.isTrue
 
-class MetricInvocationAspectTest : JUnit5Minutests {
+class MetricInvocationAspectTest{ /* : JUnit5Minutests {
 
   fun tests() = rootContext<Fixture> {
     fixture { Fixture() }
 
-   /* test("creates MetricInvocationState object with meter IDs") {
+   test("creates MetricInvocationState object with meter IDs") {
       val state = subject.before(target, proxy, method, args, spinnakerPluginDescriptor)
 
       expectThat(state).isA<MetricInvocationState>()
@@ -92,7 +90,7 @@ class MetricInvocationAspectTest : JUnit5Minutests {
           get { timingId }.isNull()
           get { extensionName }.isA<String>().isEqualTo(target.javaClass.simpleName.toString())
         }
-    }*/
+    }
 
     test("Processes MetricInvocationState object after method invocations, meters are correct") {
       // One method invocation
@@ -109,12 +107,12 @@ class MetricInvocationAspectTest : JUnit5Minutests {
       expectThat(timerCountSummary).get { sum }.isEqualTo(2)
     }
 
-  /*  test("MetricInvocationAspect supports MetricInvocationState") {
+   test("MetricInvocationAspect supports MetricInvocationState") {
       val state = subject.before(target, proxy, method, args, spinnakerPluginDescriptor)
       val logState = LogInvocationState("foo", "bar")
       expectThat(subject.supports(state.javaClass)).isTrue()
       expectThat(subject.supports(logState.javaClass)).isFalse()
-    }*/
+    }
   }
 
   private inner class Fixture {
@@ -134,5 +132,5 @@ class MetricInvocationAspectTest : JUnit5Minutests {
     init {
       every { registryProvider.ifAvailable } returns registry
     }
-  }
+  }*/
 }

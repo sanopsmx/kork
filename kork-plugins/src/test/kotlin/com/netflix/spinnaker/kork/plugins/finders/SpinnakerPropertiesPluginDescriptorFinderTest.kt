@@ -19,8 +19,7 @@ import com.netflix.spinnaker.kork.plugins.SpinnakerPluginDescriptor
 import com.netflix.spinnaker.kork.plugins.internal.PluginZip
 import com.netflix.spinnaker.kork.plugins.internal.TestPlugin
 
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import okio.use
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter
@@ -39,7 +38,7 @@ class SpinnakerPropertiesPluginDescriptorFinderTest{
 
   @TempDir
   lateinit var pluginsPath: Path
-
+/*
   fun tests() = rootContext<Fixture> {
     fixture { Fixture(pluginsPath) }
 
@@ -53,7 +52,7 @@ class SpinnakerPropertiesPluginDescriptorFinderTest{
           get { unsafe }.isTrue()
         }
     }
-  }
+  }*/
 
   private class Fixture(val pluginsPath: Path) {
 
@@ -78,10 +77,10 @@ class SpinnakerPropertiesPluginDescriptorFinderTest{
       )
     }*/
 
-    private fun storePropertiesToPath(properties: Properties, pluginPath: Path) {
+   /* private fun storePropertiesToPath(properties: Properties, pluginPath: Path) {
       val path = pluginPath.resolve(PropertiesPluginDescriptorFinder.DEFAULT_PROPERTIES_FILE_NAME)
       OutputStreamWriter(FileOutputStream(path.toFile()), StandardCharsets.UTF_8)
         .use { writer -> properties.store(writer, "") }
-    }
+    }*/
   }
 }

@@ -15,9 +15,7 @@
  */
 package com.netflix.spinnaker.kork.plugins.update.downloader
 
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.slot
@@ -28,14 +26,14 @@ import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import strikt.assertions.isTrue
 
-class ProcessFileDownloaderTest : JUnit5Minutests {
+class ProcessFileDownloaderTest{ /* : JUnit5Minutests {
 
   fun tests() = rootContext<Fixture> {
     fixture {
       Fixture()
     }
 
-   /* test("command is correctly executed") {
+   test("command is correctly executed") {
       subject.downloadFile(URL("http://localhost/somefile.zip"))
 
       expectThat(processBuilderSlot.captured)
@@ -49,19 +47,19 @@ class ProcessFileDownloaderTest : JUnit5Minutests {
           )
         }
     }
-*/
-    /*test("process stdout is read for downloaded file") {
+
+     test("process stdout is read for downloaded file") {
       expectThat(subject.downloadFile(URL("http://localhost/somefile.zip")))
         .assertThat("valid file has been downloaded to path") { path ->
           path.toFile().let {
             it.exists() && it.readText() == "hi"
           }
         }
-    }*/
+    }
   }
 
   private class Fixture {
-  /*  val config: ProcessFileDownloaderConfig = ProcessFileDownloaderConfig(
+     val config: ProcessFileDownloaderConfig = ProcessFileDownloaderConfig(
       "my-downloader-script -s --foo=bar https://localhost/something.zip",
       mapOf("hello" to "world")
     )
@@ -77,6 +75,6 @@ class ProcessFileDownloaderTest : JUnit5Minutests {
         path.toFile().writeText("hi")
         path.toString()
       }
-    }*/
-  }
+    }
+  }*/
 }

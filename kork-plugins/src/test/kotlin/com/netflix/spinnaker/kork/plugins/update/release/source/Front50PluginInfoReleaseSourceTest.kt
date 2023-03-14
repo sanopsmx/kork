@@ -22,8 +22,6 @@ import com.netflix.spinnaker.kork.plugins.update.internal.Front50Service
 import com.netflix.spinnaker.kork.plugins.update.internal.PinnedVersions
 import com.netflix.spinnaker.kork.plugins.update.internal.SpinnakerPluginInfo
 import com.netflix.spinnaker.kork.plugins.update.release.PluginInfoRelease
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
 import io.mockk.every
 import io.mockk.mockk
 import okhttp3.MediaType

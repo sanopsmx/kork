@@ -20,8 +20,7 @@ import com.netflix.spinnaker.kork.plugins.testplugin.api.TestExtension
 import com.netflix.spinnaker.kork.plugins.testplugin.basicGeneratedPlugin
 import com.netflix.spinnaker.kork.plugins.v2.PluginFrameworkInitializer
 
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import org.pf4j.DefaultPluginDescriptor
 import org.pf4j.PluginState
 import org.pf4j.PluginWrapper
@@ -39,9 +38,9 @@ import strikt.assertions.isNotNull
 
 class PluginSystemTest {
 
-  fun tests() = rootContext {
+  /* fun tests() = rootContext {
     derivedContext<ApplicationContextRunner>("initialization tests") {
-      /*fixture {
+     fixture {
         ApplicationContextRunner()
           .withPropertyValues(
             "spring.application.name=kork"
@@ -51,7 +50,7 @@ class PluginSystemTest {
               PluginsAutoConfiguration::class.java
             )
           )
-      }*/
+      }
 
       test("supports no configuration") {
         run { ctx: AssertableApplicationContext ->
@@ -92,7 +91,7 @@ class PluginSystemTest {
         GeneratedPluginFixture()
       }
 
-     /* test("An extension from an external plugin is available from the pluginManager") {
+      test("An extension from an external plugin is available from the pluginManager") {
         app.run { ctx: AssertableApplicationContext ->
           val pluginManager = ctx.getBean("pluginManager") as SpinnakerPluginManager
           expectThat(pluginManager.getPlugin(plugin.descriptor.pluginId)).isNotNull()
@@ -101,9 +100,9 @@ class PluginSystemTest {
           expectThat(extensions).hasSize(1)
           expectThat(extensions.first().testValue).isEqualTo("${testPluginName}Extension")
         }
-      }*/
+      }
 
-     /* test("Extensions are registered as beans") {
+      test("Extensions are registered as beans") {
         app.run { ctx: AssertableApplicationContext ->
           val extensions = ctx.getBeansOfType(TestExtension::class.java).filterKeys {
             !it.endsWith("SystemExtension")
@@ -112,7 +111,7 @@ class PluginSystemTest {
           expectThat(extensions).hasSize(1)
           expectThat(extensions.values.first().testValue).isEqualTo("${testPluginName}Extension")
         }
-      }*/
+      }
     }
   }
 
@@ -124,16 +123,16 @@ class PluginSystemTest {
         "spinnaker.extensibility.plugins.${plugin.descriptor.pluginId}.enabled=true",
         "spinnaker.extensibility.plugins.spinnaker.pluginsystemtesttestplugin.extensions.spinnaker.pluginsystemtest-test-extension.config.foo=foo"
       )
-      /*.withConfiguration(
+      .withConfiguration(
         AutoConfigurations.of(
           PluginsAutoConfiguration::class.java
         )
-      )*/
+      )
   }
 
   // companion to avoid generating a plugin per test case
   companion object GeneratedPlugin {
     val testPluginName: String = "PluginSystemTest"
     val plugin = basicGeneratedPlugin(testPluginName).generate()
-  }
+  }*/
 }

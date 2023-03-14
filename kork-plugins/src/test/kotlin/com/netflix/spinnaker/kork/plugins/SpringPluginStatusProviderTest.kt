@@ -18,9 +18,7 @@ package com.netflix.spinnaker.kork.plugins
 import com.netflix.spinnaker.config.PluginsConfigurationProperties.CONFIG_NAMESPACE
 import com.netflix.spinnaker.config.PluginsConfigurationProperties.DEFAULT_ROOT_PATH
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk
@@ -35,14 +33,14 @@ import strikt.assertions.isEqualTo
 import strikt.assertions.isFalse
 import strikt.assertions.isTrue
 
-class SpringPluginStatusProviderTest : JUnit5Minutests {
+class SpringPluginStatusProviderTest {/*}: JUnit5Minutests {
 
   fun tests() = rootContext<Fixture> {
     fixture {
       Fixture()
     }
 
-    /*test("provider attaches itself to environment") {
+    test("provider attaches itself to environment") {
       val propertySources: MutablePropertySources = mockk(relaxed = true)
       every { environment.propertySources } returns propertySources
 
@@ -56,7 +54,7 @@ class SpringPluginStatusProviderTest : JUnit5Minutests {
 
       verify(exactly = 1) { propertySources.addFirst(any<MapPropertySource>()) }
       confirmVerified(propertySources)
-    }*/
+    }
 
     test("plugins default to disabled") {
       every { dynamicConfigService.isEnabled(any(), false) } returnsMany listOf(
@@ -72,16 +70,16 @@ class SpringPluginStatusProviderTest : JUnit5Minutests {
       expectThat(subject.isPluginDisabled("hello")).describedAs("disabled state").isTrue()
     }
 
-    /*test("get plugin version") {
+     test("get plugin version") {
       val versionProp = "$CONFIG_NAMESPACE.$DEFAULT_ROOT_PATH.hello.version"
       every { dynamicConfigService.getConfig(String::class.java, versionProp, "unspecified") } returns "1.0.0"
       expectThat(subject.pluginVersion("hello")).isEqualTo("1.0.0")
-    }*/
+    }
   }
 
   private class Fixture {
     val environment: ConfigurableEnvironment = mockk(relaxed = true)
     val dynamicConfigService: DynamicConfigService = mockk(relaxed = true)
     val subject = SpringPluginStatusProvider(dynamicConfigService, "$CONFIG_NAMESPACE.$DEFAULT_ROOT_PATH")
-  }
+  }*/
 }

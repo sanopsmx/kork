@@ -21,9 +21,9 @@ import com.netflix.spinnaker.kork.plugins.testplugin.testPlugin
 import com.netflix.spinnaker.kork.plugins.v2.ApplicationContextGraph
 import com.netflix.spinnaker.kork.plugins.v2.enablePlugin
 import com.netflix.spinnaker.kork.plugins.v2.scenarios.fixtures.ParentServiceBean
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+//import dev.minutest.junit.JUnit5Minutests
+//import dev.minutest.rootContext
+//import dev.minutest.test
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.test.context.assertj.AssertableApplicationContext
 import org.springframework.boot.test.context.runner.ApplicationContextRunner

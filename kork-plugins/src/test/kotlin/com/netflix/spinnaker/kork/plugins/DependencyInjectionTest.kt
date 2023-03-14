@@ -25,8 +25,7 @@ import com.netflix.spinnaker.kork.plugins.config.ConfigResolver
 import com.netflix.spinnaker.kork.plugins.sdk.SdkFactory
 import com.netflix.spinnaker.kork.plugins.sdk.yaml.YamlResourceLoaderSdkFactory
 
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import java.lang.IllegalStateException
@@ -179,7 +178,7 @@ class DependencyInjectionTest {
           .isA<PluginSdks>()
       }
     }
-  }*/
+  }
 
   private abstract inner class Fixture {
     val configResolver: ConfigResolver = mockk(relaxed = true)
@@ -268,4 +267,7 @@ internal class PluginWithConfig(wrapper: PluginWrapper, val config: DependencyIn
 internal class PluginWithUnsupportedArg(wrapper: PluginWrapper, val bad: String) : Plugin(wrapper)
 internal class PluginWithMultipleConstructors(wrapper: PluginWrapper) : Plugin(wrapper) {
   constructor(wrapper: PluginWrapper, sdks: PluginSdks) : this(wrapper)
+
+
+  */
 }

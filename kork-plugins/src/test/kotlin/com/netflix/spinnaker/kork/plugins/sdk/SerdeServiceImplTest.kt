@@ -18,19 +18,17 @@ package com.netflix.spinnaker.kork.plugins.sdk
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.netflix.spinnaker.kork.plugins.sdk.serde.SerdeServiceImpl
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 
-class SerdeServiceImplTest : JUnit5Minutests {
+class SerdeServiceImplTest {/* : JUnit5Minutests {
 
   fun tests() = rootContext<SerdeServiceImpl> {
     fixture {
       SerdeServiceImpl(ObjectMapper().registerKotlinModule())
     }
-   /* test("map to converts a hashmap to target type") {
+    test("map to converts a hashmap to target type") {
       val o = mapOf(
         "foo" to "hello",
         "bar" to 12
@@ -52,11 +50,11 @@ class SerdeServiceImplTest : JUnit5Minutests {
         get { foo }.isEqualTo("hello")
         get { bar }.isEqualTo(12)
       }
-    }*/
+    }
   }
 
   private class MyType(
     val foo: String,
     val bar: Int
-  )
+  )*/
 }

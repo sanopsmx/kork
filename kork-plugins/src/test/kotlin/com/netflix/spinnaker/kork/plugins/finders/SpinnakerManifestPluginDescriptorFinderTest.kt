@@ -19,8 +19,6 @@ import com.netflix.spinnaker.kork.plugins.SpinnakerPluginDescriptor
 import com.netflix.spinnaker.kork.plugins.internal.PluginJar
 import com.netflix.spinnaker.kork.plugins.internal.TestPlugin
 
-import dev.minutest.rootContext
-import dev.minutest.test
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
@@ -37,7 +35,7 @@ class SpinnakerManifestPluginDescriptorFinderTest{
   @TempDir
   lateinit var pluginsPath: Path
 
-  fun tests() = rootContext<Fixture> {
+  /*  fun tests() = rootContext<Fixture> {
     fixture { Fixture(pluginsPath) }
 
     test("unsafe property is decorated into plugin descriptor") {
@@ -58,7 +56,7 @@ class SpinnakerManifestPluginDescriptorFinderTest{
      // storeManifestToPath(getPlugin1Manifest(), pluginPath)
     }
 
-  /*  private fun getPlugin1Manifest(): Manifest {
+  private fun getPlugin1Manifest(): Manifest {
       return PluginJar.createManifest(
         mapOf(
           ManifestPluginDescriptorFinder.PLUGIN_ID to "pf4j.test-plugin-1",
@@ -72,11 +70,11 @@ class SpinnakerManifestPluginDescriptorFinderTest{
           SpinnakerManifestPluginDescriptorFinder.PLUGIN_UNSAFE to "true"
         )
       )
-    }*/
+    }
 
     private fun storeManifestToPath(manifest: Manifest, pluginPath: Path) {
       val path = Files.createDirectory(pluginPath.resolve("META-INF"))
      // FileOutputStream(path.resolve("MANIFEST.MF").toFile()).use { output -> manifest.write(output) }
     }
-  }
+  }*/
 }

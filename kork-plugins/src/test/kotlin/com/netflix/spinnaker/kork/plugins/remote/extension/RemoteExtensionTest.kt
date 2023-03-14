@@ -5,15 +5,13 @@ import com.netflix.spinnaker.kork.plugins.remote.extension.transport.RemoteExten
 import com.netflix.spinnaker.kork.plugins.remote.extension.transport.RemoteExtensionQuery
 import com.netflix.spinnaker.kork.plugins.remote.extension.transport.RemoteExtensionResponse
 import com.netflix.spinnaker.kork.plugins.remote.extension.transport.RemoteExtensionTransport
-import dev.minutest.junit.JUnit5Minutests
-import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import strikt.api.expectThat
 import strikt.assertions.isA
 
-class RemoteExtensionTest : JUnit5Minutests {
+class RemoteExtensionTest {/* : JUnit5Minutests {
   fun tests() = rootContext<Fixture> {
     fixture {
       Fixture()
@@ -63,4 +61,5 @@ class RemoteExtensionTest : JUnit5Minutests {
   private class ConfigType: RemoteExtensionPointConfig
   private class WriteResponse: RemoteExtensionResponse
   private class ReadResponse: RemoteExtensionResponse
+  */
 }

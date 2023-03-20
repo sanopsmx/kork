@@ -31,15 +31,20 @@ public class AwsMetricsSupport {
     }
 
     return new String[] {
-      "requestType", originalRequest.getClass().getSimpleName(),
-      "statusCode", Integer.toString(ase.getStatusCode()),
-      "errorCode", Optional.ofNullable(ase.getErrorCode()).orElse(DEFAULT_UNKNOWN),
-      "serviceName", Optional.ofNullable(ase.getServiceName()).orElse(DEFAULT_UNKNOWN),
+      "requestType",
+      originalRequest.getClass().getSimpleName(),
+      "statusCode",
+      Integer.toString(ase.getStatusCode()),
+      "errorCode",
+      Optional.ofNullable(ase.getErrorCode()).orElse(DEFAULT_UNKNOWN),
+      "serviceName",
+      Optional.ofNullable(ase.getServiceName()).orElse(DEFAULT_UNKNOWN),
       "errorType",
-          Optional.ofNullable(ase.getErrorType())
-              .orElse(AmazonServiceException.ErrorType.Unknown)
-              .name(),
-      "accountId", Optional.ofNullable(targetAccountId).orElse(DEFAULT_UNKNOWN)
+      Optional.ofNullable(ase.getErrorType())
+          .orElse(AmazonServiceException.ErrorType.Unknown)
+          .name(),
+      "accountId",
+      Optional.ofNullable(targetAccountId).orElse(DEFAULT_UNKNOWN)
     };
   }
 

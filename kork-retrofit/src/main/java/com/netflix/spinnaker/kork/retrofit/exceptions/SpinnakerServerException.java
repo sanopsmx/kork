@@ -76,7 +76,7 @@ public class SpinnakerServerException extends SpinnakerException {
 
   @Getter
   // Use JsonIgnoreProperties because some responses contain properties that
-  // cannot be mapped to the RetrofitErrorResponseBody class.  If the default
+  // cannot be mapped to the RetrofitErrorResponseBody class. If the default
   // JacksonConverter (with no extra configurations) is used to deserialize the
   // response body and properties other than "message" exist in the JSON
   // response, there will be an UnrecognizedPropertyException.

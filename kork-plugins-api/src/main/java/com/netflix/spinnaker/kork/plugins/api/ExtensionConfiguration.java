@@ -27,12 +27,15 @@ import javax.annotation.Nonnull;
 /**
  * Denotes that a class provides extension configuration. For example:
  *
- * <pre>{@code
- * &#064;ExtensionConfiguration("my-extension")
- * public class MyExtensionConfiguration {
- *   private String someProperty;
+ * <pre>
+ * {
+ *   &#64;code
+ *   &#064;ExtensionConfiguration("my-extension")
+ *   public class MyExtensionConfiguration {
+ *     private String someProperty;
+ *   }
  * }
- * }</pre>
+ * </pre>
  */
 @Beta
 @Retention(RetentionPolicy.RUNTIME)

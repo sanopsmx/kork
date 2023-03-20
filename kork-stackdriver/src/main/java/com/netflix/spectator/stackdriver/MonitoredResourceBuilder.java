@@ -122,12 +122,10 @@ class MonitoredResourceBuilder {
   boolean maybeCollectGkeInstanceLabels(Map<String, String> labels) {
     // Not sure how to get the info I need
     /*
-     * project_id: The identifier of the GCP project associated with this.
-     * cluster_name: An immutable name for the cluster the container is in.
-     * namespace_id: Immutable ID of the cluster namespace the container is in.
-     * instance_id: Immutable ID of the GCE instance the container is in.
-     * pod_id: Immutable ID of the pod the container is in.
-     * container_name: Immutable name of the container.
+     * project_id: The identifier of the GCP project associated with this. cluster_name: An immutable
+     * name for the cluster the container is in. namespace_id: Immutable ID of the cluster namespace the
+     * container is in. instance_id: Immutable ID of the GCE instance the container is in. pod_id:
+     * Immutable ID of the pod the container is in. container_name: Immutable name of the container.
      * zone: The GCE zone in which the instance is running.
      */
     return false;

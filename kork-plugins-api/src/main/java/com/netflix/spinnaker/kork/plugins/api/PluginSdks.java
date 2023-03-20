@@ -29,16 +29,19 @@ import javax.annotation.Nonnull;
  * <p>If an extension needs any services, this interface can be included as a constructor parameter
  * and the implementation will be injected into the extension.
  *
- * <pre>{@code
- * public class MyExtension {
+ * <pre>
+ * {
+ *   &#64;code
+ *   public class MyExtension {
  *
- *   private final PluginSdks pluginSdks;
+ *     private final PluginSdks pluginSdks;
  *
- *   public MyExtension(PluginSdks pluginSdks) {
- *     this.pluginSdks = pluginSdks;
+ *     public MyExtension(PluginSdks pluginSdks) {
+ *       this.pluginSdks = pluginSdks;
+ *     }
  *   }
  * }
- * }</pre>
+ * </pre>
  */
 public interface PluginSdks {
 

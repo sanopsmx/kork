@@ -119,7 +119,7 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
 
     OutputStreamAppender<ILoggingEvent> rootAppender = null;
     if (appender instanceof OutputStreamAppender) {
-      // And, assume it's an OutputStreamAppender.  We need this to get at its
+      // And, assume it's an OutputStreamAppender. We need this to get at its
       // encoder...
       rootAppender = (OutputStreamAppender<ILoggingEvent>) appender;
     } else {
@@ -134,7 +134,7 @@ public class MemoryAppender extends ListAppender<ILoggingEvent> {
     // Finally, grab the layout.
 
     // Look for LayoutWrappingEncoder since it's the class that introduces
-    // Layout.  See http://logback.qos.ch/manual/encoders.html.
+    // Layout. See http://logback.qos.ch/manual/encoders.html.
     if (!(rootAppender.getEncoder() instanceof LayoutWrappingEncoder)) {
       throw new IllegalStateException("no LayoutWrappingEncoder -- can't determine layout");
     }

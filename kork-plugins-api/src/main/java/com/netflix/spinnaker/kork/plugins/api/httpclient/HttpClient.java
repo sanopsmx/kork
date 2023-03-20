@@ -34,14 +34,17 @@ import javax.annotation.Nonnull;
  * <p>It is not mandatory for plugins to use this HttpClient for all HTTP/RPC needs. If a plugin
  * wants to use Spring's WebClient, Retrofit, or something else, they are still able to do so.
  *
- * <pre>{@code
- * // Internal services can be retrieved by name.
- * HttpClient front50Client = httpClientProvider.getInternalService("front50");
+ * <pre>
+ * {
+ *   &#64;code
+ *   // Internal services can be retrieved by name.
+ *   HttpClient front50Client = httpClientProvider.getInternalService("front50");
  *
- * Response response = front50Client.get(new Request("getApplication", "/v2/applications/gate"));
+ *   Response response = front50Client.get(new Request("getApplication", "/v2/applications/gate"));
  *
- * Application app = response.getBody(Application.class);
- * }</pre>
+ *   Application app = response.getBody(Application.class);
+ * }
+ * </pre>
  *
  * TODO(rz): Add async api as well?
  */

@@ -224,8 +224,9 @@ public class MetricDescriptorCache {
     labelDescriptor.setValueType("STRING");
     descriptor.getLabels().add(labelDescriptor);
 
-    /* Catch but ignore errors. Assume there is another process making mods too.
-     * We may overwrite theirs, but they'll just have to make them again later.
+    /*
+     * Catch but ignore errors. Assume there is another process making mods too. We may overwrite
+     * theirs, but they'll just have to make them again later.
      */
     try {
       log.info("Deleting existing stackdriver descriptor {}", descriptorName);

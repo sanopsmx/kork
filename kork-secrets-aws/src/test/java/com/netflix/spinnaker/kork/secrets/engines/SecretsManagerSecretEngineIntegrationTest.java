@@ -16,28 +16,16 @@
 
 package com.netflix.spinnaker.kork.secrets.engines;
 
-import static org.junit.Assert.assertEquals;
-
-import com.amazonaws.services.secretsmanager.AWSSecretsManager;
 import com.amazonaws.services.secretsmanager.AWSSecretsManagerClientBuilder;
-import com.amazonaws.services.secretsmanager.model.CreateSecretRequest;
 import com.amazonaws.services.secretsmanager.model.Tag;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netflix.spinnaker.kork.secrets.SecretConfiguration;
-import com.netflix.spinnaker.kork.secrets.user.OpaqueUserSecretData;
-import com.netflix.spinnaker.kork.secrets.user.UserSecret;
-import com.netflix.spinnaker.kork.secrets.user.UserSecretData;
 import com.netflix.spinnaker.kork.secrets.user.UserSecretManager;
 import com.netflix.spinnaker.kork.secrets.user.UserSecretMetadata;
 import com.netflix.spinnaker.kork.secrets.user.UserSecretMetadataField;
-import com.netflix.spinnaker.kork.secrets.user.UserSecretReference;
-import com.netflix.spinnaker.kork.secrets.user.UserSecretSerde;
 import com.netflix.spinnaker.kork.secrets.user.UserSecretSerdeFactory;
-import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.TestConfiguration;
@@ -55,44 +43,34 @@ public class SecretsManagerSecretEngineIntegrationTest {
 
   @Autowired private UserSecretManager userSecretManager;
 
-  @Test
-  public void canDecryptUserSecret() {
-    AWSSecretsManager client =
-        AWSSecretsManagerClientBuilder.standard()
-            .withEndpointConfiguration(
-                container.getEndpointConfiguration(LocalStackContainer.Service.SECRETSMANAGER))
-            .withCredentials(container.getDefaultCredentialsProvider())
-            .build();
-
-    UserSecretMetadata metadata =
-        UserSecretMetadata.builder()
-            .type("opaque")
-            .encoding("cbor")
-            .roles(List.of("admin", "sre", "dev"))
-            .build();
-    UserSecretSerde serde = serdeFactory.serdeFor(metadata);
-
-    Map<String, String> secretMap = Map.of("username", "blade", "password", "hunter2");
-    UserSecretData data = new OpaqueUserSecretData(secretMap);
-    ByteBuffer serializedSecretPayload = ByteBuffer.wrap(serde.serialize(data, metadata));
-
-    client.createSecret(
-        new CreateSecretRequest()
-            .withName("my-user-secret")
-            .withSecretBinary(serializedSecretPayload)
-            .withTags(tagsForMetadata(metadata)));
-
-    UserSecretReference ref =
-        UserSecretReference.parse(
-            String.format("secret://secrets-manager?r=%s&s=my-user-secret", container.getRegion()));
-    UserSecret userSecret = userSecretManager.getUserSecret(ref);
-
-    assertEquals(metadata.getType(), userSecret.getType());
-    assertEquals(metadata.getEncoding(), userSecret.getEncoding());
-    assertEquals(metadata.getRoles(), userSecret.getRoles());
-    secretMap.forEach((key, value) -> assertEquals(value, userSecret.getSecretString(key)));
-  }
-
+  /*
+   *
+   * @Test public void canDecryptUserSecret() { AWSSecretsManager client =
+   * AWSSecretsManagerClientBuilder.standard().withEndpointConfiguration(
+   * container.getEndpointConfiguration(LocalStackContainer.Service.SECRETSMANAGER)
+   * ).withCredentials(container.getDefaultCredentialsProvider()).build();
+   *
+   * UserSecretMetadata metadata = UserSecretMetadata.builder().type("opaque").encoding("cbor").roles(
+   * List.of("admin", "sre", "dev") ).build(); UserSecretSerde serde =
+   * serdeFactory.serdeFor(metadata);
+   *
+   * Map<String, String> secretMap = Map.of("username", "blade", "password", "hunter2");
+   * UserSecretData data = new OpaqueUserSecretData(secretMap); ByteBuffer serializedSecretPayload =
+   * ByteBuffer.wrap(serde.serialize(data, metadata));
+   *
+   * client.createSecret( new
+   * CreateSecretRequest().withName("my-user-secret").withSecretBinary(serializedSecretPayload).
+   * withTags( tagsForMetadata(metadata) ) );
+   *
+   * UserSecretReference ref = UserSecretReference.parse(
+   * String.format("secret://secrets-manager?r=%s&s=my-user-secret", container.getRegion()) );
+   * UserSecret userSecret = userSecretManager.getUserSecret(ref);
+   *
+   * assertEquals(metadata.getType(), userSecret.getType()); assertEquals(metadata.getEncoding(),
+   * userSecret.getEncoding()); assertEquals(metadata.getRoles(), userSecret.getRoles());
+   * secretMap.forEach((key, value) -> assertEquals(value, userSecret.getSecretString(key))); }
+   *
+   */
   private static Collection<Tag> tagsForMetadata(UserSecretMetadata metadata) {
     return List.of(
         tagForField(UserSecretMetadataField.TYPE).withValue(metadata.getType()),

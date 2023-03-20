@@ -18,11 +18,7 @@ package com.netflix.spinnaker.kork.actuator.endpoint;
 
 import static java.lang.String.format;
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.Sanitizer;
@@ -40,9 +36,10 @@ public class ResolvedEnvironmentEndpoint {
   public ResolvedEnvironmentEndpoint(
       Environment environment, ResolvedEnvironmentConfigurationProperties properties) {
     this.environment = environment;
+
     Optional.ofNullable(properties.getKeysToSanitize())
         .map(p -> p.toArray(new String[0]))
-        .ifPresent(sanitizer::setKeysToSanitize);
+        .isPresent();
   }
 
   @ReadOperation
@@ -53,7 +50,7 @@ public class ResolvedEnvironmentEndpoint {
                 property -> property,
                 property -> {
                   try {
-                    return sanitizer.sanitize(property, environment.getProperty(property));
+                    return sanitizer;
                   } catch (Exception e) {
                     return format("Exception occurred: %s", e.getMessage());
                   }

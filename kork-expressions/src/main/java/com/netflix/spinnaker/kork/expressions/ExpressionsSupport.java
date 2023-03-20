@@ -102,7 +102,7 @@ public class ExpressionsSupport {
     }
 
     // TODO(rz): Once plugins are no longer an incubating feature, extraExpressionFunctionProviders
-    //  var could be removed
+    // var could be removed
     if (pluginManager != null) {
       expressionFunctionProviders.addAll(
           pluginManager.getExtensions(ExpressionFunctionProvider.class));

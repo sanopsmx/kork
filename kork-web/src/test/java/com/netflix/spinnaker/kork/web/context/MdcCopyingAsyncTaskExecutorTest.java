@@ -69,8 +69,12 @@ public class MdcCopyingAsyncTaskExecutorTest {
       new AuthenticatedRequestFilter(
           true /* extractSpinnakerHeaders */,
           false /* extractSpinnakerUserOriginHeader */,
-          false /* forceNewSpinnakerRequestId */,
-          true /* clearAuthenticatedRequestPostFilter */);
+          false /*
+                 * forceNewSpinnakerRequestId
+                 */,
+          true /*
+                * clearAuthenticatedRequestPostFilter
+                */);
 
   @BeforeEach
   public void setup() {

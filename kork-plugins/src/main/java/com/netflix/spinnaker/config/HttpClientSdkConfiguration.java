@@ -73,7 +73,7 @@ public class HttpClientSdkConfiguration {
     KotlinModule kotlinModule = new KotlinModule.Builder().build();
 
     // TODO(rz): It'd be nice to make this customizable, but I'm not sure how to do that without
-    //  bringing Jackson into the Plugin SDK (quite undesirable).
+    // bringing Jackson into the Plugin SDK (quite undesirable).
     ObjectMapper objectMapper = new ObjectMapper();
     objectMapper.registerModule(new Jdk8Module());
     objectMapper.registerModule(new JavaTimeModule());

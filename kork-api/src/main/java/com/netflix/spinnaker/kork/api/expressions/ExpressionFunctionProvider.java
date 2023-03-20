@@ -43,7 +43,7 @@ import javax.annotation.Nullable;
  *       )
  *     )
  *
- *   @JvmStatic
+ *   &#64;JvmStatic
  *   fun hello(execution: Execution): String =
  *     "Hello, ${execution.id}"
  * }

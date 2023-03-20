@@ -12,7 +12,7 @@ dependencies {
   api "org.springframework.boot:spring-boot-autoconfigure"
   api "org.springframework.boot:spring-boot-starter-aop"
   api "org.springframework.boot:spring-boot-starter-actuator"
-  api "com.netflix.spectator:spectator-api"
+  api "com.netflix.spectator:spectator-api:1.5.3"
   api "com.google.code.findbugs:jsr305"
   api "io.github.resilience4j:resilience4j-annotations"
   api "io.github.resilience4j:resilience4j-retry"
@@ -20,9 +20,9 @@ dependencies {
 
   implementation "com.fasterxml.jackson.core:jackson-annotations"
   implementation "com.fasterxml.jackson.core:jackson-databind"
-  implementation "com.netflix.spectator:spectator-ext-gc"
-  implementation "com.netflix.spectator:spectator-ext-jvm"
-  implementation "com.netflix.spectator:spectator-reg-micrometer"
+  implementation "com.netflix.spectator:spectator-ext-gc:1.5.3"
+  implementation "com.netflix.spectator:spectator-ext-jvm:1.5.3"
+  implementation "com.netflix.spectator:spectator-reg-micrometer:1.5.3"
 
   testImplementation "org.junit.jupiter:junit-jupiter-api"
   testImplementation("org.mockito:mockito-core")

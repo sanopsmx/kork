@@ -22,9 +22,12 @@ package com.netflix.spinnaker.kork.expressions;
  *
  * <p>For example, in the evaluation context is defined only {@code fileMap} object:
  *
- * <pre>{@code
- * Map<String, Object> fileMap = Collections.singletonMap("owner", "managed-by-${team}");
- * }</pre>
+ * <pre>
+ * {
+ *   &#64;code
+ *   Map<String, Object> fileMap = Collections.singletonMap("owner", "managed-by-${team}");
+ * }
+ * </pre>
  *
  * <p>An exception will be thrown in attempt to get JSON because of {@code fileMap} contains SpEL
  * inside.

@@ -24,7 +24,7 @@ import com.netflix.spinnaker.kork.plugins.update.release.plugin3
 import com.netflix.spinnaker.kork.plugins.update.release.pluginNoReleases*/
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import strikt.api.expectThat
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo

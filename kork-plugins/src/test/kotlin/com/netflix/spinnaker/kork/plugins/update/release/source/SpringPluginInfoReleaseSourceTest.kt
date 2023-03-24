@@ -27,7 +27,7 @@ import com.netflix.spinnaker.kork.plugins.update.release.plugin2
 import com.netflix.spinnaker.kork.plugins.update.release.pluginNoReleases*/
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import strikt.api.expectThat

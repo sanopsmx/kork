@@ -27,7 +27,7 @@ import com.netflix.spinnaker.kork.plugins.SpinnakerPluginDescriptor
 import com.netflix.spinnaker.kork.plugins.api.internal.SpinnakerExtensionPoint
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import java.lang.reflect.Method

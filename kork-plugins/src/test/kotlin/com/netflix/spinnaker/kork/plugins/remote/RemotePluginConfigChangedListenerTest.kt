@@ -9,7 +9,7 @@ import com.netflix.spinnaker.kork.plugins.remote.extension.RemoteExtensionPointC
 import com.netflix.spinnaker.kork.plugins.remote.extension.RemoteExtensionPointDefinition
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import org.spockframework.util.CollectionUtil.listOf

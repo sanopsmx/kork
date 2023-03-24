@@ -22,7 +22,7 @@ import com.netflix.spinnaker.kork.plugins.SpinnakerPluginManager
 import com.netflix.spinnaker.kork.web.exceptions.NotFoundException
 
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.assertThrows

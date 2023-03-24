@@ -18,7 +18,7 @@ package com.netflix.spinnaker.kork.plugins.config
 import com.netflix.spinnaker.kork.plugins.api.ExtensionConfiguration
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import strikt.api.expectThat

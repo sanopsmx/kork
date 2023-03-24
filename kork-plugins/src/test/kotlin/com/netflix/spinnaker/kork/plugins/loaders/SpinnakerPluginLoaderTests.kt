@@ -21,7 +21,7 @@ import com.netflix.spinnaker.kork.plugins.testplugin.api.TestExtension
 import com.netflix.spinnaker.kork.plugins.testplugin.basicGeneratedPlugin
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.mockk
 import java.nio.file.Path
 import java.nio.file.Paths

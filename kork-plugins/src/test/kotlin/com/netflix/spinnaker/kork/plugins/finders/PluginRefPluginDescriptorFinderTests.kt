@@ -18,7 +18,7 @@ package com.netflix.spinnaker.kork.plugins.finders
 
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import java.nio.file.Path
 import java.nio.file.Paths
 import org.pf4j.PluginDescriptor

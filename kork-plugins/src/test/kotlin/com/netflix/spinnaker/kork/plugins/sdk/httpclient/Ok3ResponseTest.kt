@@ -19,7 +19,7 @@ package com.netflix.spinnaker.kork.plugins.sdk.httpclient
 import com.fasterxml.jackson.databind.ObjectMapper
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.mockk
 import java.io.IOException
 import okhttp3.MediaType

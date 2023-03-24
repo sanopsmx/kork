@@ -18,7 +18,7 @@ package com.netflix.spinnaker.kork.plugins
 import com.netflix.spinnaker.kork.plugins.VersionRequirementsParser.VersionRequirements
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import org.spockframework.util.CollectionUtil.listOf
 import strikt.api.expectThat
 import strikt.api.expectThrows

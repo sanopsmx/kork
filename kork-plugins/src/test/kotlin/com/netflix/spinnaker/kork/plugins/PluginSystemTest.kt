@@ -21,7 +21,7 @@ import com.netflix.spinnaker.kork.plugins.testplugin.basicGeneratedPlugin
 import com.netflix.spinnaker.kork.plugins.v2.PluginFrameworkInitializer
 
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import org.pf4j.DefaultPluginDescriptor
 import org.pf4j.PluginState
 import org.pf4j.PluginWrapper

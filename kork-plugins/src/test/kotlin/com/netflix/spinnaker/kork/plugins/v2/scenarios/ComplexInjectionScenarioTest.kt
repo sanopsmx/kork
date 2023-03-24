@@ -24,7 +24,7 @@ import com.netflix.spinnaker.kork.plugins.testplugin.testPlugin
 import com.netflix.spinnaker.kork.plugins.v2.enablePlugin
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.context.runner.ApplicationContextRunner

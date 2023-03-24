@@ -20,7 +20,7 @@ import com.netflix.spinnaker.kork.plugins.internal.PluginJar
 import com.netflix.spinnaker.kork.plugins.internal.TestPlugin
 
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path

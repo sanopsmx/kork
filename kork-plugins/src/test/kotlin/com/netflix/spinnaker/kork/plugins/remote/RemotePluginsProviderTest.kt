@@ -3,7 +3,7 @@ package com.netflix.spinnaker.kork.plugins.remote
 import com.netflix.spinnaker.kork.plugins.remote.extension.RemoteExtension
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.mockk
 import org.springframework.context.ApplicationEventPublisher
 import strikt.api.expectThat

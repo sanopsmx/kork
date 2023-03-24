@@ -19,7 +19,7 @@ import com.fasterxml.jackson.core.type.TypeReference
 import com.netflix.spinnaker.config.PluginsConfigurationProperties.PluginRepositoryProperties
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.every
 import io.mockk.mockk
 import org.spekframework.spek2.dsl.Fixture

@@ -20,7 +20,7 @@ import com.netflix.spinnaker.kork.plugins.internal.PluginZip
 import com.netflix.spinnaker.kork.plugins.internal.TestPlugin
 
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import okio.use
 import java.io.FileOutputStream
 import java.io.OutputStreamWriter

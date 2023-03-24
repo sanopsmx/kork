@@ -19,7 +19,7 @@ package com.netflix.spinnaker.kork.plugins.update.downloader
 import com.netflix.spinnaker.config.PluginsConfigurationProperties
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import org.spockframework.util.CollectionUtil.listOf
 import strikt.api.expectThat
 import strikt.assertions.isA

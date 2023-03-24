@@ -20,7 +20,7 @@ import com.netflix.spinnaker.config.PluginsConfigurationProperties.DEFAULT_ROOT_
 import com.netflix.spinnaker.kork.dynamicconfig.DynamicConfigService
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import io.mockk.confirmVerified
 import io.mockk.every
 import io.mockk.mockk

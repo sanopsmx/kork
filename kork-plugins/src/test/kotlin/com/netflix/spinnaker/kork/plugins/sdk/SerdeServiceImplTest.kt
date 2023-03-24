@@ -20,7 +20,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.netflix.spinnaker.kork.plugins.sdk.serde.SerdeServiceImpl
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
+
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 

@@ -2,19 +2,22 @@ package com.netflix.spinnaker.kork.web.exceptions
 
 import com.netflix.spinnaker.config.ErrorConfiguration
 import com.netflix.spinnaker.kork.test.log.MemoryAppender
-import ch.qos.logback.classic.Level;
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.client.TestRestTemplate
-import org.springframework.boot.web.server.LocalServerPort
+import org.springframework.boot.test.web.server.LocalServerPort
+import org.springframework.boot.web.context.WebServerInitializedEvent
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -24,8 +27,9 @@ import spock.lang.Specification
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = TestControllersConfiguration)
 class GenericExceptionHandlersMvcSpec extends Specification {
 
-  @LocalServerPort
+   @LocalServerPort
   int port
+
 
   @Autowired
   TestRestTemplate restTemplate
@@ -95,13 +99,18 @@ class GenericExceptionHandlersMvcSpec extends Specification {
 
     @Configuration
     @EnableWebSecurity
-    class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-      @Override
-      protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-          .headers().disable()
-          .authorizeRequests().anyRequest().permitAll()
+    class WebSecurityConfig  {
+      @Bean
+      public SecurityFilterChain configure(HttpSecurity http) throws Exception {
+          http.csrf().disable()
+                  .headers().disable()
+                  .authorizeHttpRequests((requests) -> requests
+                          .requestMatchers(new AntPathRequestMatcher("*")).permitAll()
+                          .anyRequest().authenticated());
+          return http.build();
       }
+
+
     }
 
     @Bean

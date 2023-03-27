@@ -48,12 +48,15 @@ import org.testcontainers.utility.DockerImageName;
 @SpringBootTest(classes = SecretConfiguration.class)
 public class SecretsManagerSecretEngineIntegrationTest {
 
-  @Autowired private LocalStackContainer container;
+  @Autowired
+  private LocalStackContainer container;
 
   // for setting up test data
-  @Autowired private UserSecretSerdeFactory serdeFactory;
+  @Autowired
+  private UserSecretSerdeFactory serdeFactory;
 
-  @Autowired private UserSecretManager userSecretManager;
+  @Autowired
+  private UserSecretManager userSecretManager;
 
   /*
   //commented for PR3 porting

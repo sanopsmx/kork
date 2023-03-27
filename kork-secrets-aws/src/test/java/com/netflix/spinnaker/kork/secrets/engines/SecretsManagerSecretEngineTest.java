@@ -15,11 +15,11 @@
  */
 package com.netflix.spinnaker.kork.secrets.engines;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.amazonaws.services.secretsmanager.model.DescribeSecretResult;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
@@ -40,117 +40,113 @@ import com.netflix.spinnaker.kork.secrets.user.UserSecretSerdeFactory;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
 public class SecretsManagerSecretEngineTest {
-  @Spy private SecretsManagerSecretEngine secretsManagerSecretEngine;
-  @Mock private SecretsManagerClientProvider clientProvider;
+  @Spy
+  private SecretsManagerSecretEngine secretsManagerSecretEngine;
+  @Mock
+  private SecretsManagerClientProvider clientProvider;
 
   private UserSecretSerdeFactory userSecretSerdeFactory;
   private UserSecretSerde userSecretSerde;
 
-  private GetSecretValueResult kvSecretValue =
-      new GetSecretValueResult().withSecretString("{\"password\":\"hunter2\"}");
-  private GetSecretValueResult plaintextSecretValue =
-      new GetSecretValueResult().withSecretString("letmein");
-  private GetSecretValueResult binarySecretValue =
-      new GetSecretValueResult().withSecretBinary(ByteBuffer.wrap("i'm binary".getBytes()));
-  private GetSecretValueResult secretStringFileValue =
-      new GetSecretValueResult().withSecretString("BEGIN RSA PRIVATE KEY");
+  private GetSecretValueResult kvSecretValue = new GetSecretValueResult().withSecretString(
+    "{\"password\":\"hunter2\"}"
+  );
+  private GetSecretValueResult plaintextSecretValue = new GetSecretValueResult().withSecretString("letmein");
+  private GetSecretValueResult binarySecretValue = new GetSecretValueResult().withSecretBinary(
+    ByteBuffer.wrap("i'm binary".getBytes())
+  );
+  private GetSecretValueResult secretStringFileValue = new GetSecretValueResult().withSecretString(
+    "BEGIN RSA PRIVATE KEY"
+  );
+  /*
+   *
+   * @Rule public ExpectedException exceptionRule = ExpectedException.none();
+   */
 
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
-
-  @Before
+  @BeforeEach
   public void setup() {
     ObjectMapper mapper = new ObjectMapper();
     List<ObjectMapper> mappers = List.of(mapper);
     userSecretSerde = new DefaultUserSecretSerde(mappers, List.of(OpaqueUserSecretData.class));
     userSecretSerdeFactory = new UserSecretSerdeFactory(List.of(userSecretSerde));
-    secretsManagerSecretEngine =
-        new SecretsManagerSecretEngine(mapper, userSecretSerdeFactory, clientProvider);
-    initMocks(this);
+    secretsManagerSecretEngine = new SecretsManagerSecretEngine(mapper, userSecretSerdeFactory, clientProvider);
+    openMocks(this);
   }
 
   @Test
   public void decryptStringWithKey() {
-    EncryptedSecret kvSecret =
-        EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret!k:password");
+    EncryptedSecret kvSecret = EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret!k:password");
     doReturn(kvSecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
     assertArrayEquals("hunter2".getBytes(), secretsManagerSecretEngine.decrypt(kvSecret));
   }
 
   @Test
   public void decryptStringWithoutKey() {
-    EncryptedSecret plaintextSecret =
-        EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret");
+    EncryptedSecret plaintextSecret = EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret");
     doReturn(plaintextSecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
     assertArrayEquals("letmein".getBytes(), secretsManagerSecretEngine.decrypt(plaintextSecret));
   }
 
   @Test
   public void decryptFileWithKey() {
-    EncryptedSecret kvSecret =
-        EncryptedSecret.parse("encryptedFile:secrets-manager!r:us-west-2!s:private-key!k:password");
-    exceptionRule.expect(InvalidSecretFormatException.class);
-    doReturn(kvSecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
-    secretsManagerSecretEngine.validate(kvSecret);
+    EncryptedSecret kvSecret = EncryptedSecret.parse(
+      "encryptedFile:secrets-manager!r:us-west-2!s:private-key!k:password"
+    );
+    // exceptionRule.expect(InvalidSecretFormatException.class);
+    Assertions.assertThrows(InvalidSecretFormatException.class, () -> {
+      doReturn(kvSecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
+      secretsManagerSecretEngine.validate(kvSecret);
+    });
   }
 
   @Test
   public void decryptSecretStringAsFile() {
-    EncryptedSecret secretStringFile =
-        EncryptedSecret.parse("encryptedFile:secrets-manager!r:us-west-2!s:private-key");
+    EncryptedSecret secretStringFile = EncryptedSecret.parse("encryptedFile:secrets-manager!r:us-west-2!s:private-key");
     doReturn(secretStringFileValue).when(secretsManagerSecretEngine).getSecretValue(any());
-    assertArrayEquals(
-        "BEGIN RSA PRIVATE KEY".getBytes(), secretsManagerSecretEngine.decrypt(secretStringFile));
+    assertArrayEquals("BEGIN RSA PRIVATE KEY".getBytes(), secretsManagerSecretEngine.decrypt(secretStringFile));
   }
 
   @Test
   public void decryptSecretBinaryAsFile() {
-    EncryptedSecret secretBinaryFile =
-        EncryptedSecret.parse("encryptedFile:secrets-manager!r:us-west-2!s:private-key");
+    EncryptedSecret secretBinaryFile = EncryptedSecret.parse("encryptedFile:secrets-manager!r:us-west-2!s:private-key");
     doReturn(binarySecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
-    assertArrayEquals(
-        "i'm binary".getBytes(), secretsManagerSecretEngine.decrypt(secretBinaryFile));
+    assertArrayEquals("i'm binary".getBytes(), secretsManagerSecretEngine.decrypt(secretBinaryFile));
   }
 
   @Test
   public void decryptStringWithBinaryResult() {
-    EncryptedSecret kvSecret =
-        EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret!k:password");
+    EncryptedSecret kvSecret = EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret!k:password");
     doReturn(binarySecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
-    exceptionRule.expect(SecretException.class);
-    secretsManagerSecretEngine.decrypt(kvSecret);
+    // exceptionRule.expect(SecretException.class);
+    Assertions.assertThrows(SecretException.class, () -> {
+      secretsManagerSecretEngine.decrypt(kvSecret);
+    });
   }
 
   @Test
   public void decryptJsonUserSecret() {
-    DescribeSecretResult description =
-        new DescribeSecretResult()
-            .withTags(
-                new Tag().withKey(UserSecretMetadataField.TYPE.getTagKey()).withValue("opaque"),
-                new Tag().withKey(UserSecretMetadataField.ROLES.getTagKey()).withValue("a, b, c"));
+    DescribeSecretResult description = new DescribeSecretResult().withTags(
+      new Tag().withKey(UserSecretMetadataField.TYPE.getTagKey()).withValue("opaque"),
+      new Tag().withKey(UserSecretMetadataField.ROLES.getTagKey()).withValue("a, b, c")
+    );
     doReturn(description).when(secretsManagerSecretEngine).getSecretDescription(any());
 
     UserSecretData data = new OpaqueUserSecretData(Map.of("password", "hunter2"));
-    UserSecretMetadata metadata =
-        UserSecretMetadata.builder()
-            .type("opaque")
-            .encoding("json")
-            .roles(List.of("a", "b", "c"))
-            .build();
+    UserSecretMetadata metadata = UserSecretMetadata.builder().type("opaque").encoding("json").roles(
+      List.of("a", "b", "c")
+    ).build();
     byte[] secretBytes = userSecretSerde.serialize(data, metadata);
-    GetSecretValueResult stubResult =
-        new GetSecretValueResult().withSecretBinary(ByteBuffer.wrap(secretBytes));
+    GetSecretValueResult stubResult = new GetSecretValueResult().withSecretBinary(ByteBuffer.wrap(secretBytes));
     doReturn(stubResult).when(secretsManagerSecretEngine).getSecretValue(any());
 
-    UserSecretReference reference =
-        UserSecretReference.parse("secret://secrets-manager?r=us-west-2&s=private-key");
+    UserSecretReference reference = UserSecretReference.parse("secret://secrets-manager?r=us-west-2&s=private-key");
     UserSecret secret = secretsManagerSecretEngine.decrypt(reference);
     assertEquals("hunter2", secret.getSecretString("password"));
     assertEquals(List.of("a", "b", "c"), secret.getRoles());

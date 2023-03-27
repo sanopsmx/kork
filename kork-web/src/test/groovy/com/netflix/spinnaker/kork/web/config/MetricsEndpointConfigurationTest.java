@@ -22,40 +22,45 @@ import com.netflix.spinnaker.config.MetricsEndpointConfiguration;
 import java.net.URI;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.web.util.UriComponentsBuilder;
 
-@SpringBootTest(
-    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-    classes = {
-      MetricsEndpointConfigurationTest.TestConfiguration.class,
-      MetricsEndpointConfiguration.class
-    })
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
+  MetricsEndpointConfigurationTest.TestConfiguration.class, MetricsEndpointConfiguration.class})
 @TestPropertySource(properties = {"spectator.web-endpoint.enabled = true"})
 public class MetricsEndpointConfigurationTest {
 
-  @LocalServerPort int port;
+  // https://www.appsloveworld.com/springboot/100/119/org-springframework-boot-web-server-localserverport-is-deprecated
+  @Value("${server.port}")
+  // @LocalServerPort
+  int port;
 
-  @Autowired TestRestTemplate restTemplate;
+  @Autowired
+  TestRestTemplate restTemplate;
+
+  // https://www.appsloveworld.com/springboot/100/119/org-springframework-boot-web-server-localserverport-is-deprecated
+  @EventListener
+  void onWebInit(WebServerInitializedEvent event) {
+    port = event.getWebServer().getPort();
+  }
 
   @Test
   public void spectatorMetricsAccess() {
-    URI uri =
-        UriComponentsBuilder.fromHttpUrl("http://localhost/spectator/metrics")
-            .port(port)
-            .build()
-            .toUri();
+    URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost/spectator/metrics").port(port).build().toUri();
 
     ResponseEntity<String> entity = restTemplate.getForEntity(uri, String.class);
     assertEquals(HttpStatus.OK, entity.getStatusCode());
   }
 
   @SpringBootApplication
-  public static class TestConfiguration {}
+  public static class TestConfiguration {
+  }
 }

@@ -28,6 +28,12 @@ import spock.lang.Unroll
 
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
+import java.rmi.AccessException
+import java.rmi.AlreadyBoundException
+import java.rmi.NotBoundException
+import java.rmi.Remote
+import java.rmi.RemoteException
+import java.rmi.registry.Registry
 
 class MetricsInterceptorSpec extends Specification {
   def "should store current time as request attribute"() {
@@ -122,6 +128,31 @@ class MetricsInterceptorSpec extends Specification {
       this.id = id
       this.timer = new DefaultTimer(null, id)
       return timer
+    }
+
+    @Override
+    Remote lookup(String s) throws RemoteException, NotBoundException, AccessException {
+      return null
+    }
+
+    @Override
+    void bind(String s, Remote remote) throws RemoteException, AlreadyBoundException, AccessException {
+
+    }
+
+    @Override
+    void unbind(String s) throws RemoteException, NotBoundException, AccessException {
+
+    }
+
+    @Override
+    void rebind(String s, Remote remote) throws RemoteException, AccessException {
+
+    }
+
+    @Override
+    String[] list() throws RemoteException, AccessException {
+      return new String[0]
     }
   }
 }

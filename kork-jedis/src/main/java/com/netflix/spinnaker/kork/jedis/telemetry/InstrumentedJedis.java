@@ -31,11 +31,12 @@ import redis.clients.jedis.params.SetParams;
 import redis.clients.jedis.params.ZAddParams;
 import redis.clients.jedis.params.ZIncrByParams;
 import redis.clients.jedis.util.Slowlog;
+import redis.clients.jedis.Pipeline;
 
 /**
  * Instruments: - Timer for each command - Distribution summary for all payload sizes - Error rates
  */
-public class InstrumentedJedis extends Jedis {
+public class InstrumentedJedis {
 
   private final Registry registry;
   private final Jedis delegated;
@@ -2141,14 +2142,24 @@ public class InstrumentedJedis extends Jedis {
     return instrumented(command, () -> delegated.auth(password));
   }
 
-  @Override
+  /*@Override
   public Pipeline pipelined() {
     String command = "pipelined";
     return instrumented(
         command, () -> new InstrumentedPipeline(registry, delegated.pipelined(), poolName));
-  }
+  } */
 
   @Override
+  public Pipeline pipelined() {
+    String command = "pipelined";
+    InstrumentedPipeline pipeline = new InstrumentedPipeline(delegated);
+    pipeline.setPoolName(poolName);
+    pipeline.setRegistry(registry);
+
+    return instrumented(command, () -> pipeline);
+  }
+
+  /* @Override
   public Long zcount(byte[] key, double min, double max) {
     String command = "zcount";
     return instrumented(command, () -> delegated.zcount(key, min, max));
@@ -2910,5 +2921,5 @@ public class InstrumentedJedis extends Jedis {
   public List<Long> bitfield(byte[] key, byte[]... arguments) {
     String command = "bitfield";
     return instrumented(command, () -> delegated.bitfield(key, arguments));
-  }
+  } */
 }

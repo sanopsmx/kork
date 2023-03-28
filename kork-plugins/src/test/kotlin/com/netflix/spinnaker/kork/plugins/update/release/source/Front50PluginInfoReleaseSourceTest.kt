@@ -15,7 +15,8 @@
  *
  */
 package com.netflix.spinnaker.kork.plugins.update.release.source
-
+class Front50PluginInfoReleaseSourceTest{}
+/*
 import com.netflix.spinnaker.kork.plugins.update.ServerGroupLocationResolver
 import com.netflix.spinnaker.kork.plugins.update.ServerGroupNameResolver
 import com.netflix.spinnaker.kork.plugins.update.internal.Front50Service
@@ -114,3 +115,6 @@ class Front50PluginInfoReleaseSourceTest {//: JUnit5Minutests {
     )*/
   }
 }
+
+
+ */

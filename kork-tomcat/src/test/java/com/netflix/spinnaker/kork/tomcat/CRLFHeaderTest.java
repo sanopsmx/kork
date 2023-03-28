@@ -9,10 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = {
-  CRLFHeaderTest.HeaderTestControllerConfiguration.class})
-@TestPropertySource(properties = {"logging.level.org.apache.coyote.http11.Http11InputBuffer = DEBUG"})
-@org.springframework.boot.context.properties.EnableConfigurationProperties({TomcatConfigurationProperties.class})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    classes = {CRLFHeaderTest.HeaderTestControllerConfiguration.class})
+@TestPropertySource(
+    properties = {"logging.level.org.apache.coyote.http11.Http11InputBuffer = DEBUG"})
+@org.springframework.boot.context.properties.EnableConfigurationProperties({
+  TomcatConfigurationProperties.class
+})
 public class CRLFHeaderTest {
   private static final String CR = "\r";
   private static final String LF = "\n";
@@ -35,8 +39,7 @@ public class CRLFHeaderTest {
     public void onGetRequest() {}
   }
 
-  @LocalServerPort
-  private int port;
+  @LocalServerPort private int port;
 
   /*
    * clientTest tests the TCP segmentation bug introduced in tomcat v9.0.31. See

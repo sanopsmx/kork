@@ -18,11 +18,11 @@ apply plugin: "java-library"
 dependencies {
   api(platform(project(":spinnaker-dependencies")))
 
-  api "io.reactivex:rxjava"
-  api "com.netflix.spectator:spectator-api"
-  api "com.google.apis:google-api-services-monitoring"
+  api "io.reactivex.rxjava3:rxjava:3.1.6"
+  api "com.netflix.spectator:spectator-api:1.5.3"
+  api "com.google.apis:google-api-services-monitoring:v3-rev540-1.25.0"
 
-  implementation("com.netflix.spectator:spectator-web-spring") {
+  implementation("com.netflix.spectator:spectator-web-spring:1.5.3") {
     // exclude transitives since this brings in a newer version of spring (boot)
     // dependencies than we're compatible with (2.2.x for spring boot and 5.2.x
     // for spring as of version 1.0.5 of spectator).

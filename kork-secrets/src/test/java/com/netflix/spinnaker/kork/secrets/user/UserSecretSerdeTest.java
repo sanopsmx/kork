@@ -24,8 +24,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest(classes = SecretConfiguration.class)
 public class UserSecretSerdeTest {
 
-  @Autowired
-  UserSecretSerdeFactory factory;
+  @Autowired UserSecretSerdeFactory factory;
 
   /*
    * @Test public void jsonStringMap() { var metadata =

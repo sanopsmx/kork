@@ -26,17 +26,18 @@ public class SecretAwarePropertySourceTest {
    */
   @BeforeAll
   public void setup() {
-    EnumerablePropertySource source = new EnumerablePropertySource("testSource") {
-      @Override
-      public String[] getPropertyNames() {
-        return new String[0];
-      }
+    EnumerablePropertySource source =
+        new EnumerablePropertySource("testSource") {
+          @Override
+          public String[] getPropertyNames() {
+            return new String[0];
+          }
 
-      @Override
-      public Object getProperty(String name) {
-        return testValues.get(name);
-      }
-    };
+          @Override
+          public Object getProperty(String name) {
+            return testValues.get(name);
+          }
+        };
 
     testValues.put("testSecretFile", "encrypted:noop!k:testValue");
     testValues.put("testSecretPath", "encrypted:noop!k:testValue");

@@ -47,8 +47,7 @@ import retrofit.http.GET;
 
 public class SpinnakerRetrofitErrorHandlerTest {
 
-
-/*
+  /*
   //commented for PR3 porting
   private static RetrofitService retrofitService;
 

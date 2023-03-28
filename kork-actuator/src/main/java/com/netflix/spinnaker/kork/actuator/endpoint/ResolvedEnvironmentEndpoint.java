@@ -18,10 +18,12 @@ package com.netflix.spinnaker.kork.actuator.endpoint;
 
 import static java.lang.String.format;
 
+import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.stream.Collectors;
-import java.util.*;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.endpoint.Sanitizer;
 import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
@@ -38,34 +40,24 @@ public class ResolvedEnvironmentEndpoint {
   public ResolvedEnvironmentEndpoint(
       Environment environment, ResolvedEnvironmentConfigurationProperties properties) {
     this.environment = environment;
-    /* Optional.ofNullable(properties.getKeysToSanitize())
+    Optional.ofNullable(properties.getKeysToSanitize())
         .map(p -> p.toArray(new String[0]))
-        .ifPresent(sanitizer::setKeysToSanitize); */
-    Optional.ofNullable(properties.getKeysToSanitize()).map(p -> p.toArray(new String[0])).isPresent();
-
+        .isPresent();
   }
 
   @ReadOperation
   public Map<String, Object> resolvedEnv() {
-    /* return getPropertyKeys().stream()
+    return getPropertyKeys().stream()
         .collect(
             Collectors.toMap(
                 property -> property,
                 property -> {
                   try {
-                    return sanitizer.sanitize(property, environment.getProperty(property));
+                    return sanitizer;
                   } catch (Exception e) {
                     return format("Exception occurred: %s", e.getMessage());
                   }
-                })); */
-    return getPropertyKeys().stream().collect(Collectors.toMap(property -> property, property -> {
-      try {
-        return null;
-        return sanitizer;
-      } catch (Exception e) {
-        return format("Exception occurred: %s", e.getMessage());
-      }
-    }));
+                }));
   }
 
   /** This gathers all defined properties in the system (no matter the source) */

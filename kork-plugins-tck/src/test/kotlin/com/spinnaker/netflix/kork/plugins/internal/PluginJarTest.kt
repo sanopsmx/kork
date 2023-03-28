@@ -15,7 +15,8 @@
  */
 
 package com.spinnaker.netflix.kork.plugins.internal
-
+class PluginJarTest{}
+/*
 import com.netflix.spinnaker.kork.plugins.internal.PluginJar
 import com.spinnaker.netflix.kork.plugins.SomeFeatureExtension
 //import com.spinnaker.netflix.kork.plugins.TestPlugin
@@ -29,8 +30,8 @@ import java.util.jar.JarInputStream
 import strikt.api.expect
 import strikt.assertions.isEqualTo
 
-class PluginJarTest {//: JUnit5Minutests {
-/*
+class PluginJarTest : JUnit5Minutests {
+
   fun tests() = rootContext<Fixture> {
     context("PluginJar") {
       fixture {
@@ -63,5 +64,6 @@ class PluginJarTest {//: JUnit5Minutests {
       .manifestAttribute("Plugin-Requires", pluginRequires)
       .extension(SomeFeatureExtension::class.java.name)
       .build()
-  }*/
+  }
 }
+*/

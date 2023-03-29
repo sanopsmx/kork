@@ -20,15 +20,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import com.netflix.spinnaker.kork.secrets.SecretConfiguration;
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest(classes = SecretConfiguration.class)
 @RequiredArgsConstructor
 class SecretsManagerConfigurationTest {
-  @Autowired
-  SecretsManagerSecretEngine engine;
+  @Autowired SecretsManagerSecretEngine engine;
 
   /*
    //commented for PR3 porting

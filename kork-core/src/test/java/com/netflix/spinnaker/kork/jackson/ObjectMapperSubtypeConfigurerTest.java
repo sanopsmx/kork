@@ -15,28 +15,29 @@
  */
 package com.netflix.spinnaker.kork.jackson;
 
-//import static org.junit.Assert.assertEquals;//commented for PR3 porting
+// import static org.junit.Assert.assertEquals;//commented for PR3 porting
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-//import com.fasterxml.jackson.core.JsonProcessingException; //commented for PR3 porting
+// import com.fasterxml.jackson.core.JsonProcessingException; //commented for PR3 porting
 import com.fasterxml.jackson.databind.ObjectMapper;
-//import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.ClassSubtypeLocator; //commented for PR3 porting
-//import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.StringSubtypeLocator; //commented for PR3 porting
+// import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.ClassSubtypeLocator;
+// //commented for PR3 porting
+// import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.StringSubtypeLocator;
+// //commented for PR3 porting
 import java.util.ArrayList;
 import java.util.List;
-//import org.junit.Before;
-//import org.junit.Test;
+// import org.junit.Before;
+// import org.junit.Test;
 import org.junit.jupiter.api.BeforeAll;
-
 
 public class ObjectMapperSubtypeConfigurerTest {
 
   ObjectMapper mapper;
 
-  //@Before //commented for PR3 porting
+  // @Before //commented for PR3 porting
   @BeforeAll
   public void setup() {
     mapper = new ObjectMapper();
@@ -77,7 +78,6 @@ public class ObjectMapperSubtypeConfigurerTest {
     return searchPackages;
   }
 }
-
 
 @JsonTypeInfo(use = Id.NAME, include = As.PROPERTY, property = "kind")
 abstract class RootType {}

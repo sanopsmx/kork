@@ -21,8 +21,7 @@ import org.mockito.MockitoAnnotations;
 
 public class SecretSessionTest {
 
-  @Mock
-  private SecretEngineRegistry secretEngineRegistry;
+  @Mock private SecretEngineRegistry secretEngineRegistry;
   private SecretEngine secretEngine;
   private List<SecretEngine> secretEngineList = new ArrayList<>();
   private SecretManager secretManager;
@@ -62,7 +61,8 @@ public class SecretSessionTest {
     Assertions.assertEquals(1, secretSession.secretCache.size());
     String decrypted = secretSession.decrypt("encrypted:noop!f:unknown!v:test");
     Assertions.assertEquals("test", decrypted);
-    Assertions.assertEquals("test", secretSession.secretCache.get("encrypted:noop!f:unknown!v:test"));
+    Assertions.assertEquals(
+        "test", secretSession.secretCache.get("encrypted:noop!f:unknown!v:test"));
     Assertions.assertEquals(2, secretSession.secretCache.size());
   }
 

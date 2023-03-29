@@ -31,11 +31,9 @@ import org.mockito.MockitoAnnotations;
 
 public class SecretManagerTest {
 
-  @Mock
-  SecretEngineRegistry secretEngineRegistry;
+  @Mock SecretEngineRegistry secretEngineRegistry;
 
-  @Mock
-  SecretEngine secretEngine;
+  @Mock SecretEngine secretEngine;
 
   SecretManager secretManager;
 

@@ -25,9 +25,6 @@ import redis.clients.jedis.commands.JedisCommands;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
 import redis.clients.jedis.util.Pool;
-import redis.clients.jedis.params.ScanParams;
-import redis.clients.jedis.resps.ScanResult;
-
 
 public class JedisClientDelegate implements RedisClientDelegate {
 
@@ -116,7 +113,7 @@ public class JedisClientDelegate implements RedisClientDelegate {
     ((Pipeline) p).sync();
   }
   */
-    @Override
+  @Override
   public <R> R withMultiClient(Function<JedisCommands, R> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       return f.apply(jedis);
@@ -163,11 +160,11 @@ public class JedisClientDelegate implements RedisClientDelegate {
   @Override
   public void syncPipeline(Pipeline p) {
     if (!(p instanceof Pipeline)) {
-      throw new IllegalArgumentException("Invalid RedisPipeline implementation: " + p.getClass().getName());
+      throw new IllegalArgumentException(
+          "Invalid RedisPipeline implementation: " + p.getClass().getName());
     }
     ((Pipeline) p).sync();
   }
-
 
   @Override
   public boolean supportsMultiKeyPipelines() {
@@ -244,7 +241,7 @@ public class JedisClientDelegate implements RedisClientDelegate {
       } while (!"0".equals(cursor));
     }
   } */
-    public void withScriptingClient(Consumer<JedisCommands> f) {
+  public void withScriptingClient(Consumer<JedisCommands> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       JedisCommands jedisCommands = (JedisCommands) jedis;
       f.accept(jedisCommands);
@@ -275,5 +272,4 @@ public class JedisClientDelegate implements RedisClientDelegate {
       } while (!"0".equals(cursor));
     }
   }
-
 }

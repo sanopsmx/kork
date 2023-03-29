@@ -38,8 +38,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.PreDestroy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Arrays;
-
 
 public class RedisLockManager implements RefreshableLockManager {
   private static final Logger log = LoggerFactory.getLogger(RedisLockManager.class);
@@ -389,14 +387,17 @@ public class RedisLockManager implements RefreshableLockManager {
 
   private Lock findAuthoritativeLockOrNull(Lock lock) {
     /* Object payload =
+    redisClientDelegate.withScriptingClient(
+        c -> {
+          return c.eval(
+              FIND_SCRIPT, Arrays.asList(lockKey(lock.getName())), Arrays.asList(ownerName));
+        });*/
+    Object payload =
         redisClientDelegate.withScriptingClient(
             c -> {
               return c.eval(
                   FIND_SCRIPT, Arrays.asList(lockKey(lock.getName())), Arrays.asList(ownerName));
-            });*/
-	Object payload = redisClientDelegate.withScriptingClient(c -> {
-      return c.eval(FIND_SCRIPT, Arrays.asList(lockKey(lock.getName())), Arrays.asList(ownerName));
-    });  
+            });
     if (payload == null) {
       return null;
     }
@@ -445,35 +446,35 @@ public class RedisLockManager implements RefreshableLockManager {
     long releaseTtl =
         wasWorkSuccessful ? lock.getSuccessIntervalMillis() : lock.getFailureIntervalMillis();
 
-     Object payload = redisClientDelegate.withScriptingClient(c -> {
-      return c.eval(
-        RELEASE_SCRIPT,
-        Arrays.asList(lockKey(lock.getName())),
-        Arrays.asList(
-          ownerName,
-          String.valueOf(lock.getVersion()),
-          String.valueOf(Duration.ofMillis(releaseTtl).getSeconds())
-        )
-      );
-    });
+    Object payload =
+        redisClientDelegate.withScriptingClient(
+            c -> {
+              return c.eval(
+                  RELEASE_SCRIPT,
+                  Arrays.asList(lockKey(lock.getName())),
+                  Arrays.asList(
+                      ownerName,
+                      String.valueOf(lock.getVersion()),
+                      String.valueOf(Duration.ofMillis(releaseTtl).getSeconds())));
+            });
 
     return payload.toString();
   }
 
   private Lock tryUpdateLock(final Lock lock, final long nextVersion) {
-      Object payload = redisClientDelegate.withScriptingClient(c -> {
-      return c.eval(
-        HEARTBEAT_SCRIPT,
-        Arrays.asList(lockKey(lock.getName())),
-        Arrays.asList(
-          ownerName,
-          String.valueOf(lock.getVersion()),
-          String.valueOf(nextVersion),
-          Long.toString(lock.getLeaseDurationMillis()),
-          Long.toString(clock.millis())
-        )
-      );
-    });
+    Object payload =
+        redisClientDelegate.withScriptingClient(
+            c -> {
+              return c.eval(
+                  HEARTBEAT_SCRIPT,
+                  Arrays.asList(lockKey(lock.getName())),
+                  Arrays.asList(
+                      ownerName,
+                      String.valueOf(lock.getVersion()),
+                      String.valueOf(nextVersion),
+                      Long.toString(lock.getLeaseDurationMillis()),
+                      Long.toString(clock.millis())));
+            });
 
     if (payload == null) {
       throw new LockExpiredException(String.format("Lock expired %s", lock));

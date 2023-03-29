@@ -16,3 +16,8 @@ dependencies {
   testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
   testRuntimeOnly "org.postgresql:postgresql"
 }
+
+
+test {
+  useJUnitPlatform()
+}

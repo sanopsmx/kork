@@ -21,6 +21,7 @@ import java.util.function.Function;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.commands.JedisBinaryCommands;
 import redis.clients.jedis.commands.JedisCommands;
 import redis.clients.jedis.params.ScanParams;
 import redis.clients.jedis.resps.ScanResult;
@@ -74,23 +75,23 @@ public class JedisClientDelegate implements RedisClientDelegate {
       f.accept(transaction);
       transaction.exec();
     }
+  }v*/
+
+  @Override
+  public <R> R withBinaryClient(Function<JedisBinaryCommands, R> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      return f.apply(jedis);
+    }
   }
 
-  // @Override
-  // public <R> R withBinaryClient(Function<BinaryJedisCommands, R> f) {
-  // try (Jedis jedis = jedisPool.getResource()) {
-  // return f.apply(jedis);
-  // }
-  // }
-
-  // @Override
-  // public void withBinaryClient(Consumer<BinaryJedisCommands>> f) {
-  // try (Jedis jedis = jedisPool.getResource()) {
-  // f.accept(jedis);
-  // }
-  // }
-  //
   @Override
+  public void withBinaryClient(Consumer<JedisBinaryCommands> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      f.accept(jedis);
+    }
+  }
+
+  /*@Override
   public void withPipeline(Consumer<Pipeline> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       f.accept(jedis.pipelined());

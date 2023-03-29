@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import redis.clients.jedis.Pipeline;
 import redis.clients.jedis.Transaction;
+import redis.clients.jedis.commands.JedisBinaryCommands;
 import redis.clients.jedis.commands.JedisCommands;
 
 /**
@@ -38,9 +39,9 @@ public interface RedisClientDelegate {
 
   void withMultiClient(Consumer<Transaction> f);
 
-  // <R> R withBinaryClient(Function<BinaryJedisCommands, R> f);
-  //
-  // void withBinaryClient(Consumer<BinaryJedisCommands> f);
+  <R> R withBinaryClient(Function<JedisBinaryCommands, R> f);
+
+  void withBinaryClient(Consumer<JedisBinaryCommands> f);
 
   void withPipeline(Consumer<Pipeline> f);
 

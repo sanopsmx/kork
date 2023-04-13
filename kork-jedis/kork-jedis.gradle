@@ -7,14 +7,15 @@ dependencies {
   api "org.springframework.boot:spring-boot-starter-actuator"
   api "redis.clients:jedis"
   api project(":kork-core")
-  api "com.netflix.spectator:spectator-api"
+  api "com.netflix.spectator:spectator-api:1.5.3"
 
   implementation "com.fasterxml.jackson.core:jackson-databind"
+  implementation "org.apache.commons:commons-lang3"
 
-  testImplementation "com.hubspot.jinjava:jinjava"
+  testImplementation "com.hubspot.jinjava:jinjava:2.6.0"
   testImplementation project(":kork-core-tck")
   testImplementation project(":kork-jedis-test")
-  testImplementation "org.codehaus.groovy:groovy-all"
+  testImplementation "org.mockito:mockito-core"
   testImplementation "org.spockframework:spock-core"
   testImplementation "junit:junit"
   testRuntimeOnly "cglib:cglib-nodep"

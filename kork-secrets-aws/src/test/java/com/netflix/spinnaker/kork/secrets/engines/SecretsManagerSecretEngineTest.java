@@ -15,11 +15,11 @@
  */
 package com.netflix.spinnaker.kork.secrets.engines;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.MockitoAnnotations.initMocks;
+import static org.mockito.MockitoAnnotations.openMocks;
 
 import com.amazonaws.services.secretsmanager.model.DescribeSecretResult;
 import com.amazonaws.services.secretsmanager.model.GetSecretValueResult;
@@ -40,10 +40,9 @@ import com.netflix.spinnaker.kork.secrets.user.UserSecretSerdeFactory;
 import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.Map;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.Spy;
 
@@ -62,10 +61,12 @@ public class SecretsManagerSecretEngineTest {
       new GetSecretValueResult().withSecretBinary(ByteBuffer.wrap("i'm binary".getBytes()));
   private GetSecretValueResult secretStringFileValue =
       new GetSecretValueResult().withSecretString("BEGIN RSA PRIVATE KEY");
+  /*
+   *
+   * @Rule public ExpectedException exceptionRule = ExpectedException.none();
+   */
 
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
-
-  @Before
+  @BeforeEach
   public void setup() {
     ObjectMapper mapper = new ObjectMapper();
     List<ObjectMapper> mappers = List.of(mapper);
@@ -73,7 +74,7 @@ public class SecretsManagerSecretEngineTest {
     userSecretSerdeFactory = new UserSecretSerdeFactory(List.of(userSecretSerde));
     secretsManagerSecretEngine =
         new SecretsManagerSecretEngine(mapper, userSecretSerdeFactory, clientProvider);
-    initMocks(this);
+    openMocks(this);
   }
 
   @Test
@@ -96,9 +97,13 @@ public class SecretsManagerSecretEngineTest {
   public void decryptFileWithKey() {
     EncryptedSecret kvSecret =
         EncryptedSecret.parse("encryptedFile:secrets-manager!r:us-west-2!s:private-key!k:password");
-    exceptionRule.expect(InvalidSecretFormatException.class);
-    doReturn(kvSecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
-    secretsManagerSecretEngine.validate(kvSecret);
+    // exceptionRule.expect(InvalidSecretFormatException.class);
+    Assertions.assertThrows(
+        InvalidSecretFormatException.class,
+        () -> {
+          doReturn(kvSecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
+          secretsManagerSecretEngine.validate(kvSecret);
+        });
   }
 
   @Test
@@ -124,8 +129,12 @@ public class SecretsManagerSecretEngineTest {
     EncryptedSecret kvSecret =
         EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret!k:password");
     doReturn(binarySecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
-    exceptionRule.expect(SecretException.class);
-    secretsManagerSecretEngine.decrypt(kvSecret);
+    // exceptionRule.expect(SecretException.class);
+    Assertions.assertThrows(
+        SecretException.class,
+        () -> {
+          secretsManagerSecretEngine.decrypt(kvSecret);
+        });
   }
 
   @Test

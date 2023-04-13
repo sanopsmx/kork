@@ -17,6 +17,7 @@ dependencies {
   testRuntimeOnly "org.postgresql:postgresql"
 }
 
+
 test {
   useJUnitPlatform()
 }

@@ -17,10 +17,7 @@
 package com.netflix.spinnaker.kork.eureka;
 
 import com.netflix.appinfo.*;
-import com.netflix.discovery.DefaultEurekaClientConfig;
-import com.netflix.discovery.DiscoveryClient;
-import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.EurekaClientConfig;
+import com.netflix.discovery.*;
 import com.netflix.eventbus.impl.EventBusImpl;
 import com.netflix.eventbus.spi.EventBus;
 import com.netflix.spinnaker.kork.discovery.DiscoveryAutoConfiguration;
@@ -44,16 +41,6 @@ public class EurekaAutoConfiguration {
   @Bean
   public EventBus eventBus() {
     return new EventBusImpl();
-  }
-
-  /** @deprecated use EurekaClient rather than DiscoveryClient */
-  @Bean
-  @Deprecated
-  public DiscoveryClient discoveryClient(
-      ApplicationInfoManager applicationInfoManager,
-      EurekaClientConfig eurekaClientConfig,
-      DiscoveryClient.DiscoveryClientOptionalArgs optionalArgs) {
-    return new DiscoveryClient(applicationInfoManager, eurekaClientConfig, optionalArgs);
   }
 
   @Bean
@@ -83,16 +70,6 @@ public class EurekaAutoConfiguration {
   EurekaClientConfig eurekaClientConfig(
       EurekaConfigurationProperties eurekaConfigurationProperties) {
     return new DefaultEurekaClientConfig(eurekaConfigurationProperties.getClient().getNamespace());
-  }
-
-  @Bean
-  DiscoveryClient.DiscoveryClientOptionalArgs optionalArgs(
-      EventBus eventBus, HealthCheckHandler healthCheckHandler) {
-    DiscoveryClient.DiscoveryClientOptionalArgs args =
-        new DiscoveryClient.DiscoveryClientOptionalArgs();
-    args.setEventBus(eventBus);
-    args.setHealthCheckHandlerProvider(new StaticProvider<>(healthCheckHandler));
-    return args;
   }
 
   @Bean

@@ -20,14 +20,11 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Pipeline;
-import redis.clients.jedis.ScanParams;
-import redis.clients.jedis.ScanResult;
 import redis.clients.jedis.Transaction;
-import redis.clients.jedis.commands.BinaryJedisCommands;
+import redis.clients.jedis.commands.JedisBinaryCommands;
 import redis.clients.jedis.commands.JedisCommands;
-import redis.clients.jedis.commands.MultiKeyCommands;
-import redis.clients.jedis.commands.RedisPipeline;
-import redis.clients.jedis.commands.ScriptingCommands;
+import redis.clients.jedis.params.ScanParams;
+import redis.clients.jedis.resps.ScanResult;
 import redis.clients.jedis.util.Pool;
 
 public class JedisClientDelegate implements RedisClientDelegate {
@@ -63,55 +60,110 @@ public class JedisClientDelegate implements RedisClientDelegate {
     }
   }
 
+  /*
   @Override
-  public <R> R withMultiClient(Function<MultiKeyCommands, R> f) {
+  public <R> R withMultiClient(Function<JedisCommands, R> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       return f.apply(jedis);
     }
   }
 
   @Override
-  public void withMultiClient(Consumer<MultiKeyCommands> f) {
+  public void withMultiClient(Consumer<Transaction> f) {
     try (Jedis jedis = jedisPool.getResource()) {
-      f.accept(jedis);
+      Transaction transaction = jedis.multi();
+      f.accept(transaction);
+      transaction.exec();
     }
-  }
+  }v*/
 
   @Override
-  public <R> R withBinaryClient(Function<BinaryJedisCommands, R> f) {
+  public <R> R withBinaryClient(Function<JedisBinaryCommands, R> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       return f.apply(jedis);
     }
   }
 
   @Override
-  public void withBinaryClient(Consumer<BinaryJedisCommands> f) {
+  public void withBinaryClient(Consumer<JedisBinaryCommands> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       f.accept(jedis);
     }
   }
 
-  @Override
-  public void withPipeline(Consumer<RedisPipeline> f) {
+  /*@Override
+  public void withPipeline(Consumer<Pipeline> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       f.accept(jedis.pipelined());
     }
   }
 
   @Override
-  public <R> R withPipeline(Function<RedisPipeline, R> f) {
+  public <R> R withPipeline(Function<Pipeline, R> f) {
     try (Jedis jedis = jedisPool.getResource()) {
       return f.apply(jedis.pipelined());
     }
   }
 
   @Override
-  public void syncPipeline(RedisPipeline p) {
+  public void syncPipeline(Pipeline p) {
     if (!(p instanceof Pipeline)) {
       throw new IllegalArgumentException(
           "Invalid RedisPipeline implementation: " + p.getClass().getName());
     }
+    ((Pipeline) p).sync();
+  }
+  */
+  @Override
+  public <R> R withMultiClient(Function<JedisCommands, R> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      return f.apply(jedis);
+    }
+  }
 
+  @Override
+  public void withMultiClient(Consumer<Transaction> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      Transaction transaction = jedis.multi();
+      f.accept(transaction);
+      transaction.exec();
+    }
+  }
+
+  // @Override
+  // public <R> R withBinaryClient(Function<BinaryJedisCommands, R> f) {
+  // try (Jedis jedis = jedisPool.getResource()) {
+  // return f.apply(jedis);
+  // }
+  // }
+
+  // @Override
+  // public void withBinaryClient(Consumer<BinaryJedisCommands>> f) {
+  // try (Jedis jedis = jedisPool.getResource()) {
+  // f.accept(jedis);
+  // }
+  // }
+  //
+  @Override
+  public void withPipeline(Consumer<Pipeline> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      f.accept(jedis.pipelined());
+    }
+  }
+
+  @Override
+  public <R> R withPipeline(Function<Pipeline, R> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      return f.apply(jedis.pipelined());
+    }
+  }
+
+  @Override
+  public void syncPipeline(Pipeline p) {
+    if (!(p instanceof Pipeline)) {
+      throw new IllegalArgumentException(
+          "Invalid RedisPipeline implementation: " + p.getClass().getName());
+    }
     ((Pipeline) p).sync();
   }
 
@@ -158,17 +210,50 @@ public class JedisClientDelegate implements RedisClientDelegate {
     return true;
   }
 
-  @Override
-  public void withScriptingClient(Consumer<ScriptingCommands> f) {
+  /* @Override
+  public void withScriptingClient(Consumer<JedisCommands> f) {
     try (Jedis jedis = jedisPool.getResource()) {
-      f.accept(jedis);
+      JedisCommands jedisCommands = (JedisCommands) jedis;
+      f.accept(jedisCommands);
     }
   }
 
   @Override
-  public <R> R withScriptingClient(Function<ScriptingCommands, R> f) {
+  public <R> R withScriptingClient(Function<JedisCommands, R> f) {
     try (Jedis jedis = jedisPool.getResource()) {
-      return f.apply(jedis);
+      JedisCommands jedisCommands = (JedisCommands) jedis;
+      return f.apply(jedisCommands);
+    }
+  }
+
+  @Override
+  public void withKeyScan(String pattern, int count, Consumer<RedisScanResult> f) {
+    ScanParams params = new ScanParams().match(pattern).count(count);
+    String cursor = ScanParams.SCAN_POINTER_START;
+
+    try (Jedis jedis = jedisPool.getResource()) {
+      do {
+        ScanResult<String> result = jedis.scan(cursor, params);
+
+        final List<String> results = result.getResult();
+        f.accept(() -> results);
+
+        cursor = result.getCursor();
+      } while (!"0".equals(cursor));
+    }
+  } */
+  public void withScriptingClient(Consumer<JedisCommands> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      JedisCommands jedisCommands = (JedisCommands) jedis;
+      f.accept(jedisCommands);
+    }
+  }
+
+  @Override
+  public <R> R withScriptingClient(Function<JedisCommands, R> f) {
+    try (Jedis jedis = jedisPool.getResource()) {
+      JedisCommands jedisCommands = (JedisCommands) jedis;
+      return f.apply(jedisCommands);
     }
   }
 

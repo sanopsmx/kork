@@ -386,13 +386,18 @@ public class RedisLockManager implements RefreshableLockManager {
   }
 
   private Lock findAuthoritativeLockOrNull(Lock lock) {
+    /* Object payload =
+    redisClientDelegate.withScriptingClient(
+        c -> {
+          return c.eval(
+              FIND_SCRIPT, Arrays.asList(lockKey(lock.getName())), Arrays.asList(ownerName));
+        });*/
     Object payload =
         redisClientDelegate.withScriptingClient(
             c -> {
               return c.eval(
                   FIND_SCRIPT, Arrays.asList(lockKey(lock.getName())), Arrays.asList(ownerName));
             });
-
     if (payload == null) {
       return null;
     }
@@ -427,7 +432,6 @@ public class RedisLockManager implements RefreshableLockManager {
                         lockOptions.getLockName(),
                         String.join(";", attributes)));
               });
-
       if (payload == null) {
         throw new LockNotAcquiredException(String.format("Lock not acquired %s", lockOptions));
       }

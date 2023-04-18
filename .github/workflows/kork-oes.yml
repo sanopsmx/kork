@@ -53,8 +53,8 @@ jobs:
                  name = 'nexus'
                  url "https://nexus.opsmx.net/repository/maven-snapshots/"
                   credentials {
-                    username = ${{ secrets.NEXUS_USERNAME }}
-                    password = ${{ secrets.NEXUS_PASSWORD }}
+                    username = admin
+                    password = Opsmx
                          }
                      }
                 }

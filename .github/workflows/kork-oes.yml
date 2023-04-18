@@ -34,7 +34,7 @@ jobs:
               group = 'io.spinnaker.kork'
               apply plugin: 'maven-publish'
 
-                publishing {
+              publishing {
                    publications {
                        maven(MavenPublication) {
                             groupId = 'io.spinnaker.kork'
@@ -58,7 +58,7 @@ jobs:
                          }
                      }
                 }
-              }  
+               }  
                                tasks.withType(GenerateModuleMetadata).configureEach {
                               // The value 'enforced-platform' is provided in the validation error message you got
                       suppressedValidationErrors.add('enforced-platform')

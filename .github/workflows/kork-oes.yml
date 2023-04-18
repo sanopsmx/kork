@@ -34,9 +34,9 @@ jobs:
               group = 'io.spinnaker.kork'
               apply plugin: 'maven-publish'
 
-              publishing {
-                   publications {
-                       maven(MavenPublication) {
+              publishing{
+                   publications{
+                       maven(MavenPublication){
                             groupId = 'io.spinnaker.kork'
                             artifactId = 'NEXUSARTIID'
                             version = "$NEXUS_VERSION"

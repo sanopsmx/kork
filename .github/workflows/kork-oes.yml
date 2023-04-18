@@ -53,8 +53,8 @@ jobs:
                  name = 'nexus'
                  url "https://nexus.opsmx.net/repository/maven-snapshots/"
                   credentials {
-                    username = "admin"
-                    password = "Opsmx"
+                    username = "${{ secrets.NEXUS_USERNAME }}"
+                    password = "${{ secrets.NEXUS_PASSWORD }}"
                          }
                      }
                 }
@@ -74,7 +74,7 @@ jobs:
                sed  s/NEXUSARTIID/$i/g patch > patchnew
                cat patchnew >> $i/$i.gradle
                
-               cat $i/$i.gradle
+               #cat $i/$i.gradle
          
               done
              

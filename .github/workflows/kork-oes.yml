@@ -53,14 +53,13 @@ jobs:
                  name = 'nexus'
                  url "https://nexus.opsmx.net/repository/maven-snapshots/"
                   credentials {
-                    username = admin
-                    password = Opsmx
+                    username = "admin"
+                    password = "Opsmx"
                          }
                      }
                 }
                }  
                                tasks.withType(GenerateModuleMetadata).configureEach {
-                              // The value 'enforced-platform' is provided in the validation error message you got
                       suppressedValidationErrors.add('enforced-platform')
                 }
 

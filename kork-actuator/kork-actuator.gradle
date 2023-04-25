@@ -45,5 +45,7 @@ dependencies {
   testImplementation group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: '3.0.4'
   testImplementation group: 'com.netflix.spectator', name: 'spectator-reg-micrometer', version: '1.5.4'
   //Need to delete at end:end
-
+  constraints{
+    api("org.yaml:snakeyaml:2.0")
+  }
 }

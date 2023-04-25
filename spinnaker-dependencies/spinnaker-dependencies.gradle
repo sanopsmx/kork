@@ -119,7 +119,9 @@ dependencies {
   api("com.netflix.spectator:spectator-reg-micrometer:${versions.spectator}")
 
   api ("io.springfox:springfox-boot-starter:3.0.0")
-
+  constraints{
+    api("org.yaml:snakeyaml:2.0")
+  }
 /*  api("io.springfox:springfox-swagger-ui:${versions.springfoxSwagger}")
   api("io.springfox:springfox-swagger2:${versions.springfoxSwagger}")
   api("org.springdoc:springdoc-openapi-webmvc-core:${versions.openapi}")

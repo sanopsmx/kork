@@ -121,7 +121,7 @@ dependencies {
   api ("io.springfox:springfox-boot-starter:3.0.0")
 
   constraints{
-  api("org.yaml:snakeyaml:2.0")
+    api("org.yaml:snakeyaml:2.0")
     api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0")
     api("org.liquibase:liquibase-core:4.21.0")
   }

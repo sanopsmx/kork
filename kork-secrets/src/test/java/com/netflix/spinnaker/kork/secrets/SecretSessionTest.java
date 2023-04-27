@@ -1,5 +1,6 @@
 package com.netflix.spinnaker.kork.secrets;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doReturn;
@@ -13,9 +14,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.Before;
+import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -27,7 +27,7 @@ public class SecretSessionTest {
   private SecretManager secretManager;
   private SecretSession secretSession;
 
-  @BeforeAll
+  @Before
   public void setup() {
     MockitoAnnotations.initMocks(this);
 
@@ -53,40 +53,39 @@ public class SecretSessionTest {
   @Test
   public void decryptReturnsSecretFromCache() {
     String decrypted = secretSession.decrypt("encrypted:noop!f:test!k:key");
-    Assertions.assertEquals("decrypted", decrypted);
+    assertEquals("decrypted", decrypted);
   }
 
   @Test
   public void decryptAddsToCacheOnCacheMiss() {
-    Assertions.assertEquals(1, secretSession.secretCache.size());
+    assertEquals(1, secretSession.secretCache.size());
     String decrypted = secretSession.decrypt("encrypted:noop!f:unknown!v:test");
-    Assertions.assertEquals("test", decrypted);
-    Assertions.assertEquals(
-        "test", secretSession.secretCache.get("encrypted:noop!f:unknown!v:test"));
-    Assertions.assertEquals(2, secretSession.secretCache.size());
+    assertEquals("test", decrypted);
+    assertEquals("test", secretSession.secretCache.get("encrypted:noop!f:unknown!v:test"));
+    assertEquals(2, secretSession.secretCache.size());
   }
 
   @Test
   public void decryptAsFileReturnsSecretFromCache() {
     String decryptedPath = secretSession.decryptAsFile("encrypted:noop!f:file").toString();
-    Assertions.assertEquals("decryptedFile", decryptedPath);
+    assertEquals("decryptedFile", decryptedPath);
   }
 
   @Test
   public void decryptAsFileAddsToCacheOnCacheMiss() {
     doReturn(Paths.get("tempFile")).when(secretManager).decryptAsFile(any());
-    Assertions.assertEquals(1, secretSession.secretFileCache.size());
+    assertEquals(1, secretSession.secretFileCache.size());
     Path decrypted = secretSession.decryptAsFile("encrypted:noop!f:unknown");
-    Assertions.assertEquals(2, secretSession.secretFileCache.size());
+    assertEquals(2, secretSession.secretFileCache.size());
   }
 
   @Test
   public void clearCachedSecretsShouldClearAllCaches() {
-    Assertions.assertEquals(1, secretSession.secretCache.size());
-    Assertions.assertEquals(1, secretSession.secretFileCache.size());
+    assertEquals(1, secretSession.secretCache.size());
+    assertEquals(1, secretSession.secretFileCache.size());
     secretSession.clearCachedSecrets();
-    Assertions.assertEquals(0, secretSession.secretCache.size());
-    Assertions.assertEquals(0, secretSession.secretFileCache.size());
+    assertEquals(0, secretSession.secretCache.size());
+    assertEquals(0, secretSession.secretFileCache.size());
     verify(secretEngine, times(1)).clearCache();
   }
 }

@@ -122,6 +122,8 @@ dependencies {
 
   constraints{
     api("org.yaml:snakeyaml:2.0")
+    api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.15.0")
+    api("org.liquibase:liquibase-core:4.21.0")
   }
   api("org.codehaus.jettison:jettison:1.5.4")
   api ("com.thoughtworks.xstream:xstream:1.4.20")

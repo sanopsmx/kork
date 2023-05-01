@@ -25,6 +25,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE + 67)
@@ -32,7 +33,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 public class ActuatorEndpointsConfiguration {
 
   @Bean
-  public void configure(HttpSecurity http) throws Exception {
+  public SecurityFilterChain configure(HttpSecurity http) throws Exception {
     http.authorizeHttpRequests(
         (requests) ->
             requests
@@ -40,5 +41,6 @@ public class ActuatorEndpointsConfiguration {
                 .permitAll()
                 .anyRequest()
                 .authenticated());
+    return http.build();
   }
 }

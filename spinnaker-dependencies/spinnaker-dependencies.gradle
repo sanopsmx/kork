@@ -28,7 +28,7 @@ ext {
     spectator        : "1.5.4", //spectator        : "1.0.6",//changed version for PR3 porting
     spek             : "1.1.5",
     spek2            : "2.0.9",
-    springBoot       : "3.0.0",
+    springBoot       : "3.0.6",
     springCloud      : "2022.0.2",
     springfoxSwagger : "3.0.0",//"2.9.2",
     //swagger          : "1.5.20", //this should stay in sync with what springfoxSwagger expects
@@ -97,7 +97,7 @@ dependencies {
   api("org.junit.platform:junit-platform-runner:1.9.2")
   api("org.assertj:assertj-core:3.23.1")
   api("com.amazonaws:aws-java-sdk-sts:1.12.411")
-  api("com.google.cloud:libraries-bom:25.3.0")
+  api("com.google.cloud:libraries-bom:26.13.0")
   api("com.jcraft:jsch.agentproxy.jsch:0.0.9")
   api("com.jcraft:jsch.agentproxy.connector-factory:0.0.9")
   api("io.github.resilience4j:resilience4j-all:2.0.0")
@@ -117,6 +117,7 @@ dependencies {
   api("com.netflix.spectator:spectator-reg-atlas:${versions.spectator}")
   api("com.netflix.spectator:spectator-web-spring:${versions.spectator}")
   api("com.netflix.spectator:spectator-reg-micrometer:${versions.spectator}")
+  api("mysql:mysql-connector-java:8.0.20")
 
   api ("io.springfox:springfox-boot-starter:3.0.0")
 

@@ -32,6 +32,7 @@ dependencies {
 
   // Force component bringing this in to already support spring boot configure.
   compileOnly "org.springframework.boot:spring-boot-autoconfigure"
+  implementation "com.google.http-client:google-http-client-jackson2:1.43.1"
 
   testImplementation "org.mockito:mockito-core"
   testImplementation "junit:junit"

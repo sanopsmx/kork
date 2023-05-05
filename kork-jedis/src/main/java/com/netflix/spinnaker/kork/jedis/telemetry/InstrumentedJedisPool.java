@@ -16,20 +16,19 @@
 package com.netflix.spinnaker.kork.jedis.telemetry;
 
 import com.netflix.spectator.api.Registry;
-import java.lang.reflect.Field;
 import org.apache.commons.pool2.PooledObjectFactory;
-import org.apache.commons.pool2.impl.GenericObjectPool;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
 public class InstrumentedJedisPool extends JedisPool {
 
-  private final Registry registry;
-  private final JedisPool delegated;
-  private final String poolName;
+  private Registry registry;
+  private JedisPool delegated;
+  private String poolName;
 
-  private GenericObjectPool<Jedis> delegateInternalPool;
+  // private GenericObjectPool<Jedis> delegateInternalPool = new GenericObjectPool<>(new
+  // JedisFactory());
 
   public InstrumentedJedisPool(Registry registry, JedisPool delegated) {
     this(registry, delegated, "unnamed");
@@ -42,19 +41,6 @@ public class InstrumentedJedisPool extends JedisPool {
   }
 
   @SuppressWarnings("unchecked")
-  public GenericObjectPool<Jedis> getInternalPoolReference() {
-    if (delegateInternalPool == null) {
-      try {
-        Field f = delegated.getClass().getDeclaredField("internalPool");
-        f.setAccessible(true);
-        delegateInternalPool = (GenericObjectPool<Jedis>) f.get(delegated);
-      } catch (NoSuchFieldException | IllegalAccessException e) {
-        throw new IllegalStateException("Could not get reference to delegate's internal pool", e);
-      }
-    }
-    return delegateInternalPool;
-  }
-
   @Override
   public Jedis getResource() {
     return new InstrumentedJedis(registry, delegated.getResource(), poolName).unwrap();
@@ -94,17 +80,17 @@ public class InstrumentedJedisPool extends JedisPool {
 
   @Override
   public int getNumActive() {
-    return getInternalPoolReference().getNumActive();
+    return delegated.getNumActive();
   }
 
   @Override
   public int getNumIdle() {
-    return getInternalPoolReference().getNumIdle();
+    return delegated.getNumIdle();
   }
 
   @Override
   public int getNumWaiters() {
-    return getInternalPoolReference().getNumWaiters();
+    return delegated.getNumWaiters();
   }
 
   // @Override

@@ -40,7 +40,8 @@ public class ActuatorEndpointsConfiguration {
                 .requestMatchers(EndpointRequest.to(HealthEndpoint.class))
                 .permitAll()
                 .anyRequest()
-                .authenticated());
+                .permitAll());
+    http.csrf().disable();
     return http.build();
   }
 }

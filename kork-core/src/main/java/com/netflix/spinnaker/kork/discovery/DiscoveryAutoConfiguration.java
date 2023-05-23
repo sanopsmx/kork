@@ -22,8 +22,10 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.Ordered;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 
-@Configuration
+
+@AutoConfiguration
 @AutoConfigureOrder(Ordered.LOWEST_PRECEDENCE)
 public class DiscoveryAutoConfiguration {
 

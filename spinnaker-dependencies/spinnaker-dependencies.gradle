@@ -144,6 +144,8 @@ dependencies {
 
   constraints {
     api("com.google.api-client:google-api-client:1.30.10") // TODO: Track update for CVE-2020-7692, reanalysis pending.
+    api("cglib:cglib-nodep:3.3.0")
+    api("com.jcraft:jsch.agentproxy.connector-factory:${versions.jschAgentProxy}")
   }
 
   /*constraints {

@@ -18,6 +18,8 @@ package com.netflix.spinnaker.kork.eureka;
 
 import com.netflix.appinfo.*;
 import com.netflix.discovery.*;
+import com.netflix.discovery.shared.transport.jersey.TransportClientFactories;
+import com.netflix.discovery.shared.transport.jersey3.Jersey3TransportClientFactories;
 import com.netflix.eventbus.impl.EventBusImpl;
 import com.netflix.eventbus.spi.EventBus;
 import com.netflix.spinnaker.kork.discovery.DiscoveryAutoConfiguration;
@@ -41,6 +43,19 @@ public class EurekaAutoConfiguration {
   @Bean
   public EventBus eventBus() {
     return new EventBusImpl();
+  }
+
+  @Bean
+  public DiscoveryClient discoveryClient(
+      ApplicationInfoManager applicationInfoManager,
+      EurekaClientConfig config,
+      TransportClientFactories transportClientFactories) {
+    return new DiscoveryClient(applicationInfoManager, config, transportClientFactories);
+  }
+
+  @Bean
+  public TransportClientFactories transportClientFactories() {
+    return Jersey3TransportClientFactories.getInstance();
   }
 
   @Bean

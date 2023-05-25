@@ -34,13 +34,12 @@ public class ActuatorEndpointsConfiguration {
 
   @Bean
   public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-    http.authorizeHttpRequests(
-        (requests) ->
-            requests
-                .requestMatchers(EndpointRequest.to(HealthEndpoint.class))
-                .permitAll()
-                .anyRequest()
-                .permitAll());
+    http.securityMatcher(EndpointRequest.to(HealthEndpoint.class));
+    http.authorizeHttpRequests()
+        .requestMatchers(EndpointRequest.to(HealthEndpoint.class))
+        .permitAll()
+        .anyRequest()
+        .authenticated();
     http.csrf().disable();
     return http.build();
   }

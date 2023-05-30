@@ -222,7 +222,9 @@ public class SqlTestUtil {
 
     Liquibase migrate;
     try {
-      DatabaseChangeLog changeLog = new DatabaseChangeLog();
+      // New Liquibase version does null checks for changeLog. Hence changeLog filePath is passed in
+      // below constructor.
+      DatabaseChangeLog changeLog = new DatabaseChangeLog("db/changelog-master.yml");
 
       changeLog.setChangeLogParameters(
           new ChangeLogParameters(

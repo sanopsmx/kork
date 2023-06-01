@@ -4,7 +4,7 @@ on:
   workflow_call:
   push:
     branches:
-    - OP-20499-fix
+    - OES-1.30.x-master-adhoc
  
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
@@ -25,7 +25,7 @@ jobs:
           cache: 'gradle'
       - name: Build
         env:
-          NEXUS_VERSION: 1-2-lut-SNAPSHOT
+          NEXUS_VERSION: 1-0-SNAPSHOT
         run: |
             
               cat <<EOF>> patch

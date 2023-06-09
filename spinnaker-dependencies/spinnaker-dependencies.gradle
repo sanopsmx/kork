@@ -134,6 +134,9 @@ dependencies {
     api("commons-net:commons-net:3.9.0")
     api("net.minidev:json-smart:2.4.10")
     api("org.json:json:20230227")
+    api("org.jsoup:jsoup:1.15.3")
+    api("com.fasterxml.woodstox:woodstox-core:6.4.0")
+    api("net.minidev:json-smart:2.4.9")
   }
 
 

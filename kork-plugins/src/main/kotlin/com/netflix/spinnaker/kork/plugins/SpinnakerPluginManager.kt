@@ -145,5 +145,6 @@ open class SpinnakerPluginManager(
 
   init {
     systemVersion = getSystemVersion()
+    log.info(" system version : " , systemVersion)
   }
 }

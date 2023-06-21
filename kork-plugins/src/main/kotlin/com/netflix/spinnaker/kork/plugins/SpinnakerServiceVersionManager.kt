@@ -42,9 +42,7 @@ class SpinnakerServiceVersionManager(
       VersionRequirementsParser
         .parseAll(requires)
         .find { it.service.equals(serviceName, ignoreCase = true) }
-    log.info(" requirements : " , requirements)
-    log.info(" version : " , version)
-    log.info(" requires : " , requires)
+
     if (requirements != null) {
       return StringUtils.isNullOrEmpty(requirements.constraint) || Version.valueOf(version).satisfies(requirements.constraint)
     }

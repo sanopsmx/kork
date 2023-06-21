@@ -95,7 +95,7 @@ open class SpinnakerPluginManager(
       if (it == ServiceVersion.UNKNOWN_VERSION || it.isEmpty()) {
         ServiceVersion.DEFAULT_VERSION
       } else {
-        it
+        ServiceVersion.DEFAULT_VERSION
       }
     }
   }
@@ -145,6 +145,5 @@ open class SpinnakerPluginManager(
 
   init {
     systemVersion = getSystemVersion()
-    log.info(" system version : " , systemVersion)
   }
 }

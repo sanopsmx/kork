@@ -28,7 +28,7 @@ ext {
     spectator        : "1.5.4", //spectator        : "1.0.6",//changed version for PR3 porting
     spek             : "1.1.5",
     spek2            : "2.0.9",
-    springBoot       : "3.0.6",
+    springBoot       : "3.0.7",
     springCloud      : "2022.0.2",
     springfoxSwagger : "3.0.0",//"2.9.2",
     //swagger          : "1.5.20", //this should stay in sync with what springfoxSwagger expects
@@ -153,7 +153,6 @@ dependencies {
     api("com.nhaarman:mockito-kotlin:1.6.0")
     api("mysql:mysql-connector-java:8.0.28")
     api("commons-io:commons-io:2.11.0")
-    api("org.springframework.boot:spring-boot-autoconfigure:3.0.7")
   }
 
   /*constraints {

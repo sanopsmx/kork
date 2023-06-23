@@ -6,6 +6,7 @@ on:
     - OES-1.30.x-master-adhoc 
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
+  CONTAINER_REGISTRY: quay.io/opsmxpublic
 jobs:
   publish-kork:
     runs-on: ubuntu-latest

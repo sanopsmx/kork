@@ -1,0 +1,639 @@
+name:  kork publish and Build All except deck
+on:
+  workflow_call:
+  push:
+    branches:
+    - OES-1.30.x-master-adhoc 
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
+jobs:
+  publish-kork:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Build
+        env:
+          NEXUS_VERSION: 1-0-SNAPSHOT
+        run: |
+            
+              cat <<EOF>> patch
+              
+              version = "$NEXUS_VERSION"
+              group = 'io.spinnaker.kork'
+              apply plugin: 'maven-publish'
+
+              publishing{
+                   publications{
+                       maven(MavenPublication){
+                            groupId = 'io.spinnaker.kork'
+                            artifactId = 'NEXUSARTIID'
+                            version = "$NEXUS_VERSION"
+                            from components.java
+                 pom {
+                   name = 'NEXUSARTIID'
+                   description = 'A description of my library'
+                   }
+                 }
+              }
+
+              repositories {
+                 maven{
+                 name = 'nexus'
+                 url "https://nexus.opsmx.net/repository/maven-snapshots/"
+                  credentials {
+                    username = "${{ secrets.NEXUS_USERNAME }}"
+                    password = "${{ secrets.NEXUS_PASSWORD }}"
+                         }
+                     }
+                }
+               }  
+                               tasks.withType(GenerateModuleMetadata).configureEach {
+                      suppressedValidationErrors.add('enforced-platform')
+                }
+
+              EOF
+             
+              ls -d */  | grep -v  "gradle" | sed 's/\///g' > ds.txt
+              
+              cat ds.txt
+
+              for i in $(cat ds.txt) 
+              do
+               sed  s/NEXUSARTIID/$i/g patch > patchnew
+               cat patchnew >> $i/$i.gradle
+               
+               #cat $i/$i.gradle
+         
+              done
+             
+              sed -e '/components\.java/ s/^#*/\/\//' -i kork-bom/kork-bom.gradle
+              sed -e '/components\.java/ s/^#*/\/\//' -i spinnaker-dependencies/spinnaker-dependencies.gradle
+          
+                 echo "checking -----------------------"
+              ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
+              
+              
+  publish-fiat:
+    runs-on: ubuntu-latest
+    needs: [publish-kork]
+    steps:
+      - name: Checkout OpsMx Fiat repo
+        uses: actions/checkout@v2
+        with:
+         repository: opsmx/fiat-oes
+         ref: refs/heads/OES-1.30.x
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Build
+        env:
+          NEXUS_VERSION: 1-0-SNAPSHOT
+        run: |
+            
+              cat <<EOF>> patch
+              
+              version = "$NEXUS_VERSION"
+              group = 'io.spinnaker.fiat'
+              apply plugin: 'maven-publish'
+
+              publishing{
+                   publications{
+                       maven(MavenPublication){
+                            groupId = 'io.spinnaker.fiat'
+                            artifactId = 'NEXUSARTIID'
+                            version = "$NEXUS_VERSION"
+                            from components.java
+                 pom {
+                   name = 'NEXUSARTIID'
+                   description = 'A description of my library'
+                   }
+                 }
+              }
+
+              repositories {
+                 maven{
+                 name = 'nexus'
+                 url "https://nexus.opsmx.net/repository/maven-snapshots/"
+                  credentials {
+                    username = "${{ secrets.NEXUS_USERNAME }}"
+                    password = "${{ secrets.NEXUS_PASSWORD }}"
+                         }
+                     }
+                }
+               }  
+                               tasks.withType(GenerateModuleMetadata).configureEach {
+                                         suppressedValidationErrors.add('enforced-platform')
+                                       }
+
+              EOF
+             
+              ls -d */  | grep "fiat" | sed 's/\///g' > ds.txt
+              
+              cat ds.txt
+              
+
+              for i in $(cat ds.txt) 
+              do
+               sed  s/NEXUSARTIID/$i/g patch > patchnew
+               cat patchnew >> $i/$i.gradle
+             
+              done
+               sed -e '/components\.java/ s/^#*/\/\//' -i fiat-bom/fiat-bom.gradle
+              ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
+
+  clouddriver-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/clouddriver-oes
+          ref: refs/heads/OES-1.30.x  
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-clouddriver-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: |
+     
+          ./gradlew --no-daemon -PenableCrossCompilerPlugin=true clouddriver-web:installDist -x test 
+                        
+            extra_opts='"-Djava.security.egd=file:/dev/./urandom" "-Dspring.config.import=optional:/opt/spinnaker/config/" "--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED" "--add-exports=java.base/sun.security.rsa=ALL-UNNAMED" "--add-exports=java.base/sun.security.pkcs=ALL-UNNAMED" "--add-exports=java.base/sun.security.x509=ALL-UNNAMED"'
+            
+            extra_opts_escaped=$(sed 's/[\/&]/\\&/g' <<< "$extra_opts")
+              
+            echo $extra_opts_escaped
+            
+            #sed "s/^\(DEFAULT_JVM_OPTS=\'.*\)\'$/\1 $extra_opts_escaped\'/" -i clouddriver-web/build/install/clouddriver/bin/clouddriver               
+            
+                sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/"  -i clouddriver-web/build/install/clouddriver/bin/clouddriver
+                              
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            TARGETARCH=amd64
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"
+      - name: dockerBuildpushjaeger
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            TARGETARCH=amd64
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"    
+
+  echo-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/echo-oes
+          ref: refs/heads/OES-1.30.x
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-echo-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true echo-web:installDist -x test 
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"
+      - name: dockerBuildpushdev
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"                
+  
+  fiat-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/fiat-oes
+          ref: refs/heads/OES-1.30.x
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-fiat-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true fiat-web:installDist -x test 
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+      - name: dockerBuildpushjaeger
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"   
+     
+  front50-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/front50-oes
+          ref: refs/heads/OES-1.30.x     
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-front50-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-build-cache --no-daemon -PenableCrossCompilerPlugin=true front50-web:installDist -x test 
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+      - name: dockerBuildpushjaeger
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"  
+  
+  gate-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2        
+        with:
+          repository: opsmx/gate-oes
+          ref: refs/heads/OES-1.30.x
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo Build number is ${{ github.run_number }}
+          
+           echo git tag is ${GITHUB_REF#refs/*/}
+          echo ::set-output name=REPO::ubi8-gate-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true gate-web:installDist -x test 
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEVERSION=v4.0.3.2-rc1
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+      - name: dockerBuildpushdev
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEVERSION=v4.0.3.2-rc1
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"
+            
+  igor-build-push:
+    runs-on: ubuntu-latest 
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/igor-oes
+          ref: refs/heads/OES-1.30.x
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-igor-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: |
+        
+            ./gradlew --no-daemon -PenableCrossCompilerPlugin=true igor-web:installDist -x test 
+            
+            #extra_opts='"--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED"'
+            
+            
+            extra_opts='"-Djava.security.egd=file:/dev/./urandom" "-Dspring.config.import=optional:/opt/spinnaker/config/" "--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED"'
+
+            extra_opts_escaped=$(sed 's/[\/&]/\\&/g' <<< "$extra_opts")
+              
+            echo $extra_opts_escaped
+            
+            #sed "s/^\(DEFAULT_JVM_OPTS=\'.*\)\'$/\1 $extra_opts_escaped\'/" -i igor-web/build/install/igor/bin/igor               
+            
+
+                sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/" -i  igor-web/build/install/igor/bin/igor 
+
+            cat igor-web/build/install/igor/bin/igor
+              
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+      - name: dockerBuildpushdev
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"                    
+ 
+  kayenta-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/kayenta-oes
+          ref: refs/heads/OES-1.30.x
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-kayenta-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true kayenta-web:installDist -x test 
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"        
+ 
+  orca-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/orca-oes
+          ref: refs/heads/OES-1.30.x      
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-orca-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-build-cache --no-daemon -PenableCrossCompilerPlugin=true orca-web:installDist -x test 
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+      - name: dockerBuildpushjaeger
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"    
+            
+  
+  rosco-build-push:
+    runs-on: ubuntu-latest
+    needs: [publish-fiat]
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          repository: opsmx/rosco-oes
+          ref: refs/heads/OES-1.30.x
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - uses: actions/setup-java@v2
+        with:
+          java-version: 17
+          distribution: 'temurin'
+      - name: Prepare build variables
+        id: build_variables
+        run: |
+          echo ::set-output name=REPO::ubi8-rosco-cve
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+      - name: Login to Quay
+        uses: docker/login-action@v1
+        # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
+        with:
+          registry: quay.io
+          username: ${{ secrets.QUAY_USERNAME }}
+          password: ${{ secrets.QUAY_KEY }}
+      - name: Build
+        env:
+          ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
+        run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true rosco-web:installDist -x test 
+
+      - name: dockerBuildpush
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-fips
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+      - name: dockerBuildpushdev
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: docker/ubi8/Dockerfile-dev
+          push: true
+          tags: |
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"                  

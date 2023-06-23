@@ -313,6 +313,7 @@ jobs:
  
   publish-orca:
     runs-on: ubuntu-latest
+    needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2        
         with:
@@ -726,7 +727,7 @@ jobs:
  
   kayenta-build-push:
     runs-on: ubuntu-latest
-    needs: [publish-fiat,publish-orca]
+    needs: [publish-orca]
     steps:
       - uses: actions/checkout@v2
         with:

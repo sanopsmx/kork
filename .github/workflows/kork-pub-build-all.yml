@@ -90,7 +90,7 @@ jobs:
         uses: actions/checkout@v2
         with:
          repository: opsmx/fiat-oes
-         ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+         ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -161,7 +161,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
          repository: opsmx/clouddriver-oes
-         ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+         ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -244,7 +244,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
          repository: opsmx/front50-oes
-         ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+         ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -318,7 +318,7 @@ jobs:
       - uses: actions/checkout@v2        
         with:
           repository: opsmx/orca-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -390,7 +390,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/clouddriver-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -468,7 +468,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/deck-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -526,7 +526,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/echo-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -576,7 +576,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/fiat-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -626,7 +626,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/front50-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge  
+          ref: refs/heads/OES-1.30.1  
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -677,7 +677,7 @@ jobs:
       - uses: actions/checkout@v2        
         with:
           repository: opsmx/gate-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -734,7 +734,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/igor-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -802,7 +802,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/kayenta-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -844,7 +844,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/orca-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge    
+          ref: refs/heads/OES-1.30.1    
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -896,7 +896,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/rosco-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx

@@ -505,11 +505,11 @@ jobs:
         run: |
            imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
              echo $imageName
-             echo "igor=$imageName" >> $GITHUB_OUTPUT
+             echo "deck=$imageName" >> $GITHUB_OUTPUT
              
            devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
              echo $devimageName
-             echo "igor-dev=$devimageName" >> $GITHUB_OUTPUT
+             echo "deck-dev=$devimageName" >> $GITHUB_OUTPUT
              
   echo-build-push:
     runs-on: ubuntu-latest
@@ -1021,8 +1021,7 @@ jobs:
   halyard-build-push:
     runs-on: ubuntu-latest
     outputs:
-      halyard: ${{ steps.get-img-name.outputs.halayrd }}
-      halayrd-dev: ${{ steps.get-img-name.outputs.halayrd-dev }}
+      halyard: ${{ steps.get-img-name.outputs.halyard }}
     needs: [publish-front50,publish-clouddriver]
     steps:
       - uses: actions/checkout@v2
@@ -1053,7 +1052,6 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true halyard-web:installDist -x test 
-
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -1068,10 +1066,6 @@ jobs:
            imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
              echo $imageName
              echo "halyard=$imageName" >> $GITHUB_OUTPUT
-             
-           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
-             echo $devimageName
-             echo "halyard-dev=$devimageName" >> $GITHUB_OUTPUT
                      
   outputs:
     runs-on: ubuntu-latest

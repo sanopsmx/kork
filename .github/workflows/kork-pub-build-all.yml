@@ -377,8 +377,8 @@ jobs:
   clouddriver-build-push:
     runs-on: ubuntu-latest
     outputs:
-      clouddriver: ${{ steps.get-build-name.outputs.clouddriver }}
-      clouddriver-dev: ${{ steps.get-build-name.outputs.clouddriver-dev }}
+      clouddriver: ${{ steps.get-img-name.outputs.clouddriver }}
+      clouddriver-dev: ${{ steps.get-img-name.outputs.clouddriver-dev }}
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
@@ -452,8 +452,8 @@ jobs:
   deck-build-push:
     runs-on: ubuntu-latest
     outputs:
-      deck: ${{ steps.get-build-name.outputs.deck }}
-      deck-dev: ${{ steps.get-build-name.outputs.deck-dev }}    
+      deck: ${{ steps.get-img-name.outputs.deck }}
+      deck-dev: ${{ steps.get-img-name.outputs.deck-dev }}    
     steps:
       - uses: actions/checkout@v2
         with:
@@ -514,8 +514,8 @@ jobs:
   echo-build-push:
     runs-on: ubuntu-latest
     outputs:
-      echo: ${{ steps.get-build-name.outputs.echo }}
-      echo-dev: ${{ steps.get-build-name.outputs.echo-dev }}    
+      echo: ${{ steps.get-img-name.outputs.echo }}
+      echo-dev: ${{ steps.get-img-name.outputs.echo-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
@@ -577,8 +577,8 @@ jobs:
   fiat-build-push:
     runs-on: ubuntu-latest
     outputs:
-      fiat: ${{ steps.get-build-name.outputs.fiat }}
-      fiat-dev: ${{ steps.get-build-name.outputs.fiat-dev }}    
+      fiat: ${{ steps.get-img-name.outputs.fiat }}
+      fiat-dev: ${{ steps.get-img-name.outputs.fiat-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
@@ -638,8 +638,8 @@ jobs:
   front50-build-push:
     runs-on: ubuntu-latest
     outputs:
-      front50: ${{ steps.get-build-name.outputs.front50 }}
-      front50-dev: ${{ steps.get-build-name.outputs.front50-dev }}    
+      front50: ${{ steps.get-img-name.outputs.front50 }}
+      front50-dev: ${{ steps.get-img-name.outputs.front50-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
@@ -700,8 +700,8 @@ jobs:
   gate-build-push:
     runs-on: ubuntu-latest
     outputs:
-      gate: ${{ steps.get-build-name.outputs.gate }}
-      gate-dev: ${{ steps.get-build-name.outputs.gate-dev }}    
+      gate: ${{ steps.get-img-name.outputs.gate }}
+      gate-dev: ${{ steps.get-img-name.outputs.gate-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2        
@@ -769,8 +769,8 @@ jobs:
   igor-build-push:
     runs-on: ubuntu-latest
     outputs:
-      igor: ${{ steps.get-build-name.outputs.igor }}
-      igor-dev: ${{ steps.get-build-name.outputs.igor-dev }}    
+      igor: ${{ steps.get-img-name.outputs.igor }}
+      igor-dev: ${{ steps.get-img-name.outputs.igor-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
@@ -841,8 +841,8 @@ jobs:
   kayenta-build-push:
     runs-on: ubuntu-latest
     outputs:
-      kayenta: ${{ steps.get-build-name.outputs.kayenta }}
-      kayenta-dev: ${{ steps.get-build-name.outputs.kayenta-dev }}  
+      kayenta: ${{ steps.get-img-name.outputs.kayenta }}
+      kayenta-dev: ${{ steps.get-img-name.outputs.kayenta-dev }}  
     needs: [publish-orca]
     steps:
       - uses: actions/checkout@v2
@@ -896,8 +896,8 @@ jobs:
   orca-build-push:
     runs-on: ubuntu-latest
     outputs:
-      orca: ${{ steps.get-build-name.outputs.orca }}
-      orca-dev: ${{ steps.get-build-name.outputs.orca-dev }}
+      orca: ${{ steps.get-img-name.outputs.orca }}
+      orca-dev: ${{ steps.get-img-name.outputs.orca-dev }}
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
@@ -959,8 +959,8 @@ jobs:
   rosco-build-push:
     runs-on: ubuntu-latest
     outputs:
-      rosco: ${{ steps.get-build-name.outputs.rosco }}
-      rosco-dev: ${{ steps.get-build-name.outputs.rosco-dev }}
+      rosco: ${{ steps.get-img-name.outputs.rosco }}
+      rosco-dev: ${{ steps.get-img-name.outputs.rosco-dev }}
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
@@ -1021,8 +1021,8 @@ jobs:
   halyard-build-push:
     runs-on: ubuntu-latest
     outputs:
-      halyard: ${{ steps.get-build-name.outputs.halayrd }}
-      halayrd-dev: ${{ steps.get-build-name.outputs.halayrd-dev }}
+      halyard: ${{ steps.get-img-name.outputs.halayrd }}
+      halayrd-dev: ${{ steps.get-img-name.outputs.halayrd-dev }}
     needs: [publish-front50,publish-clouddriver]
     steps:
       - uses: actions/checkout@v2

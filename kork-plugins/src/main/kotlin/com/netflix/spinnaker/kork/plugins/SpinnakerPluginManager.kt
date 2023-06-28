@@ -95,6 +95,7 @@ open class SpinnakerPluginManager(
       if (it == ServiceVersion.UNKNOWN_VERSION || it.isEmpty()) {
         ServiceVersion.DEFAULT_VERSION
       } else {
+        log.info(" setting the service version to default")
         ServiceVersion.DEFAULT_VERSION
       }
     }

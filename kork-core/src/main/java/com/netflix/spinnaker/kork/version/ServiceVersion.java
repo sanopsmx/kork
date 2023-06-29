@@ -48,6 +48,7 @@ public class ServiceVersion {
    */
   @Nonnull
   public String resolve() {
+    log.info(" resolvedServiceVersion before : ", resolvedServiceVersion);
     if (resolvedServiceVersion == null) {
       for (VersionResolver resolver : resolvers) {
         final String resolverName = resolver.getClass().getSimpleName();
@@ -69,7 +70,7 @@ public class ServiceVersion {
         resolvedServiceVersion = UNKNOWN_VERSION;
       }
     }
-
+    log.info(" resolvedServiceVersion before return : ", resolvedServiceVersion);
     return resolvedServiceVersion;
   }
 }

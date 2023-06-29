@@ -7,6 +7,7 @@ on:
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g
   CONTAINER_REGISTRY: quay.io/opsmxpublic
+  
 jobs:
   publish-kork:
     runs-on: ubuntu-latest
@@ -80,8 +81,7 @@ jobs:
           
                  echo "checking -----------------------"
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
-              
-              
+                           
   publish-fiat:
     runs-on: ubuntu-latest
     needs: [publish-kork]
@@ -90,7 +90,7 @@ jobs:
         uses: actions/checkout@v2
         with:
          repository: opsmx/fiat-oes
-         ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+         ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -161,7 +161,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
          repository: opsmx/clouddriver-oes
-         ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+         ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -212,9 +212,8 @@ jobs:
              
               ls -d */  | grep "clouddriver" | sed 's/\///g' > ds.txt
               
-              cat ds.txt
+              #cat ds.txt
               
-
               for i in $(cat ds.txt) 
               do
                sed  s/NEXUSARTIID/$i/g patch > patchnew
@@ -230,13 +229,10 @@ jobs:
                cat patchnew >> cats/$i/$i.gradle
              
               done
- 
-             
               sed -e '/components\.java/ s/^#*/\/\//' -i clouddriver-bom/clouddriver-bom.gradle
           
-                ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
+              ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
                 
- 
   publish-front50:
     runs-on: ubuntu-latest
     needs: [publish-fiat]
@@ -244,7 +240,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
          repository: opsmx/front50-oes
-         ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+         ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -308,8 +304,6 @@ jobs:
               sed -e '/components\.java/ s/^#*/\/\//' -i front50-bom/front50-bom.gradle
           
                 ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test               
-   
-   
  
   publish-orca:
     runs-on: ubuntu-latest
@@ -318,7 +312,7 @@ jobs:
       - uses: actions/checkout@v2        
         with:
           repository: opsmx/orca-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2
@@ -369,9 +363,6 @@ jobs:
              
               ls -d */  | grep "orca\|keiko" | sed 's/\///g' > ds.txt
               
-              # cat ds.txt
-              
-
               for i in $(cat ds.txt) 
               do
                sed  s/NEXUSARTIID/$i/g patch > patchnew
@@ -385,12 +376,15 @@ jobs:
 
   clouddriver-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      clouddriver: ${{ steps.get-img-name.outputs.clouddriver }}
+      clouddriver-dev: ${{ steps.get-img-name.outputs.clouddriver-dev }}
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/clouddriver-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -422,13 +416,10 @@ jobs:
             
             extra_opts_escaped=$(sed 's/[\/&]/\\&/g' <<< "$extra_opts")
               
-            echo $extra_opts_escaped
-            
-            #sed "s/^\(DEFAULT_JVM_OPTS=\'.*\)\'$/\1 $extra_opts_escaped\'/" -i clouddriver-web/build/install/clouddriver/bin/clouddriver               
-            
-                sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/"  -i clouddriver-web/build/install/clouddriver/bin/clouddriver
+            sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/"  -i clouddriver-web/build/install/clouddriver/bin/clouddriver
                               
       - name: dockerBuildpush
+        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -436,9 +427,9 @@ jobs:
             TARGETARCH=amd64
           file: docker/ubi8/Dockerfile-fips
           push: true
-          tags: |
-            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"
-      - name: dockerBuildpushjaeger
+          tags: "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"
+      - name: dockerBuildpushjaeger      
+        id: docker_build-dev
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -446,16 +437,28 @@ jobs:
             TARGETARCH=amd64
           file: docker/ubi8/Dockerfile-dev
           push: true
-          tags: |
-            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"    
+          tags:  "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"          
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "clouddriver=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "clouddriver-dev=$devimageName" >> $GITHUB_OUTPUT
 
   deck-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      deck: ${{ steps.get-img-name.outputs.deck }}
+      deck-dev: ${{ steps.get-img-name.outputs.deck-dev }}    
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/deck-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -488,23 +491,37 @@ jobs:
                 sed -i 's/\r//' docker/run-apache2.sh
               
                ./gradlew build --no-daemon -PskipTests 
-
       - name: dockerBuildpush
+        id: docker_build
         uses: docker/build-push-action@v2
         with:
           context: .
           file: docker/ubi8/Dockerfile
           push: true
           tags: |
-            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}" 
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "deck=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "deck-dev=$devimageName" >> $GITHUB_OUTPUT
+             
   echo-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      echo: ${{ steps.get-img-name.outputs.echo }}
+      echo-dev: ${{ steps.get-img-name.outputs.echo-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/echo-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -546,15 +563,28 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"                
-  
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "echo=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "echo-dev=$devimageName" >> $GITHUB_OUTPUT
+             
   fiat-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      fiat: ${{ steps.get-img-name.outputs.fiat }}
+      fiat-dev: ${{ steps.get-img-name.outputs.fiat-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/fiat-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -579,7 +609,6 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true fiat-web:installDist -x test 
-
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -596,15 +625,27 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"   
-     
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "fiat=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "fiat-dev=$devimageName" >> $GITHUB_OUTPUT
   front50-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      front50: ${{ steps.get-img-name.outputs.front50 }}
+      front50-dev: ${{ steps.get-img-name.outputs.front50-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/front50-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge  
+          ref: refs/heads/OES-1.30.1  
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -625,12 +666,10 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_KEY }}
-
       - name: Build
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: ./gradlew --no-build-cache --no-daemon -PenableCrossCompilerPlugin=true front50-web:installDist -x test 
-
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -647,15 +686,28 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"  
-  
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "front50=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "front50-dev=$devimageName" >> $GITHUB_OUTPUT
+
   gate-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      gate: ${{ steps.get-img-name.outputs.gate }}
+      gate-dev: ${{ steps.get-img-name.outputs.gate-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2        
         with:
           repository: opsmx/gate-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -683,7 +735,6 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true gate-web:installDist -x test 
-
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -704,15 +755,28 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"
-            
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "gate=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "gate-dev=$devimageName" >> $GITHUB_OUTPUT   
+   
   igor-build-push:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
+    outputs:
+      igor: ${{ steps.get-img-name.outputs.igor }}
+      igor-dev: ${{ steps.get-img-name.outputs.igor-dev }}    
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/igor-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -740,22 +804,13 @@ jobs:
         
             ./gradlew --no-daemon -PenableCrossCompilerPlugin=true igor-web:installDist -x test 
             
-            #extra_opts='"--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED"'
-            
-            
             extra_opts='"-Djava.security.egd=file:/dev/./urandom" "-Dspring.config.import=optional:/opt/spinnaker/config/" "--add-opens=java.base/sun.net=ALL-UNNAMED" "--add-exports=java.base/sun.net=ALL-UNNAMED" "--add-opens=java.base/java.time=ALL-UNNAMED"'
 
             extra_opts_escaped=$(sed 's/[\/&]/\\&/g' <<< "$extra_opts")
-              
-            echo $extra_opts_escaped
-            
-            #sed "s/^\(DEFAULT_JVM_OPTS=\'.*\)\'$/\1 $extra_opts_escaped\'/" -i igor-web/build/install/igor/bin/igor               
-            
+                      
+            sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/" -i  igor-web/build/install/igor/bin/igor 
 
-                sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/" -i  igor-web/build/install/igor/bin/igor 
-
-            cat igor-web/build/install/igor/bin/igor
-              
+            #cat igor-web/build/install/igor/bin/igor              
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -772,15 +827,28 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"                    
- 
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "igor=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "igor-dev=$devimageName" >> $GITHUB_OUTPUT
+             
   kayenta-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      kayenta: ${{ steps.get-img-name.outputs.kayenta }}
+      kayenta-dev: ${{ steps.get-img-name.outputs.kayenta-dev }}  
     needs: [publish-orca]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/kayenta-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -814,15 +882,28 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"        
- 
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "kayenta=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $devimageName
+             echo "kayenta-dev=$devimageName" >> $GITHUB_OUTPUT 
+             
   orca-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      orca: ${{ steps.get-img-name.outputs.orca }}
+      orca-dev: ${{ steps.get-img-name.outputs.orca-dev }}
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/orca-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge    
+          ref: refs/heads/OES-1.30.1    
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -843,7 +924,6 @@ jobs:
           registry: quay.io
           username: ${{ secrets.QUAY_USERNAME }}
           password: ${{ secrets.QUAY_KEY }}
-
       - name: Build
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
@@ -865,16 +945,28 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"    
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "orca=$imageName" >> $GITHUB_OUTPUT
             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "orca-dev=$devimageName" >> $GITHUB_OUTPUT          
   
   rosco-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      rosco: ${{ steps.get-img-name.outputs.rosco }}
+      rosco-dev: ${{ steps.get-img-name.outputs.rosco-dev }}
     needs: [publish-fiat]
     steps:
       - uses: actions/checkout@v2
         with:
           repository: opsmx/rosco-oes
-          ref: refs/heads/OES-1.30.x-synch-1.30.1-merge
+          ref: refs/heads/OES-1.30.1
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -899,7 +991,6 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true rosco-web:installDist -x test 
-
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -916,11 +1007,22 @@ jobs:
           push: true
           tags: |
             "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"   
-
-
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "rosco=$imageName" >> $GITHUB_OUTPUT
+             
+           devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
+             echo $devimageName
+             echo "rosco-dev=$devimageName" >> $GITHUB_OUTPUT
 
   halyard-build-push:
     runs-on: ubuntu-latest
+    outputs:
+      halyard: ${{ steps.get-img-name.outputs.halyard }}
+    needs: [publish-front50,publish-clouddriver]
     steps:
       - uses: actions/checkout@v2
         with:
@@ -950,7 +1052,6 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_version: ${{ steps.build_variables.outputs.VERSION }}
         run: ./gradlew --no-daemon -PenableCrossCompilerPlugin=true halyard-web:installDist -x test 
-
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
@@ -958,4 +1059,50 @@ jobs:
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
-            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"                
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"     
+      - name: Get the image name
+        id: get-img-name  
+        run: |
+           imageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}
+             echo $imageName
+             echo "halyard=$imageName" >> $GITHUB_OUTPUT
+                     
+  outputs:
+    runs-on: ubuntu-latest
+    needs: [clouddriver-build-push,deck-build-push,echo-build-push,fiat-build-push,front50-build-push,gate-build-push,igor-build-push,kayenta-build-push,orca-build-push,rosco-build-push,halyard-build-push]
+    if: always()
+    steps:
+    - name: Check out Repository
+      uses: actions/checkout@v3
+    - name: Get Images List
+      run: | 
+         echo "--------------------Fips Docker Imgaes----------------" 
+
+        
+           echo ${{ needs.clouddriver-build-push.outputs.clouddriver }}
+           echo ${{ needs.deck-build-push.outputs.deck }} 
+           echo ${{ needs.echo-build-push.outputs.echo }} 
+           echo ${{ needs.fiat-build-push.outputs.fiat }} 
+           echo ${{ needs.front50-build-push.outputs.front50 }} 
+           echo ${{ needs.gate-build-push.outputs.gate }} 
+           echo ${{ needs.igor-build-push.outputs.igor }} 
+           echo ${{ needs.kayenta-build-push.outputs.kayenta }} 
+           echo ${{ needs.orca-build-push.outputs.orca }} 
+           echo ${{ needs.rosco-build-push.outputs.rosco }} 
+           echo ${{ needs.halyard-build-push.outputs.halyard }} 
+
+           
+           echo "--------------------Dev Docker Imgaes----------------" 
+           
+           echo ${{ needs.clouddriver-build-push.outputs.clouddriver-dev }}
+           echo ${{ needs.deck-build-push.outputs.deck }} 
+           echo ${{ needs.echo-build-push.outputs.echo-dev }} 
+           echo ${{ needs.fiat-build-push.outputs.fiat-dev }} 
+           echo ${{ needs.front50-build-push.outputs.front50-dev }} 
+           echo ${{ needs.gate-build-push.outputs.gate-dev }} 
+           echo ${{ needs.igor-build-push.outputs.igor-dev }} 
+           echo ${{ needs.kayenta-build-push.outputs.kayenta }} 
+           echo ${{ needs.orca-build-push.outputs.orca-dev}} 
+           echo ${{ needs.rosco-build-push.outputs.rosco-dev }} 
+           echo ${{ needs.halyard-build-push.outputs.halyard }} 
+         

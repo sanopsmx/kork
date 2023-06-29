@@ -50,12 +50,16 @@ public class ServiceVersion {
   public String resolve() {
     log.info(" resolvedServiceVersion before : ", resolvedServiceVersion);
     if (resolvedServiceVersion == null) {
+      log.info(" resolvers size : ", resolvers.size());
       for (VersionResolver resolver : resolvers) {
+        log.info(" inside resolvers : ", resolver);
         final String resolverName = resolver.getClass().getSimpleName();
+        log.info(" resolverName : ", resolverName);
         log.trace("Attempting to resolve service version: {}", resolverName);
 
         try {
           String version = resolver.resolve(applicationContext.getApplicationName());
+          log.info(" resolve version : ", version);
           if (version != null) {
             resolvedServiceVersion = version;
             break;

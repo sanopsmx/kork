@@ -48,18 +48,18 @@ public class ServiceVersion {
    */
   @Nonnull
   public String resolve() {
-    log.info(" resolvedServiceVersion before : ", resolvedServiceVersion);
+    log.info(" resolvedServiceVersion before : {}", resolvedServiceVersion);
     if (resolvedServiceVersion == null) {
-      log.info(" resolvers size : ", resolvers.size());
+      log.info(" resolvers size : {}", resolvers.size());
       for (VersionResolver resolver : resolvers) {
-        log.info(" inside resolvers : ", resolver);
+        log.info(" inside resolvers : {}", resolver);
         final String resolverName = resolver.getClass().getSimpleName();
-        log.info(" resolverName : ", resolverName);
+        log.info(" resolverName : {}", resolverName);
         log.trace("Attempting to resolve service version: {}", resolverName);
 
         try {
           String version = resolver.resolve(applicationContext.getApplicationName());
-          log.info(" resolve version : ", version);
+          log.info(" resolve version : {}", version);
           if (version != null) {
             resolvedServiceVersion = version;
             break;
@@ -74,7 +74,7 @@ public class ServiceVersion {
         resolvedServiceVersion = UNKNOWN_VERSION;
       }
     }
-    log.info(" resolvedServiceVersion before return : ", resolvedServiceVersion);
+    log.info(" resolvedServiceVersion before return : {}", resolvedServiceVersion);
     return resolvedServiceVersion;
   }
 }

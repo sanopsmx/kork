@@ -15,7 +15,6 @@
  */
 package com.netflix.spinnaker.kork.secrets.engines;
 
-import static org.junit.Assert.assertArrayEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -25,10 +24,9 @@ import com.google.protobuf.ByteString;
 import com.netflix.spinnaker.kork.secrets.EncryptedSecret;
 import com.netflix.spinnaker.kork.secrets.InvalidSecretFormatException;
 import com.netflix.spinnaker.kork.secrets.SecretException;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.Spy;
 
 public class GoogleSecretsManagerSecretEngineTest {
@@ -36,8 +34,6 @@ public class GoogleSecretsManagerSecretEngineTest {
   @Spy
   private GoogleSecretsManagerSecretEngine googleSecretsManagerSecretEngine =
       new GoogleSecretsManagerSecretEngine();
-
-  @Rule public ExpectedException exceptionRule = ExpectedException.none();
 
   private final SecretPayload minioAccessKeyId =
       SecretPayload.newBuilder()
@@ -60,7 +56,7 @@ public class GoogleSecretsManagerSecretEngineTest {
   private final SecretPayload plaintextSecretValue =
       SecretPayload.newBuilder().setData(ByteString.copyFromUtf8("my-k8s-v2-account-name")).build();
 
-  @Before
+  @BeforeEach
   public void setup() {
     initMocks(this);
   }
@@ -73,7 +69,8 @@ public class GoogleSecretsManagerSecretEngineTest {
     doReturn(minioAccessKeyId)
         .when(googleSecretsManagerSecretEngine)
         .getSecretPayload(any(), any(), any());
-    assertArrayEquals("minioadmin".getBytes(), googleSecretsManagerSecretEngine.decrypt(kvSecret));
+    Assertions.assertArrayEquals(
+        "minioadmin".getBytes(), googleSecretsManagerSecretEngine.decrypt(kvSecret));
   }
 
   @Test
@@ -83,7 +80,7 @@ public class GoogleSecretsManagerSecretEngineTest {
     doReturn(plaintextSecretValue)
         .when(googleSecretsManagerSecretEngine)
         .getSecretPayload(any(), any(), any());
-    assertArrayEquals(
+    Assertions.assertArrayEquals(
         "my-k8s-v2-account-name".getBytes(),
         googleSecretsManagerSecretEngine.decrypt(plaintextSecret));
   }
@@ -93,11 +90,15 @@ public class GoogleSecretsManagerSecretEngineTest {
     EncryptedSecret kvSecret =
         EncryptedSecret.parse(
             "encryptedFile:google-secrets-manager!p:824069899151!s:spinnaker-store!k:minioAccessKeyId");
-    exceptionRule.expect(InvalidSecretFormatException.class);
     doReturn(kvSecretValue)
         .when(googleSecretsManagerSecretEngine)
         .getSecretPayload(any(), any(), any());
-    googleSecretsManagerSecretEngine.validate(kvSecret);
+
+    Assertions.assertThrows(
+        InvalidSecretFormatException.class,
+        () -> {
+          googleSecretsManagerSecretEngine.validate(kvSecret);
+        });
   }
 
   @Test
@@ -107,7 +108,7 @@ public class GoogleSecretsManagerSecretEngineTest {
     doReturn(secretStringFileValue)
         .when(googleSecretsManagerSecretEngine)
         .getSecretPayload(any(), any(), any());
-    assertArrayEquals(
+    Assertions.assertArrayEquals(
         "-----BEGIN CERTIFICATE-----".getBytes(),
         googleSecretsManagerSecretEngine.decrypt(secretStringFile));
   }
@@ -119,7 +120,7 @@ public class GoogleSecretsManagerSecretEngineTest {
     doReturn(binarySecretValue)
         .when(googleSecretsManagerSecretEngine)
         .getSecretPayload(any(), any(), any());
-    assertArrayEquals(
+    Assertions.assertArrayEquals(
         "-----BEGIN CERTIFICATE-----".getBytes(),
         googleSecretsManagerSecretEngine.decrypt(secretBinaryFile));
   }
@@ -132,8 +133,11 @@ public class GoogleSecretsManagerSecretEngineTest {
     doReturn(binarySecretValue)
         .when(googleSecretsManagerSecretEngine)
         .getSecretPayload(any(), any(), any());
-    exceptionRule.expect(SecretException.class);
-    googleSecretsManagerSecretEngine.decrypt(kvSecret);
+    Assertions.assertThrows(
+        SecretException.class,
+        () -> {
+          googleSecretsManagerSecretEngine.decrypt(kvSecret);
+        });
   }
 
   @Test
@@ -144,7 +148,10 @@ public class GoogleSecretsManagerSecretEngineTest {
     doReturn(binarySecretValue)
         .when(googleSecretsManagerSecretEngine)
         .getSecretPayload(any(), any(), any());
-    exceptionRule.expect(SecretException.class);
-    googleSecretsManagerSecretEngine.decrypt(kvSecret);
+    Assertions.assertThrows(
+        SecretException.class,
+        () -> {
+          googleSecretsManagerSecretEngine.decrypt(kvSecret);
+        });
   }
 }

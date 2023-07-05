@@ -16,8 +16,6 @@
  */
 
 package com.netflix.spinnaker.kork.plugins.v2.scenarios
-class ComplexInjectionScenarioTest{}
-/*
 import com.netflix.spinnaker.config.PluginsAutoConfiguration
 import com.netflix.spinnaker.kork.plugins.FRAMEWORK_V2
 import com.netflix.spinnaker.kork.plugins.testplugin.api.TestExtension
@@ -25,7 +23,6 @@ import com.netflix.spinnaker.kork.plugins.testplugin.testPlugin
 import com.netflix.spinnaker.kork.plugins.v2.enablePlugin
 import dev.minutest.junit.JUnit5Minutests
 import dev.minutest.rootContext
-import dev.minutest.test
 import org.springframework.boot.autoconfigure.AutoConfigurations
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.test.context.runner.ApplicationContextRunner
@@ -51,8 +48,7 @@ class ComplexInjectionScenarioTest : JUnit5Minutests {
     fixture {
       Fixture()
     }
-
-   /* test("bi-directional (service <-> plugin) injection works") {
+    test("bi-directional (service <-> plugin) injection works") {
       app.run { ctx ->
         val injectsPluginExtensions = ctx.getBean(InjectsPluginExtensions::class.java)
         expectThat(injectsPluginExtensions.testExtensions) {
@@ -70,11 +66,11 @@ class ComplexInjectionScenarioTest : JUnit5Minutests {
           get { first().testValue }.isEqualTo("ParentServiceBean")
         }
       }
-    }*/
+    }
   }
 
   private class Fixture {
-   /* val plugin = testPlugin {
+    val plugin = testPlugin {
       sourceFile(
         "ComplexInjectionExtension",
         """
@@ -112,7 +108,7 @@ class ComplexInjectionScenarioTest : JUnit5Minutests {
         AutoConfigurations.of(
           PluginsAutoConfiguration::class.java
         )
-      )*/
+      )
   }
 
   @TestConfiguration
@@ -134,6 +130,3 @@ class ComplexInjectionScenarioTest : JUnit5Minutests {
     }
   }
 }
-
-
- */

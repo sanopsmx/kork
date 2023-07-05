@@ -16,20 +16,14 @@
 
 package com.netflix.spinnaker.kork.secrets.user;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import com.netflix.spinnaker.kork.secrets.EncryptedSecret;
 import com.netflix.spinnaker.kork.secrets.SecretConfiguration;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @SpringBootTest(classes = SecretConfiguration.class)
-@RunWith(SpringJUnit4ClassRunner.class)
 public class UserSecretManagerTest {
 
   @Autowired UserSecretManager userSecretManager;
@@ -38,23 +32,23 @@ public class UserSecretManagerTest {
   public void getTestSecret() {
     var ref = UserSecretReference.parse("secret://noop?v=test");
     var secret = userSecretManager.getUserSecret(ref);
-    assertEquals("test", secret.getSecretString("v"));
-    assertEquals("opaque", secret.getType());
-    assertTrue(secret.getRoles().isEmpty());
+    Assertions.assertEquals("test", secret.getSecretString("v"));
+    Assertions.assertEquals("opaque", secret.getType());
+    Assertions.assertTrue(secret.getRoles().isEmpty());
   }
 
   @Test
   public void getTestSecretString() {
     var ref = UserSecretReference.parse("secret://noop?foo=bar");
     var userSecret = userSecretManager.getUserSecret(ref);
-    assertEquals("bar", userSecret.getSecretString("foo"));
+    Assertions.assertEquals("bar", userSecret.getSecretString("foo"));
   }
 
   @Test
   public void getTestExternalSecret() {
     var ref = EncryptedSecret.parse("encrypted:noop!v:test");
-    assertNotNull(ref);
+    Assertions.assertNotNull(ref);
     var secret = userSecretManager.getExternalSecretString(ref);
-    assertEquals("test", secret);
+    Assertions.assertEquals("test", secret);
   }
 }

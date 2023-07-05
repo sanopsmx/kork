@@ -37,4 +37,5 @@ dependencies {
 
   testImplementation "org.mockito:mockito-core"
   testImplementation "junit:junit"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
 }

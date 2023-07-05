@@ -15,42 +15,35 @@
  */
 package com.netflix.spinnaker.kork.jackson;
 
-// import static org.junit.Assert.assertEquals;//commented for PR3 porting
-
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.As;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.annotation.JsonTypeName;
-// import com.fasterxml.jackson.core.JsonProcessingException; //commented for PR3 porting
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-// import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.ClassSubtypeLocator;
-// //commented for PR3 porting
-// import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.StringSubtypeLocator;
-// //commented for PR3 porting
+import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.ClassSubtypeLocator;
+import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.StringSubtypeLocator;
 import java.util.ArrayList;
 import java.util.List;
-// import org.junit.Before;
-// import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class ObjectMapperSubtypeConfigurerTest {
 
   ObjectMapper mapper;
 
-  // @Before //commented for PR3 porting
   @BeforeAll
   public void setup() {
     mapper = new ObjectMapper();
   }
 
-  /*
-  //commented for PR3 porting
   @Test
   public void shouldRegisterSubtypesByClass() throws JsonProcessingException {
     new ObjectMapperSubtypeConfigurer(true)
         .registerSubtype(mapper, new ClassSubtypeLocator(RootType.class, searchPackages()));
 
-    assertEquals("{\"kind\":\"child\"}", mapper.writeValueAsString(new ChildType()));
+    Assertions.assertEquals("{\"kind\":\"child\"}", mapper.writeValueAsString(new ChildType()));
   }
 
   @Test
@@ -61,16 +54,19 @@ public class ObjectMapperSubtypeConfigurerTest {
             new StringSubtypeLocator(
                 "com.netflix.spinnaker.kork.jackson.RootType", searchPackages()));
 
-    assertEquals("{\"kind\":\"child\"}", mapper.writeValueAsString(new ChildType()));
+    Assertions.assertEquals("{\"kind\":\"child\"}", mapper.writeValueAsString(new ChildType()));
   }
 
-  @Test(expected = InvalidSubtypeConfigurationException.class)
+  @Test
   public void shouldThrowWhenSubtypeNameIsUndefined() {
-    new ObjectMapperSubtypeConfigurer(true)
-        .registerSubtype(
-            mapper, new ClassSubtypeLocator(UndefinedRootType.class, searchPackages()));
+    Assertions.assertThrows(
+        InvalidSubtypeConfigurationException.class,
+        () -> {
+          new ObjectMapperSubtypeConfigurer(true)
+              .registerSubtype(
+                  mapper, new ClassSubtypeLocator(UndefinedRootType.class, searchPackages()));
+        });
   }
-  */
 
   List<String> searchPackages() {
     List<String> searchPackages = new ArrayList<>();

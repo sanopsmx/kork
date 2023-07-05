@@ -30,7 +30,7 @@ dependencies {
   testImplementation "org.spockframework:spock-core"
   testImplementation "org.spockframework:spock-spring"
   testImplementation "org.springframework.boot:spring-boot-starter-test"
-  testRuntimeOnly "cglib:cglib-nodep"
+  testRuntimeOnly "cglib:cglib-nodep:3.3.0"
   testRuntimeOnly "org.objenesis:objenesis"
 
 

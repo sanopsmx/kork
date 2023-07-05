@@ -23,13 +23,13 @@ import com.netflix.spinnaker.kork.secrets.SecretDecryptionException;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class AbstractStorageEngineTest {
   AbstractStorageSecretEngine engine;
 
-  @BeforeAll
+  @BeforeEach
   public void init() {
     engine =
         new AbstractStorageSecretEngine() {

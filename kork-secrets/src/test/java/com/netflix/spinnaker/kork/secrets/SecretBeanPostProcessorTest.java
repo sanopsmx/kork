@@ -6,7 +6,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -46,7 +46,7 @@ public class SecretBeanPostProcessorTest {
         }
       };
 
-  @BeforeAll
+  @BeforeEach
   public void setup() {
     mutablePropertySources.addLast(propertySource);
     mutablePropertySources.addLast(enumerablePropertySource);

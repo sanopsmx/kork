@@ -20,4 +20,8 @@ dependencies {
   testImplementation "junit:junit"
   testRuntimeOnly "cglib:cglib-nodep"
   testRuntimeOnly "org.objenesis:objenesis"
+  testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine"
+}
+test {
+  useJUnitPlatform()
 }

@@ -26,14 +26,14 @@ import com.netflix.spinnaker.kork.jackson.ObjectMapperSubtypeConfigurer.StringSu
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class ObjectMapperSubtypeConfigurerTest {
 
   ObjectMapper mapper;
 
-  @BeforeAll
+  @BeforeEach
   public void setup() {
     mapper = new ObjectMapper();
   }

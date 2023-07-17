@@ -93,10 +93,8 @@ open class SpinnakerPluginManager(
     // system version is null.
     return serviceVersion.resolve().let {
       if (it == ServiceVersion.UNKNOWN_VERSION || it.isEmpty()) {
-        log.info(" setting the service version to default: if block : {}" , it)
         ServiceVersion.DEFAULT_VERSION
       } else {
-        log.info(" not setting the service version to default: else block : {}", it)
         it
       }
     }
@@ -147,6 +145,5 @@ open class SpinnakerPluginManager(
 
   init {
     systemVersion = getSystemVersion()
-    log.info(" system version : {}" , systemVersion)
   }
 }

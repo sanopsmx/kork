@@ -16,8 +16,6 @@
 
 package com.netflix.spinnaker.kork.retrofit.exceptions;
 
-/*
-//commented for PR3 porting
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -43,12 +41,9 @@ import retrofit.RetrofitError;
 import retrofit.client.Response;
 import retrofit.converter.JacksonConverter;
 import retrofit.http.GET;
-*/
 
 public class SpinnakerRetrofitErrorHandlerTest {
 
-  /*
-  //commented for PR3 porting
   private static RetrofitService retrofitService;
 
   private static final MockWebServer mockWebServer = new MockWebServer();
@@ -184,5 +179,4 @@ public class SpinnakerRetrofitErrorHandlerTest {
     @GET("/foo")
     Response getFoo();
   }
-  */
 }

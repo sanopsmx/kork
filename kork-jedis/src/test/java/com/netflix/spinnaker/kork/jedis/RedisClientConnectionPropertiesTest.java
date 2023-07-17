@@ -17,13 +17,9 @@
 
 package com.netflix.spinnaker.kork.jedis;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-
 import java.net.URI;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import redis.clients.jedis.Protocol;
 
 public class RedisClientConnectionPropertiesTest {
@@ -45,62 +41,62 @@ public class RedisClientConnectionPropertiesTest {
   public void getSSLwhenSSLScheme() {
     URI uri = URI.create(TEST_SSL_URI);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertTrue(rcp.isSSL());
+    Assertions.assertTrue(rcp.isSSL());
   }
 
   @Test
   public void getNotSSLwhenNotSSLScheme() {
     URI uri = URI.create(TEST_NON_SSL_URI);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertFalse(rcp.isSSL());
+    Assertions.assertFalse(rcp.isSSL());
   }
 
   @Test
   public void getConfiguredPassword() {
     URI uri = URI.create(TEST_PASSWORD_URI);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertEquals("S0meP@ssw0rd", rcp.password());
+    Assertions.assertEquals("S0meP@ssw0rd", rcp.password());
   }
 
   @Test
   public void getNullWhenNoPassword() {
     URI uri = URI.create(TEST_NO_PASSWORD_URI);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertNull(rcp.password());
+    Assertions.assertNull(rcp.password());
   }
 
   @Test
   public void getConfiguredPort() {
     URI uri = URI.create(TEST_CONFIGURED_PORT);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertEquals(8379, rcp.port());
+    Assertions.assertEquals(8379, rcp.port());
   }
 
   @Test
   public void getDefaultPort() {
     URI uri = URI.create(TEST_DEFAULT_PORT);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertEquals(Protocol.DEFAULT_PORT, rcp.port());
+    Assertions.assertEquals(Protocol.DEFAULT_PORT, rcp.port());
   }
 
   @Test
   public void getConfiguredDatabase() {
     URI uri = URI.create(TEST_CONFGIURED_DATABASE);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertEquals(8, rcp.database());
+    Assertions.assertEquals(8, rcp.database());
   }
 
   @Test
   public void getDefaultDatabase() {
     URI uri = URI.create(TEST_DEFAULT_DATABASE);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertEquals(Protocol.DEFAULT_DATABASE, rcp.database());
+    Assertions.assertEquals(Protocol.DEFAULT_DATABASE, rcp.database());
   }
 
   @Test
   public void getHost() {
     URI uri = URI.create(TEST_SSL_URI);
     RedisClientConnectionProperties rcp = new RedisClientConnectionProperties(uri);
-    assertEquals("somehost.somedomain.net", rcp.addr());
+    Assertions.assertEquals("somehost.somedomain.net", rcp.addr());
   }
 }

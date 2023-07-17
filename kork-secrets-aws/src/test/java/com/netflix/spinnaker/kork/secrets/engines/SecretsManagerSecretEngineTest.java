@@ -61,10 +61,6 @@ public class SecretsManagerSecretEngineTest {
       new GetSecretValueResult().withSecretBinary(ByteBuffer.wrap("i'm binary".getBytes()));
   private GetSecretValueResult secretStringFileValue =
       new GetSecretValueResult().withSecretString("BEGIN RSA PRIVATE KEY");
-  /*
-   *
-   * @Rule public ExpectedException exceptionRule = ExpectedException.none();
-   */
 
   @BeforeEach
   public void setup() {
@@ -97,7 +93,6 @@ public class SecretsManagerSecretEngineTest {
   public void decryptFileWithKey() {
     EncryptedSecret kvSecret =
         EncryptedSecret.parse("encryptedFile:secrets-manager!r:us-west-2!s:private-key!k:password");
-    // exceptionRule.expect(InvalidSecretFormatException.class);
     Assertions.assertThrows(
         InvalidSecretFormatException.class,
         () -> {

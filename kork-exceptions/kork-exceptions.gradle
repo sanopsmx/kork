@@ -12,3 +12,6 @@ dependencies {
 
   testImplementation "com.hubspot.jinjava:jinjava"
 }
+test {
+  useJUnitPlatform()
+}

@@ -35,6 +35,15 @@ subprojects {
       useJUnitPlatform {
         includeEngines "spek2", "junit-vintage", "junit-jupiter"
       }
+      testLogging {
+        exceptionFormat = 'full'
+        afterSuite { desc, result ->
+          if (!desc.parent) {
+            println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+            println "Report file: ${reports.html.entryPoint}"
+          }
+        }
+      }
     }
     dependencies {
       annotationProcessor(platform(project(":spinnaker-dependencies")))

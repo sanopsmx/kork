@@ -959,7 +959,7 @@ jobs:
            devimageName=${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev
              echo $devimageName
              echo "orca-dev=$devimageName" >> $GITHUB_OUTPUT          
-  
+   
   rosco-build-push:
     runs-on: ubuntu-latest
     outputs:

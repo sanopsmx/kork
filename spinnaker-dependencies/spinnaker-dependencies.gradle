@@ -153,6 +153,7 @@ dependencies {
     api("com.nhaarman:mockito-kotlin:1.6.0")
     api("mysql:mysql-connector-java:8.0.28")
     api("commons-io:commons-io:2.11.0")
+    api("io.grpc:grpc-protobuf:1.53.0")
   }
 
   /*constraints {

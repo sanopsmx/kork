@@ -124,7 +124,6 @@ public class SecretsManagerSecretEngineTest {
     EncryptedSecret kvSecret =
         EncryptedSecret.parse("encrypted:secrets-manager!r:us-west-2!s:test-secret!k:password");
     doReturn(binarySecretValue).when(secretsManagerSecretEngine).getSecretValue(any());
-    // exceptionRule.expect(SecretException.class);
     Assertions.assertThrows(
         SecretException.class,
         () -> {

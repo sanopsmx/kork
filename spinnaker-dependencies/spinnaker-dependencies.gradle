@@ -28,7 +28,7 @@ ext {
     spectator        : "1.5.4", //spectator        : "1.0.6",//changed version for PR3 porting
     spek             : "1.1.5",
     spek2            : "2.0.9",
-    springBoot       : "3.0.7",
+    springBoot       : "3.0.9",
     springCloud      : "2022.0.2",
     springfoxSwagger : "3.0.0",//"2.9.2",
     //swagger          : "1.5.20", //this should stay in sync with what springfoxSwagger expects
@@ -136,7 +136,6 @@ dependencies {
     api("org.json:json:20230227")
     api("org.jsoup:jsoup:1.15.3")
     api("com.fasterxml.woodstox:woodstox-core:6.4.0")
-    api("net.minidev:json-smart:2.4.9")
     api("com.google.oauth-client:google-oauth-client:1.34.1")
   }
 

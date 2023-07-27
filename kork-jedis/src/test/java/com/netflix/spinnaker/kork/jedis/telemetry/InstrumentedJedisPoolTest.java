@@ -16,9 +16,11 @@
 
 package com.netflix.spinnaker.kork.jedis.telemetry;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 import com.netflix.spectator.api.Registry;
+import org.junit.jupiter.api.Test;
 import redis.clients.jedis.JedisPool;
 
 public class InstrumentedJedisPoolTest {
@@ -29,4 +31,9 @@ public class InstrumentedJedisPoolTest {
 
   private InstrumentedJedisPool instrumentedJedisPool =
       new InstrumentedJedisPool(registry, jedisPool);
+
+  @Test
+  public void getInternalPoolReference() {
+    assertNotNull(instrumentedJedisPool.getInternalPoolReference());
+  }
 }

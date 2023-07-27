@@ -1,4 +1,3 @@
-/*
 package com.netflix.spinnaker.kork.web.exceptions
 
 import com.netflix.spinnaker.config.ErrorConfiguration
@@ -15,7 +14,6 @@ import org.springframework.context.annotation.Import
 import org.springframework.http.HttpStatus
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
@@ -96,8 +94,7 @@ class GenericExceptionHandlersMvcSpec extends Specification {
 
     @Configuration
     @EnableWebSecurity
-    class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-      @Override
+    class WebSecurityConfig {
       protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
           .headers().disable()
@@ -134,4 +131,3 @@ class GenericExceptionHandlersMvcSpec extends Specification {
     }
   }
 }
-*/

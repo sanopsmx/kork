@@ -19,15 +19,12 @@ import static org.junit.Assume.assumeTrue;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.runner.JUnitPlatform;
-import org.junit.runner.RunWith;
 import org.testcontainers.DockerClientFactory;
 
 /**
  * Verify that SqlTestUtil can bring up database containers. Beyond testing the code, it also helps
  * to verify that appropriate docker images are available in CI environments.
  */
-@RunWith(JUnitPlatform.class)
 public class SqlTestUtilTest {
 
   @BeforeAll

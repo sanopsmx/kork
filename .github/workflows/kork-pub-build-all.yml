@@ -427,7 +427,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-clouddriver-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -506,7 +506,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-deck-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -569,7 +569,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-echo-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -638,7 +638,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-fiat-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -706,7 +706,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-front50-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -778,7 +778,7 @@ jobs:
           
            echo git tag is ${GITHUB_REF#refs/*/}
           echo ::set-output name=REPO::ubi8-gate-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -850,7 +850,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-igor-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -927,7 +927,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-kayenta-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -988,7 +988,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-orca-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -1063,7 +1063,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-rosco-cve
-          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"1.30.1$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -1133,7 +1133,7 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-halyard-cve
-          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%Y%m%d%H%M')"
+          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%-m%d')"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1

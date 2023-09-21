@@ -91,7 +91,7 @@ dependencies {
   api("com.amazonaws:aws-java-sdk-sts:${versions.aws}")
   api("com.hubspot.jinjava:jinjava:2.6.0")
   api("redis.clients:jedis:4.3.1")
-  api("org.pf4j:pf4j:3.9.0")
+  api("org.pf4j:pf4j:3.10.0")
   api("com.squareup.okhttp3:mockwebserver:${versions.okhttp3}")
   api("com.squareup.retrofit2:retrofit-mock:${versions.retrofit2}")
   //added for PR3 porting:end

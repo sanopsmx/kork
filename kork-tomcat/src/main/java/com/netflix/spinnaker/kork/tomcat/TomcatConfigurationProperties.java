@@ -53,7 +53,7 @@ public class TomcatConfigurationProperties {
               "TLS_DHE_RSA_WITH_AES_256_CBC_SHA",
               "TLS_DHE_RSA_WITH_AES_128_CBC_SHA"));
 
-  private Boolean rejectIllegalHeader;
+  private final Boolean rejectIllegalHeader = true;
 
   public int getLegacyServerPort() {
     return legacyServerPort;
@@ -107,7 +107,4 @@ public class TomcatConfigurationProperties {
     return rejectIllegalHeader;
   }
 
-  public void setRejectIllegalHeader(Boolean rejectIllegalHeader) {
-    this.rejectIllegalHeader = rejectIllegalHeader;
-  }
 }

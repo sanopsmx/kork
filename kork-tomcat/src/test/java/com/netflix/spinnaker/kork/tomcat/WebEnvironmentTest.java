@@ -32,7 +32,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 @TestPropertySource(
     properties = {
       "logging.level.org.apache.coyote.http11.Http11InputBuffer = DEBUG",
-      "default.rejectIllegalHeader = false"
     })
 class WebEnvironmentTest {
 
@@ -53,7 +52,7 @@ class WebEnvironmentTest {
             .toUri();
     ResponseEntity<String> entity =
         restTemplate.exchange(uri, HttpMethod.GET, new HttpEntity<>(headers), String.class);
-    Assertions.assertEquals(HttpStatus.OK, entity.getStatusCode());
+    Assertions.assertEquals(HttpStatus.BAD_REQUEST, entity.getStatusCode());
   }
 
   @SpringBootApplication

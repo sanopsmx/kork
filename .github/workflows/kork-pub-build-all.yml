@@ -461,6 +461,9 @@ jobs:
           context: .
           build-args: |
             TARGETARCH=amd64
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}"
@@ -471,6 +474,9 @@ jobs:
           context: .
           build-args: |
             TARGETARCH=amd64
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags:  "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-dev"          
@@ -593,6 +599,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -601,6 +611,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |
@@ -662,6 +676,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -670,6 +688,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |
@@ -730,6 +752,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -737,7 +763,11 @@ jobs:
       - name: dockerBuildpushjaeger
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: .          
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |
@@ -803,6 +833,9 @@ jobs:
           context: .
           build-args: |
             CUSTOMPLUGIN_RELEASEVERSION=v4.0.3.2-rc1
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASE_VERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -813,6 +846,9 @@ jobs:
           context: .
           build-args: |
             CUSTOMPLUGIN_RELEASEVERSION=v4.0.3.2-rc1
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASE_VERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |
@@ -882,6 +918,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -890,6 +930,10 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |
@@ -950,7 +994,11 @@ jobs:
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: .          
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -1016,6 +1064,9 @@ jobs:
           context: .          
           build-args: |
             CUSTOMPLUGIN_RELEASEVERSION=v4.0.4-rc1
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASE_VERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -1026,6 +1077,9 @@ jobs:
           context: .
           build-args: |
             CUSTOMPLUGIN_RELEASEVERSION=v4.0.4-rc1
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASE_VERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |
@@ -1088,7 +1142,11 @@ jobs:
       - name: dockerBuildpush
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: .          
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
@@ -1096,7 +1154,11 @@ jobs:
       - name: dockerBuildpushdev
         uses: docker/build-push-action@v2
         with:
-          context: .
+          context: .         
+          build-args: |
+            CUSTOMPLUGIN_RELEASEORG=opsmx
+            CUSTOMPLUGIN_RELEASEREPO=armory-observability-plugin
+            CUSTOMPLUGIN_RELEASEVERSION=v1.0.1
           file: docker/ubi8/Dockerfile-dev
           push: true
           tags: |

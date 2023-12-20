@@ -149,6 +149,7 @@ dependencies {
     api("org.eclipse.jetty:jetty-http:11.0.16")
     api("org.eclipse.jetty.http2:http2:11.0.16")
     api("org.jooq:jooq:${versions.jooq}")
+    api("org.eclipse.jgit:org.eclipse.jgit:6.6.1.202309021850-r")
   }
 
 

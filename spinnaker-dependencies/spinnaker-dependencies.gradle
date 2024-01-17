@@ -152,6 +152,7 @@ dependencies {
     api("org.eclipse.jgit:org.eclipse.jgit:6.6.1.202309021850-r")
     api("ch.qos.logback:logback-classic:1.4.14")
     api("ch.qos.logback:logback-core:1.4.14")
+    api("io.projectreactor.netty:reactor-netty-http:1.1.13")
   }
 
 

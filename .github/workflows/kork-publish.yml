@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Build
         env:
-          NEXUS_VERSION: ${{ github.ref }}-$(date +"%Y-%m-%d")-SNAPSHOT
+          NEXUS_VERSION: $(echo "${{ github.ref }}" | sed 's/refs\/heads\///')-SNAPSHOT
         run: |
             
               cat <<EOF>> patch

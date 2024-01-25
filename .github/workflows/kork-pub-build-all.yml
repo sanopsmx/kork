@@ -1,6 +1,7 @@
-name:  kork publish and Build All including Halyard 
+name:  kork publish and Build All including Halyard for release
 on:
   workflow_dispatch:
+  workflow_call:
   push:
     branches:
     - nov13

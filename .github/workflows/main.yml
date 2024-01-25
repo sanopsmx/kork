@@ -16,6 +16,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          ref: refs/heads/nov13
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - uses: actions/setup-java@v2

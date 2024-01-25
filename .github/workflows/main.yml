@@ -165,9 +165,13 @@ jobs:
                   sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
+                  cat gradle.properties
+
                   yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
 
                   mv gradle.properties-bkp gradle.properties
+
+                  cat gradle.properties
               
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
               
@@ -258,6 +262,8 @@ jobs:
                   yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
 
                   mv gradle.properties-bkp gradle.properties
+
+                  cat gradle.properties
           
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
                 
@@ -336,10 +342,13 @@ jobs:
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle      
                   sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
+                  cat gradle.properties
 
                   yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
 
                   mv gradle.properties-bkp gradle.properties
+
+                  cat gradle.properties
           
                 ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test               
  

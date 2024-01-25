@@ -166,11 +166,7 @@ jobs:
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
                   cat gradle.properties
-
-                  yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
               
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
@@ -259,10 +255,8 @@ jobs:
                   sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
-                  yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
           
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
@@ -342,12 +336,9 @@ jobs:
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle      
                   sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
+                  
                   cat gradle.properties
-
-                  yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
           
                 ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test               
@@ -425,11 +416,8 @@ jobs:
                   sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
-                  yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
           
                 ./gradlew --no-daemon -PenableCrossCompilerPlugin=true  publish -x test
@@ -481,11 +469,8 @@ jobs:
               
             sed "s/^\(DEFAULT_JVM_OPTS\)\s*=\s*'.*'\$/\1='$extra_opts_escaped'/"  -i clouddriver-web/build/install/clouddriver/bin/clouddriver
 
-            yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
      
           ./gradlew --no-daemon -PenableCrossCompilerPlugin=true clouddriver-web:installDist -x test 
@@ -633,11 +618,8 @@ jobs:
           
 
 
-            yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
 
           ./gradlew --no-daemon -PenableCrossCompilerPlugin=true echo-web:installDist -x test 
@@ -719,11 +701,8 @@ jobs:
           sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
 
-            yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
           
           ./gradlew --no-daemon -PenableCrossCompilerPlugin=true fiat-web:installDist -x test 
@@ -802,12 +781,8 @@ jobs:
              sed  -e 's/NEXUS_USERNAME/${{ secrets.NEXUS_USERNAME }}/' -i build.gradle
              sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
-
-             yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
         
               ./gradlew --no-build-cache --no-daemon -PenableCrossCompilerPlugin=true front50-web:installDist -x test 
@@ -890,11 +865,8 @@ jobs:
              sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
 
-             yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
         
               ./gradlew --no-daemon -PenableCrossCompilerPlugin=true gate-web:installDist -x test 
@@ -977,11 +949,8 @@ jobs:
            sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
 
-            yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
         
             ./gradlew --no-daemon -PenableCrossCompilerPlugin=true igor-web:installDist -x test 
@@ -1138,11 +1107,8 @@ jobs:
            sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
 
-            yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
         
             ./gradlew --no-build-cache --no-daemon -PenableCrossCompilerPlugin=true orca-web:installDist -x test 
@@ -1227,11 +1193,8 @@ jobs:
            sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
 
-            yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
         
         
@@ -1312,11 +1275,8 @@ jobs:
            sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i build.gradle
 
            
-            yq  '.korkVersion = nov13-SNAPSHOT' gradle.properties > gradle.properties-bkp
-
-                  mv gradle.properties-bkp gradle.properties
-
-
+                  cat gradle.properties
+                  sed  -e 's/\(korkVersion\s*=\s*\)[^ \t]*/\123232/' -i  gradle.properties
                   cat gradle.properties
            
             ./gradlew --no-daemon -PenableCrossCompilerPlugin=true halyard-web:installDist -x test 

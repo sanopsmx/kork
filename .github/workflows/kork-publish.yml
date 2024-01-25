@@ -4,7 +4,7 @@ on:
   workflow_call:
   push:
     branches:
-    - nov13
+    - nov13t
  
 env:
   GRADLE_OPTS: -Dorg.gradle.daemon=false -Xmx6g -Xms6g

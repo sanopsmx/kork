@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Build
         env:
-          NEXUS_VERSION: ${{ github.ref }}-SNAPSHOT
+          NEXUS_VERSION: nov13-SNAPSHOT
         run: |
             
               cat <<EOF>> patch

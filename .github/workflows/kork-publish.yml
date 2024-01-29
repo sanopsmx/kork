@@ -24,7 +24,7 @@ jobs:
           distribution: 'temurin'
       - name: Build
         env:
-          NEXUS_VERSION: 1-9-SNAPSHOT
+          NEXUS_VERSION: nov13-SNAPSHOT
         run: |
             
               cat <<EOF>> patch
@@ -87,9 +87,9 @@ jobs:
                   
                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/' -i settings.gradle
                   
-                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/'  settings.gradle  > test
+                   sed  -e 's/NEXUS_PASSWORD/${{ secrets.NEXUS_PASSWORD }}/'  -i settings.gradle  
                    
-                   cat test
+                   
                   
                   cat settings.gradle
                  

@@ -1,4 +1,4 @@
-name:  kork publish and Build All including Halyard new naming
+name:  new  name kork publish and Build All including Halyard  
 on:
   workflow_dispatch:
   workflow_call:
@@ -1230,7 +1230,10 @@ jobs:
         id: build_variables
         run: |
           echo ::set-output name=REPO::ubi8-halyard-cve
-          echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%-m%d')"
+          #echo ::set-output name=VERSION::"$(git rev-parse --short HEAD)-$(date --utc +'%-m%d')"
+          echo ::set-output name=VERSION::"1.55.1"
+          echo "::set-output name=GITHASH::$(git rev-parse --short HEAD)"
+          echo "::set-output name=BUILDDATE::$(date -u +"%Y%m%d%H%M")"
       - name: Login to Quay
         uses: docker/login-action@v1
         # use service account flow defined at: https://github.com/docker/login-action#service-account-based-authentication-1
@@ -1256,7 +1259,7 @@ jobs:
           file: docker/ubi8/Dockerfile-fips
           push: true
           tags: |
-            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"    
+            "${{ env.CONTAINER_REGISTRY }}/${{ steps.build_variables.outputs.REPO }}:${{ steps.build_variables.outputs.VERSION }}-${{ steps.build_variables.outputs.GITHASH }}-${{ steps.build_variables.outputs.BUILDDATE }}"   
       - name: Get the image name
         id: get-img-name  
         run: |
